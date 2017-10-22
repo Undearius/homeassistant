@@ -1,0 +1,36 @@
+- name: Default
+  entities:
+    light.kyles_main:
+      state: on
+      color_temp: 400
+      brightness: 255
+    light.kyles_desk_lamp: off
+    light.kyles_corner_lamp: off
+- name: Bedtime
+  entities:
+    light.kyles_main:
+      state: off
+    light.kyles_desk_lamp:
+      state: on
+      xy_color: [0.5800,0.3900] 
+      brightness: 5
+    light.kyles_corner_lamp:
+      state: on
+      xy_color: [0.5800,0.3900] 
+      brightness: 5
+- name: Bedtime Transition
+  entities:
+    light.kyles_main:
+      state: off
+      transition: 1800
+    light.kyles_desk_lamp:
+      state: on
+      xy_color: [0.5800,0.3900] 
+      brightness: 5
+      transition: 1800
+    light.kyles_corner_lamp:
+      state: on
+      xy_color: [0.5800,0.3900] 
+      brightness: 5
+      transition: 1800
+
