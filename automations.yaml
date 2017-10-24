@@ -5,19 +5,19 @@
   condition:
   - condition: time
     weekday:
-      - mon
-      - tue
-      - wed
-      - thu
-      - sun
+    - mon
+    - tue
+    - wed
+    - thu
+    - sun
   - condition: state
     entity_id: device_tracker.kyle_oneplus
     state: 'home'
   action:
-  - service: scene.turn_on
+    service: scene.turn_on
     entity_id: scene.bedtime_transition
 
-- alias: 'Lights on at dark'
+- alias: 'Lights on at dark while home'
   trigger:
     platform: numeric_state
     entity_id: sensor.kyle_multisensor_luminance
@@ -35,39 +35,10 @@
 
 - alias: 'Lights on home after dark'
   trigger:
-    platform: state
+  - platform: state
     entity_id: device_tracker.kyle_oneplus
     to: 'home'
-  condition:
-  - condition: numeric_state
-    entity_id: sensor.kyle_multisensor_luminance
-    below: 5
-  - condition: time
-    after: '14:00:00'
-    before: '00:00:00'
-  action:
-    service: light.turn_on
-    entity_id: light.kyles_main
-
-- alias: 'Lights on late'
-  trigger:
-    platform: state
-    entity_id: device_tracker.kyle_oneplus
-    to: 'home'
-  condition:
-  - condition: numeric_state
-    entity_id: sensor.kyle_multisensor_luminance
-    below: 5
-  - condition: time
-    after: '00:00:00'
-    before: '10:00:00'
-  action:
-    service: scene.turn_on
-    entity_id: scene.bedtime
-
-- alias: 'Lights on motion'
-  trigger:
-    platform: state
+  - platform: state
     entity_id: sensor.kyle_multisensor_burglar
     to: '8'
   condition:
@@ -78,11 +49,30 @@
     after: '14:00:00'
     before: '23:00:00'
   - condition: state
-    entity_id: light.kyle_main
+    entity_id: light.kyles_main
     state: 'off'
   action:
     service: light.turn_on
     entity_id: light.kyles_main
+
+- alias: 'Lights on dim late'
+  trigger:
+  - platform: state
+    entity_id: device_tracker.kyle_oneplus
+    to: 'home'
+  - platform: state
+    entity_id: sensor.kyle_multisensor_burglar
+    to: '8'
+  condition:
+  - condition: numeric_state
+    entity_id: sensor.kyle_multisensor_luminance
+    below: 5
+  - condition: time
+    after: '23:00:00'
+    before: '10:00:00'
+  action:
+    service: scene.turn_on
+    entity_id: scene.bedtime
 
 - alias: 'Lights off motion'
   trigger:
@@ -90,9 +80,17 @@
     entity_id: sensor.kyle_multisensor_burglar
     to: '0'
   condition:
-  - condition: state
-    entity_id: device_tracker.kyle_oneplus
-    state: 'not_home'
+    condition: or
+    conditions:
+    - condition: state
+      entity_id: device_tracker.kyle_oneplus
+      state: 'not_home'
+    - condition: time
+      after: '23:00:00'
+      before: '10:00:00'
   action:
-  - service: light.turn_off
-    entity_id: light.kyles_main,light.kyles_desk_lamp,light.kyles_corner_lamp
+    service: light.turn_off
+    entity_id:
+    - light.kyles_main
+    - light.kyles_desk_lamp
+    - light.kyles_corner_lamp

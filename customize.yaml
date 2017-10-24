@@ -27,3 +27,8 @@ sensor.yr_precipitation:
   icon: mdi:weather-rainy
 sensor.yr_cloudiness:
   icon: mdi:weather-cloudy
+
+zwave.aeotec_zw090_zstick_gen5_us:
+  hidden: true
+zwave.kyle_multisensor:
+  hidden: true

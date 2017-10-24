@@ -35,3 +35,16 @@ home:
     - device_tracker.david_iphone
     - device_tracker.alyssa_iphone
     - device_tracker.craig_iphone
+media_players:
+  name: Media Players
+  entities:
+    - media_player.one_a2005
+    - media_player.plex_web_firefox
+    - media_player.roku_yt00ej737102
+    - media_player.swamp_apple_tv
+media:
+  name: Media
+  view: yes
+  entities:
+    - group.media_players
+    - remote.swamp_apple_tv
