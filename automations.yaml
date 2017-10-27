@@ -27,7 +27,7 @@
     entity_id: device_tracker.kyle_oneplus
     state: 'home'
   - condition: state
-    entity_id: light.kyle_main
+    entity_id: light.kyles_main
     state: 'off'
   action:
     service: light.turn_on
@@ -49,7 +49,7 @@
     after: '14:00:00'
     before: '23:00:00'
   - condition: state
-    entity_id: light.kyles_main
+    entity_id: group.kyle_lights
     state: 'off'
   action:
     service: light.turn_on
@@ -69,7 +69,7 @@
     below: 5
   - condition: time
     after: '23:00:00'
-    before: '10:00:00'
+    before: '07:00:00'
   action:
     service: scene.turn_on
     entity_id: scene.bedtime
@@ -87,7 +87,7 @@
       state: 'not_home'
     - condition: time
       after: '23:00:00'
-      before: '10:00:00'
+      before: '07:00:00'
   action:
     service: light.turn_off
     entity_id:
