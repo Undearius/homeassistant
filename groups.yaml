@@ -5,6 +5,9 @@ kyle_room:
     - group.kyle_lights
     - group.kyle_multisensor
     - device_tracker.kyle_oneplus5t
+    - scene.default
+    - scene.bedtime
+    - scene.bedtime
 kyle_lights:
   name: Kyle's Lights
   entities:
@@ -37,6 +40,7 @@ media_players:
   name: Media Players
   entities:
     - media_player.one_a2005
+    - media_player.oneplus_a5010
     - media_player.plex_web_firefox
     - media_player.roku_yt00ej737102
     - media_player.swamp_apple_tv

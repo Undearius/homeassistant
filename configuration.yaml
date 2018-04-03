@@ -55,6 +55,11 @@ zwave:
 media_player:
   - platform: plex
 
+hue:
+  bridges:
+    - host: 192.168.0.50
+      allow_hue_groups: false
+
 cover:
   - platform: myq
     username: !secret garage_user
