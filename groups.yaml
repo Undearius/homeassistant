@@ -4,7 +4,7 @@ kyle_room:
   entities:
     - group.kyle_lights
     - group.kyle_multisensor
-    - device_tracker.kyle_oneplus
+    - device_tracker.kyle_oneplus5t
 kyle_lights:
   name: Kyle's Lights
   entities:
@@ -30,11 +30,9 @@ weather:
 home:
   name: Home
   entities:
-    - device_tracker.kyle_oneplus
+    - device_tracker.kyle_oneplus5t
     - device_tracker.jackie_iphone
     - device_tracker.david_iphone
-    - device_tracker.alyssa_iphone
-    - device_tracker.craig_iphone
 media_players:
   name: Media Players
   entities:

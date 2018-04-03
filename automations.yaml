@@ -11,7 +11,7 @@
     - thu
     - sun
   - condition: state
-    entity_id: device_tracker.kyle_oneplus
+    entity_id: device_tracker.kyle_oneplus5t
     state: 'home'
   action:
     service: scene.turn_on
@@ -24,7 +24,7 @@
     below: 5
   condition:
   - condition: state
-    entity_id: device_tracker.kyle_oneplus
+    entity_id: device_tracker.kyle_oneplus5t
     state: 'home'
   - condition: state
     entity_id: light.kyles_main
@@ -36,7 +36,7 @@
 - alias: 'Lights on home after dark'
   trigger:
   - platform: state
-    entity_id: device_tracker.kyle_oneplus
+    entity_id: device_tracker.kyle_oneplus5t
     to: 'home'
   - platform: state
     entity_id: sensor.kyle_multisensor_burglar
@@ -55,14 +55,11 @@
     service: light.turn_on
     entity_id: light.kyles_main
 
-- alias: 'Lights on dim late'
+- alias: 'Lights on dim home late'
   trigger:
   - platform: state
-    entity_id: device_tracker.kyle_oneplus
+    entity_id: device_tracker.kyle_oneplus5t
     to: 'home'
-  - platform: state
-    entity_id: sensor.kyle_multisensor_burglar
-    to: '8'
   condition:
   - condition: numeric_state
     entity_id: sensor.kyle_multisensor_luminance
@@ -80,17 +77,47 @@
     entity_id: sensor.kyle_multisensor_burglar
     to: '0'
   condition:
-    condition: or
+  - condition: time
+    weekday:
+    - mon
+    - tue
+    - wed
+    - thu
+  - condition: or
     conditions:
     - condition: state
-      entity_id: device_tracker.kyle_oneplus
+      entity_id: device_tracker.kyle_oneplus5t
       state: 'not_home'
     - condition: time
-      after: '23:00:00'
+      after: '23:30:00'
       before: '07:00:00'
   action:
     service: light.turn_off
     entity_id:
-    - light.kyles_main
-    - light.kyles_desk_lamp
-    - light.kyles_corner_lamp
+      - light.kyles_main
+      - light.kyles_desk_lamp
+      - light.kyles_corner_lamp
+
+- alias: 'Lights on while on vacation'
+  trigger:
+    platform: numeric_state
+    entity_id: sensor.kyle_multisensor_luminance
+    below: 5
+  condition:
+  - condition: state
+    entity_id: light.kyles_main
+    state: 'off'
+  action:
+    service: light.turn_on
+    entity_id: light.kyles_main
+
+- alias: 'Lights of 22:30'
+  trigger:
+    platform: time
+    at: '22:30:00'
+  action:
+    service: light.turn_off
+    entity_id:
+      - light.kyles_main
+      - light.kyles_desk_lamp
+      - light.kyles_corner_lamp

@@ -51,6 +51,7 @@ __pycache__
 *.sqlite
 *.xml
 *.backup
+*.bak
 *.py
 *.sh
 *.google.token

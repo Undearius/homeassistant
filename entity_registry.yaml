@@ -1,0 +1,68 @@
+binary_sensor.kyle_multisensor_sensor:
+  name:
+  platform: zwave
+  unique_id: 2-72057594076463104
+sensor.kyle_multisensor_temperature:
+  name:
+  platform: zwave
+  unique_id: 2-72057594076479506
+sensor.kyle_multisensor_luminance:
+  name:
+  platform: zwave
+  unique_id: 2-72057594076479538
+sensor.kyle_multisensor_relative_humidity:
+  name:
+  platform: zwave
+  unique_id: 2-72057594076479570
+sensor.kyle_multisensor_ultraviolet:
+  name:
+  platform: zwave
+  unique_id: 2-72057594076479922
+sensor.kyle_multisensor_alarm_type:
+  name:
+  platform: zwave
+  unique_id: 2-72057594077528065
+sensor.kyle_multisensor_alarm_level:
+  name:
+  platform: zwave
+  unique_id: 2-72057594077528081
+sensor.kyle_multisensor_sourcenodeid:
+  name:
+  platform: zwave
+  unique_id: 2-72057594077528097
+sensor.kyle_multisensor_burglar:
+  name:
+  platform: zwave
+  unique_id: 2-72057594077528225
+light.kyles_desk_lamp:
+  name:
+  platform: hue
+  unique_id: 00:17:88:01:00:db:ee:86-0b
+light.kyles_corner_lamp:
+  name:
+  platform: hue
+  unique_id: 00:17:88:01:00:db:eb:b9-0b
+light.kyles_main:
+  name:
+  platform: hue
+  unique_id: 00:17:88:01:00:dd:78:08-0b
+media_player.plex_web_firefox:
+  name:
+  platform: plex
+  unique_id: 10txlf9rmwhedjxy3hq1x9eb
+media_player.oneplus_a5010:
+  name:
+  platform: plex
+  unique_id: 207b6f48751c4652-com-plexapp-android
+media_player.one_a2005:
+  name:
+  platform: plex
+  unique_id: c931496f91890db-com-plexapp-android
+media_player.roku_premiere__yt00ej737102:
+  name:
+  platform: plex
+  unique_id: a41522cb0597e2b94745e1429e03d073
+media_player.plex_web_firefox_2:
+  name:
+  platform: plex
+  unique_id: tztf2owj0wiib4bnetk0yazm
