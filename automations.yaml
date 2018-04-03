@@ -111,7 +111,7 @@
     service: light.turn_on
     entity_id: light.kyles_main
 
-- alias: 'Lights of 22:30'
+- alias: 'Lights off 22:30'
   trigger:
     platform: time
     at: '22:30:00'

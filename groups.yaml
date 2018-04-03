@@ -7,7 +7,7 @@ kyle_room:
     - device_tracker.kyle_oneplus5t
     - scene.default
     - scene.bedtime
-    - scene.bedtime
+    - scene.bedtime_transition
 kyle_lights:
   name: Kyle's Lights
   entities:
