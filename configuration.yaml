@@ -38,6 +38,7 @@ history:
   exclude:
     domains:
       - scene
+      - automation
     entities:
       - zwave.kyle_multisensor
 # View all events in a logbook
@@ -51,6 +52,7 @@ tts:
   platform: google
 zwave:
   usb_path: /dev/ttyACM0
+  polling_interval: 900000
 
 media_player:
   - platform: plex
