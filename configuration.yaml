@@ -1,83 +1,105 @@
+# Configure a default setup of Home Assistant (frontend, api, etc)
+default_config:
+
 homeassistant:
-  # Name of the location where Home Assistant is running
-  name: Home
-  # Location required to calculate the time the sun rises and sets
-  latitude: !secret lat
-  longitude: !secret lon
-  # Impacts weather/sunrise data (altitude above sea level in meters)
-  elevation: 100
-  # metric for Metric, imperial for Imperial
-  unit_system: metric
-  # Pick yours from here: http://en.wikipedia.org/wiki/List_of_tz_database_time_zones
-  time_zone: America/Toronto
+#  latitude: !secret lat
+#  longitude: !secret lon
+#  elevation: 100
+#  unit_system: metric
+#  time_zone: America/Toronto
+#  name: Home
   customize: !include customize.yaml
+# Uncomment this if you are using SSL/TLS, running in Docker container, etc.
+# http:
+#   base_url: example.duckdns.org:8123
 
-# Enables the frontend
-frontend:
+# Text to speech
+tts:
+  - platform: google_translate
 
-# Enables configuration UI
-config:
+weather:
+  - platform: environment_canada
 
-http:
-  # Uncomment this to add a password (recommended!)
-  # api_password: PASSWORD
-  # Uncomment this if you are using SSL or running in Docker etc
-  # base_url: example.duckdns.org:8123
+cover:
+  - platform: myq
+    username: !secret myqu
+    password: !secret myqp
 
-# Checks for available updates
-updater:
+#Custom component
+sonos_player_modes:
 
-# Discover some devices automatically
-discovery:
-
-# Allows you to issue voice commands from the frontend in enabled browsers
-conversation:
-
-# Enables support for tracking state changes over time.
-history:
+recorder:
+  purge_keep_days: 3
   exclude:
     domains:
       - scene
       - automation
+      - sensor
     entities:
-      - zwave.kyle_multisensor
-# View all events in a logbook
-logbook:
+      - binary_sensor.updater
+      - input_number.baby_main_ir
+  include:
+    entities:
+      - sensor.temperature
+      - sensor.weather_temperature
+      - sensor.high_temperature
+      - sensor.low_temperature
 
-# Track the sun
-sun:
+input_number:
+  baby_main_ir:
+    name: Baby Main Infrared
+    initial: 255
+    min: 0
+    max: 255
+    step: 1
+    icon: mdi:lightbulb-outline
 
-# Text to speech
-tts:
-  platform: google
-zwave:
-  usb_path: /dev/ttyACM0
-  polling_interval: 900000
+light:
+  - platform: template
+    lights:
+      baby_main_ir:
+        friendly_name: 'Baby Main Infrared'
+        icon_template: mdi:lightbulb-outline
+        value_template:  >-
+          {% if states('input_number.baby_main_ir') | int > 0 %}
+            on
+          {% else %}
+            off
+          {% endif %}
+        level_template: "{{ states('input_number.baby_main_ir') | int }}"
+        turn_on:
+          service: input_number.set_value
+          data_template:
+            entity_id: input_number.baby_main_ir
+            value: 255
+        turn_off:
+          service: input_number.set_value
+          data_template:
+            entity_id: input_number.baby_main_ir
+            value: 0
+        set_level:
+          service: input_number.set_value
+          data_template:
+            entity_id: input_number.baby_main_ir
+            value: "{{ brightness | int }}"
+  - platform: group
+    name: Bedroom Lights
+    entities:
+      - light.bed_main
+      - light.wled_bed
 
-media_player:
-  - platform: plex
-
-hue:
-  bridges:
-    - host: 192.168.0.50
-      allow_hue_groups: false
-
-cover:
-  - platform: myq
-    username: !secret garage_user
-    password: !secret garage_pass
-    type: chamberlain
-
-group: !include groups.yaml
-
-scene: !include scenes.yaml
-
-zone: !include zones.yaml
-
-switch: !include switches.yaml
-
-device_tracker: !include device_tracker.yaml
-
-sensor: !include sensors.yaml
+device_tracker:
+  - platform: linksys_smart
+    host: 192.168.0.2
+    new_device_defaults:
+      track_new_devices: false
+  - platform: linksys_smart
+    host: 192.168.0.3
+    new_device_defaults:
+      track_new_devices: false
 
 automation: !include automations.yaml
+group: !include groups.yaml
+script: !include scripts.yaml
+scene: !include scenes.yaml
+sensor: !include sensors.yaml
