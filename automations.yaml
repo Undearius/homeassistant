@@ -171,8 +171,10 @@
   condition:
   - condition: template
     value_template: '{{ states.light.baby_main.attributes.brightness > 10 }}'
-  - condition: template
-    value_template: '{{ states.media_player.baby_room.attributes.media_title == "Pink Noise HQ Audio.m4a" }}'
+  - condition: state
+    entity_id: media_player.baby_room
+    state: Pink Noise HQ Audio.m4a
+    attribute: media_title
   action:
   - data:
       entity_id: media_player.baby_room

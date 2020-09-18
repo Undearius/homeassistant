@@ -1,0 +1,12 @@
+{
+    "data": {
+        "items": [
+            {
+                "id": "reading_on",
+                "name": "Reading On"
+            }
+        ]
+    },
+    "key": "input_boolean",
+    "version": 1
+}

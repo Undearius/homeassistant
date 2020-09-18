@@ -1,0 +1,26 @@
+{
+    "data": {
+        "items": [
+            {
+                "icon": "mdi:account-multiple",
+                "id": "lovelace_guest",
+                "mode": "storage",
+                "require_admin": false,
+                "show_in_sidebar": false,
+                "title": "Guest",
+                "url_path": "lovelace-guest"
+            },
+            {
+                "icon": "mdi:baby",
+                "id": "lovelace_baby",
+                "mode": "storage",
+                "require_admin": false,
+                "show_in_sidebar": false,
+                "title": "Baby",
+                "url_path": "lovelace-baby"
+            }
+        ]
+    },
+    "key": "lovelace_dashboards",
+    "version": 1
+}

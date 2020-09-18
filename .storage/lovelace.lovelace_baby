@@ -1,0 +1,111 @@
+{
+    "data": {
+        "config": {
+            "views": [
+                {
+                    "badges": [],
+                    "cards": [
+                        {
+                            "entity": "light.baby_main",
+                            "name": "Baby Main",
+                            "type": "light"
+                        },
+                        {
+                            "entities": [
+                                {
+                                    "entity": "light.baby_main",
+                                    "icon": "mdi:lightbulb-on",
+                                    "name": "Default",
+                                    "tap_action": {
+                                        "action": "call-service",
+                                        "service": "lifx.set_state",
+                                        "service_data": {
+                                            "brightness_pct": 100,
+                                            "entity_id": "light.baby_main",
+                                            "kelvin": 3500,
+                                            "power": "on",
+                                            "transition": 0.1
+                                        }
+                                    }
+                                },
+                                {
+                                    "entity": "light.baby_main",
+                                    "icon": "mdi:book-open",
+                                    "name": "Reading",
+                                    "tap_action": {
+                                        "action": "call-service",
+                                        "service": "automation.trigger",
+                                        "service_data": {
+                                            "entity_id": "automation.baby_reading_light",
+                                            "skip_condition": false
+                                        }
+                                    }
+                                },
+                                {
+                                    "entity": "light.baby_main",
+                                    "icon": "mdi:weather-night",
+                                    "name": "Nightlight",
+                                    "tap_action": {
+                                        "action": "call-service",
+                                        "service": "automation.trigger",
+                                        "service_data": {
+                                            "entity_id": "automation.baby_nightlight_transition"
+                                        }
+                                    }
+                                }
+                            ],
+                            "show_state": false,
+                            "title": null,
+                            "type": "glance"
+                        },
+                        {
+                            "entity": "light.baby_main_ir",
+                            "type": "light"
+                        },
+                        {
+                            "entities": [
+                                {
+                                    "entity": "media_player.baby_room",
+                                    "icon": "mdi:speaker",
+                                    "name": "Lights off, Sound on",
+                                    "tap_action": {
+                                        "action": "call-service",
+                                        "service": "automation.trigger",
+                                        "service_data": {
+                                            "entity_id": "automation.turn_on_white_noise",
+                                            "skip_condition": true
+                                        }
+                                    }
+                                },
+                                {
+                                    "entity": "light.baby_main",
+                                    "icon": "mdi:tent",
+                                    "name": "Camping",
+                                    "tap_action": {
+                                        "action": "call-service",
+                                        "service": "scene.turn_on",
+                                        "service_data": {
+                                            "entity_id": "scene.camping"
+                                        }
+                                    }
+                                }
+                            ],
+                            "show_state": false,
+                            "title": null,
+                            "type": "glance"
+                        },
+                        {
+                            "entity": "media_player.baby_room",
+                            "type": "media-control"
+                        }
+                    ],
+                    "icon": "mdi:baby",
+                    "path": "baby",
+                    "title": "Baby"
+                }
+            ]
+        }
+    },
+    "key": "lovelace.lovelace_baby",
+    "version": 1
+}

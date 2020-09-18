@@ -1,0 +1,29 @@
+{
+    "data": {
+        "config": {
+            "title": "Home",
+            "views": [
+                {
+                    "cards": [
+                        {
+                            "entity": "light.computer_main",
+                            "type": "light"
+                        },
+                        {
+                            "entity": "media_player.living_room",
+                            "type": "media-control"
+                        },
+                        {
+                            "entity": "weather.ottawa_kanata_orleans",
+                            "type": "weather-forecast"
+                        }
+                    ],
+                    "path": "default_view",
+                    "title": "Home"
+                }
+            ]
+        }
+    },
+    "key": "lovelace.lovelace_guest",
+    "version": 1
+}

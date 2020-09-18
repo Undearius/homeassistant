@@ -19,7 +19,7 @@ __pycache__
 *.json
 
 .cloud
-.storage
+.storage/*
 !.storage/lovelace*
 !.storage/input_boolean
 deps
