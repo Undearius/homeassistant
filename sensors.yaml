@@ -1,7 +1,7 @@
-- platform: yr
-  monitored_conditions:
-    - temperature
-    - symbol
-    - precipitation
-    - humidity
-    - cloudiness
+- platform: template
+  sensors:
+    weather_temperature:
+      friendly_name: "Weather Temperature"
+      unit_of_measurement: '°C'
+      value_template: "{{ state_attr('weather.home', 'temperature') }}"
+- platform: environment_canada
