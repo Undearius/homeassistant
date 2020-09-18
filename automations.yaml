@@ -1,123 +1,219 @@
-- alias: 'Activate Bedtime scene'
-  trigger:
-    platform: time
-    at: '22:30:00'
-  condition:
-  - condition: time
-    weekday:
-    - mon
-    - tue
-    - wed
-    - thu
-    - sun
-  - condition: state
-    entity_id: device_tracker.kyle_oneplus5t
-    state: 'home'
-  action:
-    service: scene.turn_on
-    entity_id: scene.bedtime_transition
-
-- alias: 'Lights on at dark while home'
-  trigger:
-    platform: numeric_state
-    entity_id: sensor.kyle_multisensor_luminance
-    below: 5
-  condition:
-  - condition: state
-    entity_id: device_tracker.kyle_oneplus5t
-    state: 'home'
-  - condition: state
-    entity_id: light.kyles_main
-    state: 'off'
-  action:
-    service: light.turn_on
-    entity_id: light.kyles_main
-
-- alias: 'Lights on home after dark'
-  trigger:
-  - platform: state
-    entity_id: device_tracker.kyle_oneplus5t
-    to: 'home'
-  - platform: state
-    entity_id: sensor.kyle_multisensor_burglar
-    to: '8'
-  condition:
-  - condition: numeric_state
-    entity_id: sensor.kyle_multisensor_luminance
-    below: 5
-  - condition: time
-    after: '14:00:00'
-    before: '23:00:00'
-  - condition: state
-    entity_id: group.kyle_lights
-    state: 'off'
-  action:
-    service: light.turn_on
-    entity_id: light.kyles_main
-
-- alias: 'Lights on dim home late'
-  trigger:
-  - platform: state
-    entity_id: device_tracker.kyle_oneplus5t
-    to: 'home'
-  condition:
-  - condition: numeric_state
-    entity_id: sensor.kyle_multisensor_luminance
-    below: 5
-  - condition: time
-    after: '23:00:00'
-    before: '07:00:00'
-  action:
-    service: scene.turn_on
-    entity_id: scene.bedtime
-
-- alias: 'Lights off motion'
+- id: moviepaused
+  alias: Movie Paused
   trigger:
     platform: state
-    entity_id: sensor.kyle_multisensor_burglar
-    to: '0'
+    entity_id: media_player.plex_chromebook
+    from: playing
+    to: paused
   condition:
-  - condition: time
-    weekday:
-    - mon
-    - tue
-    - wed
-    - thu
-  - condition: or
-    conditions:
-    - condition: state
-      entity_id: device_tracker.kyle_oneplus5t
-      state: 'not_home'
-    - condition: time
-      after: '23:30:00'
-      before: '07:00:00'
-  action:
-    service: light.turn_off
-    entity_id:
-      - light.kyles_main
-      - light.kyles_desk_lamp
-      - light.kyles_corner_lamp
-
-- alias: 'Lights on while on vacation'
-  trigger:
-    platform: numeric_state
-    entity_id: sensor.kyle_multisensor_luminance
-    below: 5
-  condition:
-  - condition: state
-    entity_id: light.kyles_main
-    state: 'off'
+  - condition: template
+    value_template: '{{ is_state_attr(''media_player.plex_chromebook'', ''media_content_type'',
+      ''movie'') }}'
   action:
     service: light.turn_on
-    entity_id: light.kyles_main
-
-- alias: 'Lights off 22:30'
+    data:
+      brightness: 25
+      xy_color:
+      - 0.58
+      - 0.39
+      entity_id:
+      - light.wled_bed
+- id: movieresumed
+  alias: Movie Resumed
   trigger:
-    platform: time
-    at: '22:30:00'
+    platform: state
+    entity_id: media_player.plex_chromebook
+    from: paused
+    to: playing
+  condition:
+  - condition: template
+    value_template: '{{ is_state_attr(''media_player.plex_chromebook'', ''media_content_type'',
+      ''movie'') }}'
   action:
     service: light.turn_off
     entity_id:
-      - light.kyles_main
-      - light.kyles_desk_lamp
-      - light.kyles_corner_lamp
+    - light.wled_bed
+- id: movieended
+  alias: Movie Ended
+  trigger:
+    platform: state
+    entity_id: media_player.plex_chromebook
+    from: playing
+    to: idle
+  condition:
+  - condition: template
+    value_template: '{{ is_state_attr(''media_player.plex_chromebook'', ''media_content_type'',
+      ''movie'') }}'
+  action:
+  - service: light.turn_on
+    data:
+      transition: 10
+      brightness: 5
+      xy_color:
+      - 0.58
+      - 0.39
+      entity_id:
+      - light.wled_bed
+  - service: light.turn_on
+    data:
+      transition: 10
+      brightness_pct: 50
+      kelvin: 2600
+      entity_id:
+      - light.bed_main
+- id: moviestopped
+  alias: Movie Stopped
+  trigger:
+    platform: state
+    entity_id: media_player.plex_chromebook
+    from: paused
+    to: idle
+  condition:
+  - condition: template
+    value_template: '{{ is_state_attr(''media_player.plex_chromebook'', ''media_content_type'',
+      ''movie'') }}'
+  action:
+    service: light.turn_on
+    data:
+      transition: 10
+      brightness_pct: 100
+      kelvin: 2600
+      entity_id:
+      - light.bed_main
+- id: babymainirbrightness
+  alias: Baby Main IR Brightness
+  initial_state: true
+  trigger:
+  - platform: state
+    entity_id: input_number.baby_main_ir
+  action:
+    service: lifx.set_state
+    entity_id: light.baby_main
+    data_template:
+      infrared: '{{ states(''input_number.baby_main_ir'') | int }}'
+- id: babyiroffatsunrise
+  alias: Baby IR off at sunrise
+  trigger:
+    platform: state
+    entity_id: sun.sun
+    to: above_horizon
+  action:
+    service: input_number.set_value
+    data_template:
+      entity_id: input_number.baby_main_ir
+      value: 0
+- id: babyironatsunrise
+  alias: Baby IR on at sunset
+  trigger:
+    platform: state
+    entity_id: sun.sun
+    to: below_horizon
+  action:
+    service: input_number.set_value
+    data_template:
+      entity_id: input_number.baby_main_ir
+      value: 255
+- id: babynightlighttransition
+  alias: Baby Nightlight Transition
+  trigger:
+  action:
+  - service: lifx.set_state
+    data:
+      entity_id: light.baby_main
+      brightness_pct: 1
+      transition: 10
+      hs_color:
+      - 37
+      - 100
+      power: true
+- id: '1598760479433'
+  alias: Light off White Noise on
+  description: ''
+  trigger:
+  - device_id: 7baa77eeb6604448a7c10fb87d16a286
+    domain: light
+    entity_id: light.baby_main
+    platform: device
+    type: turned_off
+  condition:
+  - condition: state
+    entity_id: input_boolean.reading_on
+    state: 'on'
+  - after: 08:00:00
+    condition: time
+  action:
+  - data:
+      entity_id: media_player.baby_room
+    service: sonos.unjoin
+  - data:
+      entity_id: media_player.baby_room
+      volume_level: 0.14
+    service: media_player.volume_set
+  - data:
+      entity_id: media_player.baby_room
+      source: Baby
+    service: media_player.select_source
+  - data:
+      entity_id: media_player.baby_room
+      mode: REPEAT_ALL
+    service: sonos_player_modes.set_mode
+  - device_id: 7baa77eeb6604448a7c10fb87d16a286
+    domain: light
+    entity_id: light.baby_main
+    type: turn_off
+  mode: single
+- id: '1598804150280'
+  alias: Light on White Noise off
+  description: ''
+  trigger:
+  - entity_id: light.baby_main
+    platform: state
+  condition:
+  - condition: template
+    value_template: '{{ states.light.baby_main.attributes.brightness > 10 }}'
+  - condition: template
+    value_template: '{{ states.media_player.baby_room.attributes.media_title == "Pink Noise HQ Audio.m4a" }}'
+  action:
+  - data:
+      entity_id: media_player.baby_room
+      sleep_time: 0
+    service: sonos.set_sleep_timer
+  mode: single
+- id: '1598808585001'
+  alias: Baby Reading Light
+  description: ''
+  trigger: []
+  condition: []
+  action:
+  - data:
+      brightness_pct: 30
+      entity_id: light.baby_main
+      hs_color:
+      - 40
+      - 50
+      power: 'on'
+      transition: 5
+    service: lifx.set_state
+  - delay: 00:00:10
+  - data:
+      entity_id: input_boolean.reading_on
+    service: input_boolean.turn_on
+  - delay: 00:15:00
+  - data:
+      entity_id: input_boolean.reading_on
+    service: input_boolean.turn_off
+  mode: restart
+- id: '1599327200195'
+  alias: Reading Boolean off when brightness above 30%
+  description: ''
+  trigger:
+  - entity_id: light.baby_main
+    platform: state
+  condition:
+  - condition: template
+    value_template: '{{ states.light.baby_main.attributes.brightness > 85 }}'
+  action:
+  - data: {}
+    entity_id: input_boolean.reading_on
+    service: input_boolean.turn_off
+  mode: single
