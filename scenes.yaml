@@ -1,36 +1,77 @@
-- name: Default
+- name: Computer Default
   entities:
-    light.kyles_main:
-      state: on
-      color_temp: 400
-      brightness: 255
-    light.kyles_desk_lamp: off
-    light.kyles_corner_lamp: off
-- name: Bedtime
+    light.computer_main:
+      state: true
+      kelvin: 2600
+      brightness_pct: 100
+  id: af47a26076164baaa668d66f2d74c1f7
+- name: Computer Bedtime
   entities:
-    light.kyles_main:
-      state: off
-    light.kyles_desk_lamp:
-      state: on
-      xy_color: [0.5800,0.3900] 
-      brightness: 5
-    light.kyles_corner_lamp:
-      state: on
-      xy_color: [0.5800,0.3900] 
-      brightness: 5
-- name: Bedtime Transition
+    light.computer_main:
+      state: true
+      xy_color:
+      - 0.58
+      - 0.39
+      brightness_pct: 1
+  id: 9d0e9f8064dc40e28bb1f8a652bc1c3d
+- name: Bed Default
   entities:
-    light.kyles_main:
-      state: off
-      transition: 1800
-    light.kyles_desk_lamp:
-      state: on
-      xy_color: [0.5800,0.3900] 
-      brightness: 5
-      transition: 1800
-    light.kyles_corner_lamp:
-      state: on
-      xy_color: [0.5800,0.3900] 
-      brightness: 5
-      transition: 1800
-
+    light.bed_main:
+      state: true
+      kelvin: 2600
+      brightness_pct: 100
+  id: e68301c26e6f4ffa8f1351f146573692
+- name: Bed Bedtime
+  entities:
+    light.bed_main:
+      state: true
+      xy_color:
+      - 0.58
+      - 0.39
+      brightness: 1
+  id: 93e7d1f81f1743ba8265f491d2a7bb69
+- id: '1599403234467'
+  name: Camping
+  entities:
+    light.baby_main:
+      brightness: 51
+      effect_list:
+      - effect_colorloop
+      - effect_pulse
+      - effect_stop
+      friendly_name: Baby Main
+      hs_color:
+      - 206.722
+      - 84.314
+      max_mireds: 400
+      min_mireds: 111
+      rgb_color:
+      - 40
+      - 159
+      - 255
+      state: 'on'
+      supported_features: 55
+      xy_color:
+      - 0.15
+      - 0.187
+    media_player.baby_room:
+      friendly_name: Sonos Baby Room
+      icon: mdi:speaker
+      is_volume_muted: false
+      media_content_id: x-file-cifs://192.168.0.201/media/Music/Playlists/../Sounds/Crackling%20Fire%20Sounds%20-%20No%20Music.m4a
+      media_content_type: music
+      media_duration: 0
+      media_position: 1
+      media_position_updated_at: '2020-09-14T21:02:36.600289+00:00'
+      media_title: Crackling Fire Sounds - No Music.m4a
+      queue_position: 1
+      shuffle: false
+      sonos_group:
+      - media_player.baby_room
+      source_list:
+      - 106.1 CHEZ
+      - Baby
+      - KylesMegamix.m3u
+      state: playing
+      supported_features: 64063
+      volume_level: 0.49
