@@ -82,37 +82,16 @@
       - light.bed_main
 - id: babymainirbrightness
   alias: Baby Main IR Brightness
-  initial_state: true
   trigger:
   - platform: state
     entity_id: input_number.baby_main_ir
   action:
-    service: lifx.set_state
+  - service: lifx.set_state
     entity_id: light.baby_main
     data_template:
       infrared: '{{ states(''input_number.baby_main_ir'') | int }}'
-- id: babyiroffatsunrise
-  alias: Baby IR off at sunrise
-  trigger:
-    platform: state
-    entity_id: sun.sun
-    to: above_horizon
-  action:
-    service: input_number.set_value
-    data_template:
-      entity_id: input_number.baby_main_ir
-      value: 0
-- id: babyironatsunrise
-  alias: Baby IR on at sunset
-  trigger:
-    platform: state
-    entity_id: sun.sun
-    to: below_horizon
-  action:
-    service: input_number.set_value
-    data_template:
-      entity_id: input_number.baby_main_ir
-      value: 255
+  initial_state: true
+  mode: single
 - id: babynightlighttransition
   alias: Baby Nightlight Transition
   trigger:
@@ -147,12 +126,12 @@
     service: sonos.unjoin
   - data:
       entity_id: media_player.baby_room
-      volume_level: 0.14
-    service: media_player.volume_set
-  - data:
-      entity_id: media_player.baby_room
       source: Baby
     service: media_player.select_source
+  - data:
+      entity_id: media_player.baby_room
+      volume_level: 0.14
+    service: media_player.volume_set
   - data:
       entity_id: media_player.baby_room
       mode: REPEAT_ALL
@@ -161,6 +140,10 @@
     domain: light
     entity_id: light.baby_main
     type: turn_off
+  - service: input_number.set_value
+    data_template:
+      entity_id: input_number.baby_main_ir
+      value: 255
   mode: single
 - id: '1598804150280'
   alias: Light on White Noise off
@@ -180,6 +163,10 @@
       entity_id: media_player.baby_room
       sleep_time: 0
     service: sonos.set_sleep_timer
+  - service: input_number.set_value
+    data_template:
+      entity_id: input_number.baby_main_ir
+      value: 0
   mode: single
 - id: '1598808585001'
   alias: Baby Reading Light

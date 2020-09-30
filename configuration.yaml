@@ -35,9 +35,15 @@ recorder:
       - scene
       - automation
       - sensor
+    entity_globs:
+      - media_player.plex_*
     entities:
       - binary_sensor.updater
+      - binary_sensor.home_myq_gateway
       - input_number.baby_main_ir
+      - input_boolean.reading_on
+      - light.bedroom
+      - light.computer_room
   include:
     entities:
       - sensor.temperature
