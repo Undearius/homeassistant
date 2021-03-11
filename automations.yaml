@@ -93,7 +93,7 @@
   initial_state: true
   mode: single
 - id: babynightlighttransition
-  alias: Baby Nightlight Transition
+  alias: Baby Nightlight
   trigger:
   action:
   - service: lifx.set_state
@@ -105,6 +105,7 @@
       - 37
       - 100
       power: true
+  mode: single
 - id: '1598760479433'
   alias: Light off White Noise on
   description: ''
@@ -116,22 +117,20 @@
     type: turned_off
   condition:
   - condition: state
-    entity_id: input_boolean.reading_on
     state: 'on'
-  - after: 08:00:00
-    condition: time
+    entity_id: input_boolean.sound_trigger
   action:
   - data:
       entity_id: media_player.baby_room
     service: sonos.unjoin
   - data:
       entity_id: media_player.baby_room
-      source: Baby
-    service: media_player.select_source
+      volume_level: 0.13
+    service: media_player.volume_set
   - data:
       entity_id: media_player.baby_room
-      volume_level: 0.14
-    service: media_player.volume_set
+      source: Baby
+    service: media_player.select_source
   - data:
       entity_id: media_player.baby_room
       mode: REPEAT_ALL
@@ -141,9 +140,9 @@
     entity_id: light.baby_main
     type: turn_off
   - service: input_number.set_value
-    data_template:
-      entity_id: input_number.baby_main_ir
+    data:
       value: 255
+    entity_id: input_number.baby_main_ir
   mode: single
 - id: '1598804150280'
   alias: Light on White Noise off
@@ -158,6 +157,9 @@
     entity_id: media_player.baby_room
     state: Pink Noise HQ Audio.m4a
     attribute: media_title
+  - condition: state
+    entity_id: media_player.baby_room
+    state: playing
   action:
   - data:
       entity_id: media_player.baby_room
@@ -183,17 +185,19 @@
       power: 'on'
       transition: 5
     service: lifx.set_state
-  - delay: 00:00:10
-  - data:
-      entity_id: input_boolean.reading_on
-    service: input_boolean.turn_on
-  - delay: 00:15:00
-  - data:
-      entity_id: input_boolean.reading_on
-    service: input_boolean.turn_off
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 5
+      milliseconds: 0
+  - service: input_boolean.turn_on
+    entity_id: input_boolean.sound_trigger
+  - delay: 00:20:00
+  - service: input_boolean.turn_off
+    entity_id: input_boolean.sound_trigger
   mode: restart
 - id: '1599327200195'
-  alias: Reading Boolean off when brightness above 30%
+  alias: Sound Trigger off when brightness above 30%
   description: ''
   trigger:
   - entity_id: light.baby_main
@@ -203,6 +207,143 @@
     value_template: '{{ states.light.baby_main.attributes.brightness > 85 }}'
   action:
   - data: {}
-    entity_id: input_boolean.reading_on
+    entity_id: input_boolean.sound_trigger
     service: input_boolean.turn_off
+  mode: single
+- id: '1607901677018'
+  alias: Baby Reading Light Long
+  description: ''
+  trigger: []
+  condition: []
+  action:
+  - data:
+      brightness_pct: 30
+      entity_id: light.baby_main
+      hs_color:
+      - 40
+      - 50
+      power: 'on'
+      transition: 300
+    service: lifx.set_state
+  - delay:
+      hours: 0
+      minutes: 5
+      seconds: 0
+      milliseconds: 0
+  - service: input_boolean.turn_on
+    entity_id: input_boolean.sound_trigger
+  - delay:
+      hours: 0
+      minutes: 25
+      seconds: 0
+      milliseconds: 0
+  - service: input_boolean.turn_off
+    entity_id: input_boolean.sound_trigger
+  mode: restart
+- id: '1613327902048'
+  alias: SaA Webhhok Kyle
+  description: ''
+  trigger:
+  - platform: webhook
+    webhook_id: sleepasandroidkyle
+  condition: []
+  action:
+  - service: input_text.set_value
+    data:
+      value: '{{ trigger.json.event }}'
+    entity_id: input_text.saa_kyle
+  mode: single
+- id: '1613330813566'
+  alias: SaA Webhook Allynn
+  description: ''
+  trigger:
+  - platform: webhook
+    webhook_id: sleepasandroidallynn
+  condition: []
+  action:
+  - service: input_text.set_value
+    data:
+      value: '{{ trigger.json.event }}'
+    entity_id: input_text.saa_allynn
+  mode: single
+- id: '1614033386075'
+  alias: Notify Kyle if music is playing while asleep
+  description: ''
+  trigger:
+  - platform: state
+    entity_id: media_player.living_room
+    to: Playing
+  condition: []
+  action:
+  - service: notify.mobile_app_oneplus_a5010
+    data:
+      title: Music Scrobbled
+      message: Music was playing while you were asleep. Check Last.fm
+  mode: single
+- id: '1614033769366'
+  alias: Notify Kyle if Allynn left her computer on
+  description: ''
+  trigger:
+  - platform: state
+    entity_id: input_text.saa_allynn
+    from: sleep_tracking_stopped
+  - platform: state
+    entity_id: person.allynn
+    from: home
+  condition:
+  - condition: state
+    entity_id: device_tracker.allynnscomputer
+    state: home
+  action:
+  - service: notify.mobile_app_oneplus_a5010
+    data:
+      title: Computer Running
+      message: Allynn left her computer on. Shut it off.
+  mode: single
+- id: '1615074707979'
+  alias: Notify Allynn and Kyle if Ecobee becomes unavailable
+  description: ''
+  trigger:
+  - platform: state
+    entity_id: climate.my_ecobee
+    to: unavailable
+  condition: []
+  action:
+  - service: notify.mobile_app_oneplus_a5010
+    data:
+      title: Ecobee Unavailable
+      message: Check to see if furnace is on!
+  - service: notify.mobile_app_sm_a515w
+    data:
+      title: Ecobee Unavailable
+      message: Check to see if furnace is on!
+  mode: single
+- id: '1615075704978'
+  alias: Morning Sunrise
+  description: ''
+  trigger:
+  - platform: time
+    at: '6:45'
+  condition:
+  - condition: time
+    weekday:
+    - mon
+    - tue
+    - wed
+    - thu
+    - fri
+  action:
+  - service: script.turn_on
+    data:
+      light: light.bedroom_w
+    entity_id: script.sunrise
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 15
+      milliseconds: 0
+  - service: script.turn_on
+    data:
+      light: light.bedroom_d
+    entity_id: script.sunrise
   mode: single

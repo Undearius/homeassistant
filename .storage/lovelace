@@ -11,26 +11,29 @@
                         {
                             "entities": [
                                 {
-                                    "entity": "light.bed_main"
+                                    "entity": "light.bedroom_main"
                                 },
                                 {
                                     "entity": "light.wled_bed"
                                 },
                                 {
-                                    "entity": "light.computer_main"
-                                },
-                                {
-                                    "entity": "light.wled_desk"
-                                },
-                                {
                                     "entity": "light.baby_main"
-                                },
-                                {
-                                    "entity": "light.kyle_s_corner_lamp"
                                 }
                             ],
                             "title": "Lights",
                             "type": "entities"
+                        },
+                        {
+                            "type": "thermostat",
+                            "entity": "climate.my_ecobee"
+                        },
+                        {
+                            "type": "entities",
+                            "entities": [
+                                "sensor.my_ecobee_humidity",
+                                "binary_sensor.my_ecobee_occupancy",
+                                "sensor.my_ecobee_temperature"
+                            ]
                         },
                         {
                             "entity": "weather.ottawa_kanata_orleans",
@@ -59,7 +62,7 @@
                         {
                             "entities": [
                                 {
-                                    "entity": "cover.garage_door_opener"
+                                    "entity": "cover.garage_door"
                                 }
                             ],
                             "type": "entities"
@@ -71,12 +74,6 @@
                                 },
                                 {
                                     "entity": "person.kyle"
-                                },
-                                {
-                                    "entity": "person.david"
-                                },
-                                {
-                                    "entity": "person.jackie"
                                 }
                             ],
                             "show_header_toggle": false,
@@ -102,7 +99,7 @@
                         {
                             "cards": [
                                 {
-                                    "entity": "light.bedroom",
+                                    "entity": "light.bedroom_main",
                                     "name": "Main",
                                     "type": "light"
                                 },
@@ -116,7 +113,7 @@
                         {
                             "entities": [
                                 {
-                                    "entity": "light.bed_main",
+                                    "entity": "light.bedroom_main",
                                     "icon": "mdi:lightbulb-on",
                                     "name": "Default",
                                     "tap_action": {
@@ -124,13 +121,13 @@
                                         "service": "light.turn_on",
                                         "service_data": {
                                             "brightness_pct": 100,
-                                            "entity_id": "light.bed_main",
+                                            "entity_id": "light.bedroom_main",
                                             "kelvin": 3500
                                         }
                                     }
                                 },
                                 {
-                                    "entity": "light.bed_main",
+                                    "entity": "light.bedroom_main",
                                     "icon": "mdi:sleep",
                                     "name": "Bedtime",
                                     "tap_action": {
@@ -138,7 +135,7 @@
                                         "service": "light.turn_on",
                                         "service_data": {
                                             "brightness_pct": 1,
-                                            "entity_id": "light.bed_main",
+                                            "entity_id": "light.bedroom_main",
                                             "xy_color": [
                                                 0.58,
                                                 0.39
@@ -170,6 +167,7 @@
                                         "service_data": {
                                             "brightness_pct": 5,
                                             "entity_id": "light.wled_bed",
+                                            "effect": "Solid",
                                             "xy_color": [
                                                 0.58,
                                                 0.39
@@ -317,6 +315,37 @@
                             "type": "glance"
                         },
                         {
+                            "type": "conditional",
+                            "conditions": [
+                                {
+                                    "entity": "input_boolean.sound_trigger",
+                                    "state": "off"
+                                },
+                                {
+                                    "entity": "media_player.baby_room",
+                                    "state_not": "playing"
+                                }
+                            ],
+                            "card": {
+                                "type": "glance",
+                                "entities": [
+                                    {
+                                        "entity": "light.baby_main",
+                                        "icon": "mdi:speaker",
+                                        "name": "Lights off, Sound on",
+                                        "tap_action": {
+                                            "action": "call-service",
+                                            "service": "automation.trigger",
+                                            "service_data": {
+                                                "entity_id": "automation.turn_on_white_noise",
+                                                "skip_condition": true
+                                            }
+                                        }
+                                    }
+                                ]
+                            }
+                        },
+                        {
                             "entity": "light.baby_main_ir",
                             "type": "light"
                         },
@@ -347,6 +376,19 @@
                                             "transition": 5
                                         }
                                     }
+                                },
+                                {
+                                    "entity": "light.baby_main",
+                                    "icon": "mdi:book-open",
+                                    "name": "Reading",
+                                    "tap_action": {
+                                        "action": "call-service",
+                                        "service": "automation.trigger",
+                                        "service_data": {
+                                            "entity_id": "automation.baby_reading_light_long",
+                                            "skip_condition": false
+                                        }
+                                    }
                                 }
                             ],
                             "show_state": false,
@@ -356,6 +398,12 @@
                         {
                             "entity": "media_player.baby_room",
                             "type": "media-control"
+                        },
+                        {
+                            "type": "entities",
+                            "entities": [
+                                "input_number.fade_time"
+                            ]
                         }
                     ],
                     "icon": "mdi:baby",

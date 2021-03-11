@@ -1,0 +1,79 @@
+sunset:
+  alias: Sunset
+  sequence:
+  - scene: scene.sunset_yellow
+  - scene: scene.sunset_orange
+  - delay: '10'
+  - scene: scene.sunset_red
+  - delay: '10'
+  - scene: scene.sunset_purple
+  - delay: '10'
+  - type: turn_off
+    device_id: 7baa77eeb6604448a7c10fb87d16a286
+    entity_id: light.baby_main
+    domain: light
+  mode: single
+sunrise:
+  alias: Sunrise
+  sequence:
+  - service: light.turn_on
+    data_template:
+      entity_id: '{{light}}'
+      brightness: 1
+      rgb_color:
+      - 255
+      - 20
+      - 20
+  - service: light.turn_on
+    data_template:
+      entity_id: '{{light}}'
+      brightness: 30
+      rgb_color:
+      - 230
+      - 70
+      - 20
+      transition: 30
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 30
+      milliseconds: 0
+  - service: light.turn_on
+    data_template:
+      entity_id: '{{light}}'
+      brightness: 100
+      rgb_color:
+      - 230
+      - 120
+      - 40
+      transition: 60
+  - delay:
+      hours: 0
+      minutes: 1
+      seconds: 0
+      milliseconds: 0
+  - service: light.turn_on
+    data_template:
+      entity_id: '{{light}}'
+      brightness: 200
+      rgb_color:
+      - 255
+      - 170
+      - 90
+      transition: 60
+  - delay:
+      hours: 0
+      minutes: 1
+      seconds: 0
+      milliseconds: 0
+  - service: light.turn_on
+    data_template:
+      entity_id: '{{light}}'
+      brightness: 255
+      rgb_color:
+      - 255
+      - 200
+      - 150
+      transition: 60
+  mode: parallel
+  max: 10

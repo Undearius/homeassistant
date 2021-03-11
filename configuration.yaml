@@ -20,11 +20,6 @@ tts:
 weather:
   - platform: environment_canada
 
-cover:
-  - platform: myq
-    username: !secret myqu
-    password: !secret myqp
-
 #Custom component
 sonos_player_modes:
 
@@ -32,8 +27,9 @@ recorder:
   purge_keep_days: 3
   exclude:
     domains:
-      - scene
       - automation
+      - scene
+      - script
       - sensor
     entity_globs:
       - media_player.plex_*
@@ -47,18 +43,12 @@ recorder:
   include:
     entities:
       - sensor.temperature
-      - sensor.weather_temperature
       - sensor.high_temperature
       - sensor.low_temperature
-
-input_number:
-  baby_main_ir:
-    name: Baby Main Infrared
-    initial: 255
-    min: 0
-    max: 255
-    step: 1
-    icon: mdi:lightbulb-outline
+      - sensor.equipment_running
+      - sensor.aux_heat
+      - sensor.fan
+      - sensor.oneplus_a5010_sleep_confidence
 
 light:
   - platform: template
@@ -91,18 +81,14 @@ light:
   - platform: group
     name: Bedroom Lights
     entities:
-      - light.bed_main
+      - light.bedroom_d
+      - light.bedroom_w
       - light.wled_bed
-
-device_tracker:
-  - platform: linksys_smart
-    host: 192.168.0.2
-    new_device_defaults:
-      track_new_devices: false
-  - platform: linksys_smart
-    host: 192.168.0.3
-    new_device_defaults:
-      track_new_devices: false
+  - platform: group
+    name: Bedroom Main
+    entities:
+      - light.bedroom_d
+      - light.bedroom_w
 
 automation: !include automations.yaml
 group: !include groups.yaml

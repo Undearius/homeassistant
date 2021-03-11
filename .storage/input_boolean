@@ -1,12 +1,12 @@
 {
+    "version": 1,
+    "key": "input_boolean",
     "data": {
         "items": [
             {
                 "id": "reading_on",
-                "name": "Reading On"
+                "name": "Sound Machine Trigger"
             }
         ]
-    },
-    "key": "input_boolean",
-    "version": 1
+    }
 }
