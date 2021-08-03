@@ -24,7 +24,8 @@ weather:
 sonos_player_modes:
 
 recorder:
-  purge_keep_days: 3
+  db_url: postgresql://hass:hass@10.0.0.10/homeassistant
+  purge_keep_days: 7
   exclude:
     domains:
       - automation
@@ -40,6 +41,7 @@ recorder:
       - input_boolean.reading_on
       - light.bedroom
       - light.computer_room
+      - input_number.fade_time
   include:
     entities:
       - sensor.temperature
@@ -49,6 +51,12 @@ recorder:
       - sensor.aux_heat
       - sensor.fan
       - sensor.oneplus_a5010_sleep_confidence
+      - sensor.my_ecobee_humidity
+      - sensor.multisensor_6_air_temperature
+      - sensor.multisensor_6_illuminance
+      - binary_sensor.multisensor_6_home_security_motion_detection
+      - sensor.kyle_office_temperature
+      - sensor.kyle_office_humidity
 
 light:
   - platform: template

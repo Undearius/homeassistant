@@ -1,9 +1,0 @@
-set_mode:
-  description: Sets Play Model For a Specific Sonos Speaker.
-  fields:
-    entity_id:
-      description: entity_id of the device to set
-      example: "media_player.bedroom"
-    mode:
-      description: play mode 'NORMAL', 'REPEAT_ALL', 'SHUFFLE', 'SHUFFLE_NOREPEAT'
-      example: "NORMAL"

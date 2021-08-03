@@ -1,4 +1,5 @@
 - platform: environment_canada
+  station: ON/s0000430
 - platform: template
   sensors:
     equipment_running:
@@ -10,3 +11,12 @@
     fan:
       unique_id: ecobeefan
       value_template: '{{ states.climate.my_ecobee.attributes.fan }}'
+    sun_elevation:
+      unique_id: sunelevation
+      unit_of_measurement: "degrees"
+      value_template: '{{ states.sun.sun.attributes.elevation }}'
+- platform: time_date
+  display_options:
+    - 'time'
+    - 'date'
+    - 'date_time'

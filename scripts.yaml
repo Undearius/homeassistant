@@ -46,10 +46,10 @@ sunrise:
       - 230
       - 120
       - 40
-      transition: 60
+      transition: 120
   - delay:
       hours: 0
-      minutes: 1
+      minutes: 2
       seconds: 0
       milliseconds: 0
   - service: light.turn_on
@@ -60,10 +60,10 @@ sunrise:
       - 255
       - 170
       - 90
-      transition: 60
+      transition: 120
   - delay:
       hours: 0
-      minutes: 1
+      minutes: 2
       seconds: 0
       milliseconds: 0
   - service: light.turn_on
@@ -72,8 +72,8 @@ sunrise:
       brightness: 255
       rgb_color:
       - 255
-      - 200
+      - 230
       - 150
-      transition: 60
+      transition: 120
   mode: parallel
   max: 10

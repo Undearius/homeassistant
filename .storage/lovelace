@@ -190,73 +190,60 @@
                         {
                             "entity": "media_player.bedroom",
                             "type": "media-control"
+                        },
+                        {
+                            "type": "button",
+                            "tap_action": {
+                                "action": "toggle"
+                            },
+                            "entity": "light.bedroom_d",
+                            "icon_height": "50px"
                         }
                     ]
                 },
                 {
+                    "icon": "mdi:thermometer",
+                    "panel": false,
+                    "path": "climate",
+                    "title": "Climate Station",
                     "badges": [],
                     "cards": [
                         {
-                            "entity": "light.computer_main",
-                            "name": "Computer Main",
-                            "type": "light"
-                        },
-                        {
+                            "type": "history-graph",
                             "entities": [
                                 {
-                                    "entity": "light.computer_main",
-                                    "icon": "mdi:lightbulb-on",
-                                    "name": "Default",
-                                    "tap_action": {
-                                        "action": "call-service",
-                                        "service": "scene.apply",
-                                        "service_data": {
-                                            "entities": {
-                                                "light.computer_main": {
-                                                    "brightness_pct": 100,
-                                                    "kelvin": 2600,
-                                                    "state": "on"
-                                                }
-                                            }
-                                        }
-                                    }
+                                    "entity": "sensor.multisensor_6_air_temperature"
                                 },
                                 {
-                                    "entity": "light.computer_main",
-                                    "icon": "mdi:sleep",
-                                    "name": "Bedtime",
-                                    "tap_action": {
-                                        "action": "call-service",
-                                        "service": "scene.apply",
-                                        "service_data": {
-                                            "entities": {
-                                                "light.computer_main": {
-                                                    "brightness_pct": 1,
-                                                    "state": "on",
-                                                    "xy_color": [
-                                                        0.58,
-                                                        0.39
-                                                    ]
-                                                }
-                                            }
-                                        }
-                                    }
+                                    "entity": "climate.my_ecobee"
+                                },
+                                {
+                                    "entity": "sensor.kyle_office_temperature"
                                 }
                             ],
-                            "show_state": false,
-                            "title": null,
-                            "type": "glance"
+                            "hours_to_show": 24,
+                            "refresh_interval": 0
                         },
                         {
-                            "entity": "light.wled_desk",
-                            "name": "Desk LED Strip",
-                            "type": "light"
+                            "type": "button",
+                            "tap_action": {
+                                "action": "call-service",
+                                "service": "automation.trigger",
+                                "service_data": {
+                                    "skip_condition": true
+                                },
+                                "target": {
+                                    "entity_id": "automation.boost_ac"
+                                }
+                            },
+                            "show_icon": true,
+                            "show_state": false,
+                            "show_name": true,
+                            "entity": "automation.boost_ac",
+                            "icon": "mdi:snowflake",
+                            "icon_height": "50px"
                         }
-                    ],
-                    "icon": "mdi:desktop-tower-monitor",
-                    "panel": false,
-                    "path": "computer-room",
-                    "title": "Computer Room"
+                    ]
                 },
                 {
                     "badges": [],
@@ -409,6 +396,39 @@
                     "icon": "mdi:baby",
                     "path": "baby-room",
                     "title": "Baby Room"
+                },
+                {
+                    "title": "SmartDash",
+                    "path": "smartdash",
+                    "icon": "",
+                    "badges": [],
+                    "cards": [
+                        {
+                            "type": "conditional",
+                            "conditions": {
+                                "condition": [
+                                    {
+                                        "condition": "time",
+                                        "after": "19:00:00"
+                                    }
+                                ]
+                            },
+                            "card": {}
+                        },
+                        {
+                            "type": "conditional",
+                            "conditions": [
+                                {
+                                    "entity": "climate.my_ecobee",
+                                    "state": "cool"
+                                }
+                            ],
+                            "card": {
+                                "type": "light",
+                                "entity": "light.wled_bed"
+                            }
+                        }
+                    ]
                 }
             ]
         }

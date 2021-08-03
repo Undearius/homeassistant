@@ -131,10 +131,11 @@
       entity_id: media_player.baby_room
       source: Baby
     service: media_player.select_source
-  - data:
+  - service: media_player.repeat_set
+    data:
+      repeat: one
+    target:
       entity_id: media_player.baby_room
-      mode: REPEAT_ALL
-    service: sonos_player_modes.set_mode
   - device_id: 7baa77eeb6604448a7c10fb87d16a286
     domain: light
     entity_id: light.baby_main
@@ -142,7 +143,8 @@
   - service: input_number.set_value
     data:
       value: 255
-    entity_id: input_number.baby_main_ir
+    target:
+      entity_id: input_number.baby_main_ir
   mode: single
 - id: '1598804150280'
   alias: Light on White Noise off
@@ -272,8 +274,18 @@
   trigger:
   - platform: state
     entity_id: media_player.living_room
-    to: Playing
-  condition: []
+    to: playing
+  condition:
+  - condition: not
+    conditions:
+    - condition: or
+      conditions:
+      - condition: state
+        entity_id: input_text.saa_kyle
+        state: sleep_tracking_stopped
+      - condition: state
+        entity_id: input_text.saa_kyle
+        state: alarm_alert_dismiss
   action:
   - service: notify.mobile_app_oneplus_a5010
     data:
@@ -334,16 +346,67 @@
     - fri
   action:
   - service: script.turn_on
+    target:
+      entity_id: script.sunrise
     data:
-      light: light.bedroom_w
-    entity_id: script.sunrise
+      variables:
+        light: light.bedroom_w
   - delay:
       hours: 0
-      minutes: 0
-      seconds: 15
+      minutes: 1
+      seconds: 0
       milliseconds: 0
   - service: script.turn_on
+    target:
+      entity_id: script.sunrise
     data:
-      light: light.bedroom_d
-    entity_id: script.sunrise
+      variables:
+        light: light.bedroom_d
   mode: single
+- id: '1616884736419'
+  alias: Close the garage when no one is home
+  description: ''
+  trigger:
+  - platform: state
+    entity_id: person.allynn
+    to: not_home
+  - platform: state
+    entity_id: person.kyle
+    to: not_home
+  condition:
+  - condition: and
+    conditions:
+    - condition: state
+      entity_id: person.allynn
+      state: not_home
+    - condition: state
+      entity_id: person.kyle
+      state: not_home
+    - condition: state
+      entity_id: person.guest
+      state: not_home
+    - condition: state
+      entity_id: cover.garage_door
+      state: open
+  action:
+  - service: cover.close_cover
+    target:
+      entity_id: cover.garage_door
+  mode: single
+- id: '1627953007883'
+  alias: Boost AC
+  description: ''
+  trigger:
+  condition:
+  action:
+  - service: climate.set_temperature
+    data_template:
+      entity_id: climate.my_ecobee
+      temperature: '{{ states.climate.my_ecobee.attributes.temperature | float - 1
+        }}'
+  - delay:
+      hours: 1
+  - service: ecobee.resume_program
+    data:
+      entity_id: climate.my_ecobee
+  mode: restart
