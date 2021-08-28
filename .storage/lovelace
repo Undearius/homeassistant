@@ -242,6 +242,21 @@
                             "entity": "automation.boost_ac",
                             "icon": "mdi:snowflake",
                             "icon_height": "50px"
+                        },
+                        {
+                            "type": "button",
+                            "tap_action": {
+                                "action": "call-service",
+                                "service": "ecobee.resume_program",
+                                "service_data": {
+                                    "entity_id": "climate.my_ecobee"
+                                },
+                                "target": {}
+                            },
+                            "icon_height": "50px",
+                            "icon": "hass:refresh",
+                            "entity": "climate.my_ecobee",
+                            "name": "Resume Schedule"
                         }
                     ]
                 },

@@ -168,8 +168,9 @@
       sleep_time: 0
     service: sonos.set_sleep_timer
   - service: input_number.set_value
-    data_template:
+    target:
       entity_id: input_number.baby_main_ir
+    data:
       value: 0
   mode: single
 - id: '1598808585001'
@@ -298,7 +299,7 @@
   trigger:
   - platform: state
     entity_id: input_text.saa_allynn
-    from: sleep_tracking_stopped
+    to: sleep_tracking_started
   - platform: state
     entity_id: person.allynn
     from: home

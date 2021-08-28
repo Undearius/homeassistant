@@ -20,9 +20,6 @@ tts:
 weather:
   - platform: environment_canada
 
-#Custom component
-sonos_player_modes:
-
 recorder:
   db_url: postgresql://hass:hass@10.0.0.10/homeassistant
   purge_keep_days: 7

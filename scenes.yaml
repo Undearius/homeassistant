@@ -58,7 +58,7 @@
       friendly_name: Sonos Baby Room
       icon: mdi:speaker
       is_volume_muted: false
-      media_content_id: x-file-cifs://192.168.0.201/media/Music/Playlists/../Sounds/Crackling%20Fire%20Sounds%20-%20No%20Music.m4a
+      media_content_id: x-file-cifs://10.0.0.10/media/Music/Playlists/../Sounds/Crackling%20Fire%20Sounds%20-%20No%20Music.m4a
       media_content_type: music
       media_duration: 0
       media_position: 1
