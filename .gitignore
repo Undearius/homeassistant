@@ -11,6 +11,7 @@ __pycache__
 *.db
 *.db-journal
 *.log
+*.log.*
 *.noload
 *.txt
 *.sqlite
