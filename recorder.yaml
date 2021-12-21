@@ -1,0 +1,82 @@
+db_url: postgresql://hass:hass@10.0.0.10/homeassistant
+purge_keep_days: 27
+exclude:
+  domains:
+    - automation
+    - scene
+    - script
+  entity_globs:
+    - media_player.plex_*
+  entities:
+    - binary_sensor.updater
+    - binary_sensor.home_myq_gateway
+    - input_number.baby_main_ir
+    - input_boolean.reading_on
+    - light.bedroom
+    - light.computer_room
+    - binary_sensor.sonoff_s31_button
+    - light.sonoff_s31_led
+    - switch.sonoff_s31_relay
+    - binary_sensor.kyle_office_outlet_button
+    - light.kyle_office_outlet_led
+    - switch.kyle_office_outlet_relay
+    - input_number.fade_time
+    - device_tracker.cloudnas
+    - sensor.date
+    - sensor.date_time
+    - sensor.time
+    - sensor.advisories
+    - sensor.air_quality_health_index
+    - sensor.chance_of_precip
+    - sensor.condition
+    - sensor.dew_point
+    - sensor.endings
+    - sensor.forecast
+    - sensor.humidex
+    - sensor.humidity
+    - sensor.icon_code
+    - sensor.precipitation_yesterday
+    - sensor.pressure
+    - sensor.statements
+    - sensor.tendency
+    - sensor.uv_index
+    - sensor.visibility
+    - sensor.warnings
+    - sensor.watches
+    - sensor.multisensor_6_dew_point
+    - sensor.multisensor_6_general_purpose
+    - sensor.multisensor_6_seismic_intensity
+    - sensor.multisensor_6_seismic_magnitude
+    - sensor.multisensor_6_ultraviolet
+    - sensor.multisensor_6_unknown_0x81
+    - sensor.oneplus_5t_battery_health
+    - sensor.oneplus_5t_battery_level
+    - sensor.oneplus_5t_battery_state
+    - sensor.oneplus_5t_battery_temperature
+    - sensor.oneplus_5t_charger_type
+    - sensor.oneplus_5t_detected_activity
+    - sensor.oneplus_5t_next_alarm
+    - sensor.oneplus_5t_sleep_confidence
+    - sensor.oneplus_5t_sleep_segment
+    - sensor.sm_a515w_audio_sensor
+    - sensor.sm_a515w_battery_health
+    - sensor.sm_a515w_battery_level
+    - sensor.sm_a515w_battery_state
+    - sensor.sm_a515w_battery_temperature
+    - sensor.sm_a515w_bluetooth_connection
+    - sensor.sm_a515w_charger_type
+    - sensor.sm_a515w_do_not_disturb_sensor
+    - sensor.sm_a515w_last_reboot
+    - sensor.sm_a515w_light_sensor
+    - sensor.sm_a515w_next_alarm
+    - sensor.sm_a515w_proximity_sensor
+    - sensor.sm_a515w_storage_sensor
+    - sensor.sonos_roam_battery
+    - sensor.sun_elevation
+    - sensor.wind_bearing
+    - sensor.wind_chill
+    - sensor.wind_direction
+    - sensor.wind_gust
+    - sensor.wind_speed
+    - sensor.wled_bed_estimated_current
+

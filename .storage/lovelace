@@ -11,13 +11,39 @@
                         {
                             "entities": [
                                 {
-                                    "entity": "light.bedroom_main"
+                                    "entity": "scene.christmas_porch_lights"
+                                },
+                                {
+                                    "entity": "light.porch_door"
+                                },
+                                {
+                                    "entity": "light.porch_garage"
                                 },
                                 {
                                     "entity": "light.wled_bed"
                                 },
                                 {
                                     "entity": "light.baby_main"
+                                },
+                                {
+                                    "entity": "light.livingroom_pots"
+                                },
+                                {
+                                    "entity": "light.living_room_main"
+                                },
+                                {
+                                    "entity": "light.kitchen"
+                                },
+                                {
+                                    "entity": "light.dining_table"
+                                },
+                                {
+                                    "entity": "light.sink_lights"
+                                },
+                                {
+                                    "entity": "switch.sonoff_s31_relay",
+                                    "name": "Garland",
+                                    "icon": "mdi:string-lights"
                                 }
                             ],
                             "title": "Lights",
@@ -25,15 +51,7 @@
                         },
                         {
                             "type": "thermostat",
-                            "entity": "climate.my_ecobee"
-                        },
-                        {
-                            "type": "entities",
-                            "entities": [
-                                "sensor.my_ecobee_humidity",
-                                "binary_sensor.my_ecobee_occupancy",
-                                "sensor.my_ecobee_temperature"
-                            ]
+                            "entity": "climate.thermostat"
                         },
                         {
                             "entity": "weather.ottawa_kanata_orleans",
@@ -190,14 +208,6 @@
                         {
                             "entity": "media_player.bedroom",
                             "type": "media-control"
-                        },
-                        {
-                            "type": "button",
-                            "tap_action": {
-                                "action": "toggle"
-                            },
-                            "entity": "light.bedroom_d",
-                            "icon_height": "50px"
                         }
                     ]
                 },
@@ -219,10 +229,64 @@
                                 },
                                 {
                                     "entity": "sensor.kyle_office_temperature"
+                                },
+                                {
+                                    "entity": "climate.thermostat"
                                 }
                             ],
                             "hours_to_show": 24,
                             "refresh_interval": 0
+                        },
+                        {
+                            "type": "history-graph",
+                            "entities": [
+                                {
+                                    "entity": "sensor.multisensor_6_air_temperature"
+                                },
+                                {
+                                    "entity": "climate.my_ecobee"
+                                },
+                                {
+                                    "entity": "sensor.kyle_office_temperature"
+                                },
+                                {
+                                    "entity": "climate.thermostat"
+                                }
+                            ],
+                            "hours_to_show": 2,
+                            "refresh_interval": 0
+                        },
+                        {
+                            "type": "thermostat",
+                            "entity": "climate.thermostat"
+                        },
+                        {
+                            "type": "entities",
+                            "entities": [
+                                {
+                                    "entity": "binary_sensor.thermostat_fan",
+                                    "icon": "hass:fan",
+                                    "secondary_info": "last-changed"
+                                },
+                                {
+                                    "entity": "binary_sensor.thermostat_cooler",
+                                    "icon": "hass:snowflake",
+                                    "secondary_info": "last-changed"
+                                },
+                                {
+                                    "entity": "binary_sensor.thermostat_heater",
+                                    "icon": "hass:fire",
+                                    "secondary_info": "last-changed"
+                                }
+                            ],
+                            "state_color": true
+                        },
+                        {
+                            "type": "entities",
+                            "entities": [
+                                "sensor.a_c_on_today",
+                                "sensor.furnace_on_today"
+                            ]
                         },
                         {
                             "type": "button",
@@ -244,19 +308,36 @@
                             "icon_height": "50px"
                         },
                         {
-                            "type": "button",
-                            "tap_action": {
-                                "action": "call-service",
-                                "service": "ecobee.resume_program",
-                                "service_data": {
-                                    "entity_id": "climate.my_ecobee"
+                            "type": "history-graph",
+                            "entities": [
+                                {
+                                    "entity": "sensor.multisensor_6_humidity"
                                 },
-                                "target": {}
-                            },
-                            "icon_height": "50px",
-                            "icon": "hass:refresh",
-                            "entity": "climate.my_ecobee",
-                            "name": "Resume Schedule"
+                                {
+                                    "entity": "sensor.kyle_office_humidity"
+                                },
+                                {
+                                    "entity": "sensor.thermostat_humidity"
+                                }
+                            ],
+                            "hours_to_show": 24,
+                            "refresh_interval": 0
+                        },
+                        {
+                            "type": "history-graph",
+                            "entities": [
+                                {
+                                    "entity": "sensor.multisensor_6_humidity"
+                                },
+                                {
+                                    "entity": "sensor.kyle_office_humidity"
+                                },
+                                {
+                                    "entity": "sensor.thermostat_humidity"
+                                }
+                            ],
+                            "hours_to_show": 2,
+                            "refresh_interval": 0
                         }
                     ]
                 },
@@ -313,7 +394,6 @@
                                 }
                             ],
                             "show_state": false,
-                            "title": null,
                             "type": "glance"
                         },
                         {
@@ -348,11 +428,20 @@
                             }
                         },
                         {
-                            "entity": "light.baby_main_ir",
-                            "type": "light"
-                        },
-                        {
                             "entities": [
+                                {
+                                    "entity": "light.baby_main",
+                                    "icon": "mdi:tent",
+                                    "name": "Camping",
+                                    "tap_action": {
+                                        "action": "call-service",
+                                        "service": "scene.turn_on",
+                                        "service_data": {
+                                            "entity_id": "scene.camping",
+                                            "transition": 5
+                                        }
+                                    }
+                                },
                                 {
                                     "entity": "media_player.baby_room",
                                     "icon": "mdi:speaker",
@@ -368,21 +457,8 @@
                                 },
                                 {
                                     "entity": "light.baby_main",
-                                    "icon": "mdi:tent",
-                                    "name": "Camping",
-                                    "tap_action": {
-                                        "action": "call-service",
-                                        "service": "scene.turn_on",
-                                        "service_data": {
-                                            "entity_id": "scene.camping",
-                                            "transition": 5
-                                        }
-                                    }
-                                },
-                                {
-                                    "entity": "light.baby_main",
                                     "icon": "mdi:book-open",
-                                    "name": "Reading",
+                                    "name": "Slow Reading",
                                     "tap_action": {
                                         "action": "call-service",
                                         "service": "automation.trigger",
@@ -394,8 +470,14 @@
                                 }
                             ],
                             "show_state": false,
-                            "title": null,
-                            "type": "glance"
+                            "type": "glance",
+                            "show_name": true,
+                            "show_icon": true,
+                            "state_color": false
+                        },
+                        {
+                            "entity": "light.baby_main_ir",
+                            "type": "light"
                         },
                         {
                             "entity": "media_player.baby_room",
@@ -413,35 +495,31 @@
                     "title": "Baby Room"
                 },
                 {
-                    "title": "SmartDash",
-                    "path": "smartdash",
-                    "icon": "",
+                    "title": "Office",
+                    "path": "office",
+                    "icon": "hass:desktop-tower-monitor",
                     "badges": [],
                     "cards": [
                         {
-                            "type": "conditional",
-                            "conditions": {
-                                "condition": [
-                                    {
-                                        "condition": "time",
-                                        "after": "19:00:00"
-                                    }
-                                ]
-                            },
-                            "card": {}
-                        },
-                        {
-                            "type": "conditional",
-                            "conditions": [
+                            "type": "history-graph",
+                            "entities": [
                                 {
-                                    "entity": "climate.my_ecobee",
-                                    "state": "cool"
+                                    "entity": "sensor.kyle_office_temperature"
+                                },
+                                {
+                                    "entity": "sensor.kyle_office_outlet_power"
                                 }
                             ],
-                            "card": {
-                                "type": "light",
-                                "entity": "light.wled_bed"
-                            }
+                            "hours_to_show": 24,
+                            "refresh_interval": 0
+                        },
+                        {
+                            "type": "entities",
+                            "entities": [
+                                {
+                                    "entity": "switch.kyle_office_outlet_relay"
+                                }
+                            ]
                         }
                     ]
                 }

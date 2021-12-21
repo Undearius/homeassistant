@@ -314,21 +314,26 @@
       message: Allynn left her computer on. Shut it off.
   mode: single
 - id: '1615074707979'
-  alias: Notify Allynn and Kyle if Ecobee becomes unavailable
+  alias: Notify Allynn and Kyle if Thermostat becomes unavailable
   description: ''
   trigger:
   - platform: state
-    entity_id: climate.my_ecobee
+    entity_id: climate.thermostat
     to: unavailable
+    for:
+      hours: 0
+      minutes: 1
+      seconds: 0
+      milliseconds: 0
   condition: []
   action:
   - service: notify.mobile_app_oneplus_a5010
     data:
-      title: Ecobee Unavailable
+      title: Thermostat Unavailable
       message: Check to see if furnace is on!
   - service: notify.mobile_app_sm_a515w
     data:
-      title: Ecobee Unavailable
+      title: Thermostat Unavailable
       message: Check to see if furnace is on!
   mode: single
 - id: '1615075704978'
@@ -336,7 +341,7 @@
   description: ''
   trigger:
   - platform: time
-    at: '6:45'
+    at: 06:45:00
   condition:
   - condition: time
     weekday:
@@ -351,18 +356,7 @@
       entity_id: script.sunrise
     data:
       variables:
-        light: light.bedroom_w
-  - delay:
-      hours: 0
-      minutes: 1
-      seconds: 0
-      milliseconds: 0
-  - service: script.turn_on
-    target:
-      entity_id: script.sunrise
-    data:
-      variables:
-        light: light.bedroom_d
+        light: light.wled_bed
   mode: single
 - id: '1616884736419'
   alias: Close the garage when no one is home
@@ -401,13 +395,146 @@
   condition:
   action:
   - service: climate.set_temperature
-    data_template:
-      entity_id: climate.my_ecobee
-      temperature: '{{ states.climate.my_ecobee.attributes.temperature | float - 1
-        }}'
+    data:
+      target_temp_high: '{{ states.climate.thermostat.attributes.target_temp_high
+        | float - 1 }}'
+    target:
+      entity_id: climate.thermostat
   - delay:
       hours: 1
-  - service: ecobee.resume_program
+  - service: climate.set_temperature
     data:
-      entity_id: climate.my_ecobee
+      target_temp_high: '{{ states.climate.thermostat.attributes.temperature | float
+        + 1 }}'
+    target:
+      entity_id: climate.thermostat
   mode: restart
+- id: '1634020365562'
+  alias: Let there be light
+  description: ''
+  trigger:
+  - platform: state
+    entity_id: binary_sensor.in_wall_smart_motion_dimmer_home_security_motion_detection
+    from: 'off'
+    to: 'on'
+  condition: []
+  action:
+  - service: light.turn_on
+    target:
+      entity_id:
+      - light.livingroom_pots
+      - light.dining_table
+      - light.kitchen
+      - light.living_room_main
+      - light.sink_lights
+    data:
+      brightness_pct: 100
+  mode: single
+- id: '1637868774108'
+  alias: Clock Chimes - Minutes
+  description: ''
+  trigger:
+  - platform: time_pattern
+    minutes: /15
+  condition:
+  - condition: template
+    value_template: '{{ now().minute > 10 and now().minute < 50 }}'
+  - condition: not
+    conditions:
+    - condition: state
+      entity_id: media_player.living_room
+      state: playing
+  action:
+  - data:
+      entity_id: media_player.living_room
+    service: sonos.unjoin
+  - data:
+      volume_level: 0.25
+    service: media_player.volume_set
+    target:
+      entity_id: media_player.living_room
+  - service: media_player.play_media
+    data:
+      media_content_id: x-file-cifs://10.0.0.10/docs/kyle/Documents/Projects/Clock
+        Chimes/{{ now().minute }}.mp3
+      media_content_type: music
+    target:
+      entity_id: media_player.living_room
+  mode: single
+- id: '1637870310658'
+  alias: Clock Chimes - Hour
+  description: ''
+  trigger:
+  - platform: time_pattern
+    hours: '*'
+    seconds: '39'
+    minutes: '59'
+  condition:
+  - condition: time
+    after: 06:50:00
+    before: '21:05:00'
+  - condition: not
+    conditions:
+    - condition: state
+      entity_id: media_player.living_room
+      state: playing
+  action:
+  - data:
+      entity_id: media_player.living_room
+    service: sonos.unjoin
+  - data:
+      volume_level: 0.25
+    service: media_player.volume_set
+    target:
+      entity_id: media_player.living_room
+  - service: media_player.clear_playlist
+    target:
+      entity_id: media_player.living_room
+  - service: media_player.play_media
+    data:
+      media_content_id: x-file-cifs://10.0.0.10/docs/kyle/Documents/Projects/Clock
+        Chimes/60.mp3
+      media_content_type: music
+      enqueue: true
+    target:
+      entity_id: media_player.living_room
+  - service: media_player.play_media
+    data:
+      media_content_id: x-file-cifs://10.0.0.10/docs/kyle/Documents/Projects/Clock
+        Chimes/{% if now().hour > 12 %}{{ now().hour - 11 }}{%- else -%}{{ now().hour
+        + 1 }}{%- endif %}.mp3
+      media_content_type: music
+      enqueue: true
+    target:
+      entity_id: media_player.living_room
+  - service: sonos.play_queue
+    target:
+      entity_id: media_player.living_room
+  mode: single
+- id: '1639164820573'
+  alias: Lights off when no one is home
+  description: ''
+  trigger:
+  - platform: state
+    entity_id: person.allynn
+    to: not_home
+  - platform: state
+    entity_id: person.kyle
+    to: not_home
+  condition:
+  - condition: state
+    entity_id: person.allynn
+    state: not_home
+  - condition: state
+    entity_id: person.kyle
+    state: not_home
+  - condition: not
+    conditions:
+    - condition: state
+      entity_id: person.guest
+      state: home
+  action:
+  - service: light.turn_off
+    target:
+      entity_id: all
+  mode: single

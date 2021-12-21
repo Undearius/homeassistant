@@ -17,49 +17,34 @@ homeassistant:
 tts:
   - platform: google_translate
 
-weather:
-  - platform: environment_canada
+logger:
+  default: error
+  logs:
+    homeassistant.core: fatal
 
-recorder:
-  db_url: postgresql://hass:hass@10.0.0.10/homeassistant
-  purge_keep_days: 7
-  exclude:
-    domains:
-      - automation
-      - scene
-      - script
-      - sensor
-    entity_globs:
-      - media_player.plex_*
-    entities:
-      - binary_sensor.updater
-      - binary_sensor.home_myq_gateway
-      - input_number.baby_main_ir
-      - input_boolean.reading_on
-      - light.bedroom
-      - light.computer_room
-      - input_number.fade_time
-  include:
-    entities:
-      - sensor.temperature
-      - sensor.high_temperature
-      - sensor.low_temperature
-      - sensor.equipment_running
-      - sensor.aux_heat
-      - sensor.fan
-      - sensor.oneplus_a5010_sleep_confidence
-      - sensor.my_ecobee_humidity
-      - sensor.multisensor_6_air_temperature
-      - sensor.multisensor_6_illuminance
-      - binary_sensor.multisensor_6_home_security_motion_detection
-      - sensor.kyle_office_temperature
-      - sensor.kyle_office_humidity
+binary_sensor:
+  - platform: workday
+    country: CA
+    province: 'ON'
+    #add_holidays: #Hydro Ottawa off-peak holidays 2021
+    # - "New Year’s Day"
+    # - "Family Day"
+    # - "Good Friday"
+    # - "Victoria Day"
+    # - "Canada Day"
+    # - "Civic Holiday"
+    # - "Labour Day"
+    # - "Thanksgiving Day"
+    # - "Christmas Day"
+    # - "Boxing Day"
+    #remove_holidays:
 
 light:
   - platform: template
     lights:
       baby_main_ir:
         friendly_name: 'Baby Main Infrared'
+        unique_id: BabyMainInfrared
         icon_template: mdi:lightbulb-outline
         value_template:  >-
           {% if states('input_number.baby_main_ir') | int > 0 %}
@@ -85,18 +70,55 @@ light:
             value: "{{ brightness | int }}"
   - platform: group
     name: Bedroom Lights
+    unique_id: BedroomLights
     entities:
       - light.bedroom_d
       - light.bedroom_w
       - light.wled_bed
   - platform: group
     name: Bedroom Main
+    unique_id: BedroomMain
     entities:
       - light.bedroom_d
       - light.bedroom_w
 
+template:
+  - sensor:
+      - name: Hydro Ottawa Cost
+        unique_id: HydroOttawaCost
+        unit_of_measurement: "CAD/kWh"
+        state: >
+          {% set prices = {
+            "tier1": 0.098,
+            "tier2": 0.115,
+            "off_peak": 0.082,
+            "mid_peak": 0.113,
+            "on_peak": 0.17,
+          } %}
+
+          {% if "of" == "on" %}
+            {{ prices.tier1 }}
+          {% else %}
+            {% if states.binary_sensor.workday_sensor.state == "off" %}
+              {{ prices.off_peak }}
+            {% else %}
+                {% if now().month in range(5,11) %}
+                {% if now().hour in range(11,17) %} {{ prices.on_peak }}
+                {% elif now().hour in [ 7,8,9,10,17,18 ] %} {{ prices.mid_peak }}
+                {% else %} {{ prices.off_peak }}
+                {% endif %}
+              {% else %}
+                {% if now().hour in range(11,17) %} {{ prices.mid_peak }}
+                {% elif now().hour in [ 7,8,9,10,17,18 ] %} {{ prices.on_peak }}
+                {% else %} {{ prices.off_peak }}
+                {% endif %}
+              {% endif %}
+            {% endif %}
+          {% endif %}
+
 automation: !include automations.yaml
 group: !include groups.yaml
+recorder: !include recorder.yaml
 script: !include scripts.yaml
 scene: !include scenes.yaml
 sensor: !include sensors.yaml

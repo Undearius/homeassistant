@@ -24,6 +24,7 @@ __pycache__
 !.storage/input_boolean
 deps
 entity_registry.yaml
+custom_components/git
 known_devices.yaml
 secrets.yaml
 tts

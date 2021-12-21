@@ -1,2 +1,2 @@
-media_player.bedroom:
-  icon: mdi:speaker-multiple
+sensor.cloudnas_energy:
+  device_class: energy

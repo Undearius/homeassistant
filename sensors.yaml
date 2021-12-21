@@ -1,22 +1,41 @@
-- platform: environment_canada
-  station: ON/s0000430
-- platform: template
-  sensors:
-    equipment_running:
-      unique_id: ecobeeequipmentrunning
-      value_template: '{{ states.climate.my_ecobee.attributes.equipment_running }}'
-    aux_heat:
-      unique_id: ecobeeauxheat
-      value_template: '{{ states.climate.my_ecobee.attributes.aux_heat }}'
-    fan:
-      unique_id: ecobeefan
-      value_template: '{{ states.climate.my_ecobee.attributes.fan }}'
-    sun_elevation:
-      unique_id: sunelevation
-      unit_of_measurement: "degrees"
-      value_template: '{{ states.sun.sun.attributes.elevation }}'
 - platform: time_date
   display_options:
     - 'time'
     - 'date'
     - 'date_time'
+- platform: integration
+  source: sensor.sonoff_s31_power
+  name: Sonoff S31 Energy
+  unit_prefix: k
+  round: 2
+- platform: integration
+  source: sensor.kyle_office_outlet_power
+  name: Kyle Office Outlet Energy
+  unit_prefix: k
+  round: 2
+- platform: history_stats
+  name: A/C ON today
+  entity_id: binary_sensor.thermostat_cooler
+  state: "on"
+  type: time
+  start: "{{ now().replace(hour=0, minute=0, second=0) }}"
+  end: "{{ now() }}"
+- platform: history_stats
+  name: Furnace ON today
+  entity_id: binary_sensor.thermostat_heater
+  state: "on"
+  type: time
+  start: "{{ now().replace(hour=0, minute=0, second=0) }}"
+  end: "{{ now() }}"
+- platform: powercalc
+  entity_id: device_tracker.cloudnas
+  fixed:
+    power: 67
+- platform: powercalc
+  entity_id: light.wled_bed
+  wled:
+    voltage: 5
+- platform: powercalc
+  entity_id: sensor.cyberpower_load
+  fixed:
+    power: "{{states('sensor.cyberpower_load') | int / 100 * 815}}"
