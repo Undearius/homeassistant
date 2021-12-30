@@ -1,5 +1,6 @@
 {
     "version": 1,
+    "minor_version": 1,
     "key": "lovelace",
     "data": {
         "config": {
@@ -117,11 +118,6 @@
                         {
                             "cards": [
                                 {
-                                    "entity": "light.bedroom_main",
-                                    "name": "Main",
-                                    "type": "light"
-                                },
-                                {
                                     "entity": "light.wled_bed",
                                     "type": "light"
                                 }
@@ -130,37 +126,6 @@
                         },
                         {
                             "entities": [
-                                {
-                                    "entity": "light.bedroom_main",
-                                    "icon": "mdi:lightbulb-on",
-                                    "name": "Default",
-                                    "tap_action": {
-                                        "action": "call-service",
-                                        "service": "light.turn_on",
-                                        "service_data": {
-                                            "brightness_pct": 100,
-                                            "entity_id": "light.bedroom_main",
-                                            "kelvin": 3500
-                                        }
-                                    }
-                                },
-                                {
-                                    "entity": "light.bedroom_main",
-                                    "icon": "mdi:sleep",
-                                    "name": "Bedtime",
-                                    "tap_action": {
-                                        "action": "call-service",
-                                        "service": "light.turn_on",
-                                        "service_data": {
-                                            "brightness_pct": 1,
-                                            "entity_id": "light.bedroom_main",
-                                            "xy_color": [
-                                                0.58,
-                                                0.39
-                                            ]
-                                        }
-                                    }
-                                },
                                 {
                                     "entity": "light.wled_bed",
                                     "icon": "mdi:led-strip-variant",
@@ -199,145 +164,8 @@
                             "type": "glance"
                         },
                         {
-                            "entity": "light.bedroom_lights",
-                            "hold_action": {
-                                "action": "more-info"
-                            },
-                            "type": "light"
-                        },
-                        {
                             "entity": "media_player.bedroom",
                             "type": "media-control"
-                        }
-                    ]
-                },
-                {
-                    "icon": "mdi:thermometer",
-                    "panel": false,
-                    "path": "climate",
-                    "title": "Climate Station",
-                    "badges": [],
-                    "cards": [
-                        {
-                            "type": "history-graph",
-                            "entities": [
-                                {
-                                    "entity": "sensor.multisensor_6_air_temperature"
-                                },
-                                {
-                                    "entity": "climate.my_ecobee"
-                                },
-                                {
-                                    "entity": "sensor.kyle_office_temperature"
-                                },
-                                {
-                                    "entity": "climate.thermostat"
-                                }
-                            ],
-                            "hours_to_show": 24,
-                            "refresh_interval": 0
-                        },
-                        {
-                            "type": "history-graph",
-                            "entities": [
-                                {
-                                    "entity": "sensor.multisensor_6_air_temperature"
-                                },
-                                {
-                                    "entity": "climate.my_ecobee"
-                                },
-                                {
-                                    "entity": "sensor.kyle_office_temperature"
-                                },
-                                {
-                                    "entity": "climate.thermostat"
-                                }
-                            ],
-                            "hours_to_show": 2,
-                            "refresh_interval": 0
-                        },
-                        {
-                            "type": "thermostat",
-                            "entity": "climate.thermostat"
-                        },
-                        {
-                            "type": "entities",
-                            "entities": [
-                                {
-                                    "entity": "binary_sensor.thermostat_fan",
-                                    "icon": "hass:fan",
-                                    "secondary_info": "last-changed"
-                                },
-                                {
-                                    "entity": "binary_sensor.thermostat_cooler",
-                                    "icon": "hass:snowflake",
-                                    "secondary_info": "last-changed"
-                                },
-                                {
-                                    "entity": "binary_sensor.thermostat_heater",
-                                    "icon": "hass:fire",
-                                    "secondary_info": "last-changed"
-                                }
-                            ],
-                            "state_color": true
-                        },
-                        {
-                            "type": "entities",
-                            "entities": [
-                                "sensor.a_c_on_today",
-                                "sensor.furnace_on_today"
-                            ]
-                        },
-                        {
-                            "type": "button",
-                            "tap_action": {
-                                "action": "call-service",
-                                "service": "automation.trigger",
-                                "service_data": {
-                                    "skip_condition": true
-                                },
-                                "target": {
-                                    "entity_id": "automation.boost_ac"
-                                }
-                            },
-                            "show_icon": true,
-                            "show_state": false,
-                            "show_name": true,
-                            "entity": "automation.boost_ac",
-                            "icon": "mdi:snowflake",
-                            "icon_height": "50px"
-                        },
-                        {
-                            "type": "history-graph",
-                            "entities": [
-                                {
-                                    "entity": "sensor.multisensor_6_humidity"
-                                },
-                                {
-                                    "entity": "sensor.kyle_office_humidity"
-                                },
-                                {
-                                    "entity": "sensor.thermostat_humidity"
-                                }
-                            ],
-                            "hours_to_show": 24,
-                            "refresh_interval": 0
-                        },
-                        {
-                            "type": "history-graph",
-                            "entities": [
-                                {
-                                    "entity": "sensor.multisensor_6_humidity"
-                                },
-                                {
-                                    "entity": "sensor.kyle_office_humidity"
-                                },
-                                {
-                                    "entity": "sensor.thermostat_humidity"
-                                }
-                            ],
-                            "hours_to_show": 2,
-                            "refresh_interval": 0
                         }
                     ]
                 },
@@ -493,6 +321,154 @@
                     "icon": "mdi:baby",
                     "path": "baby-room",
                     "title": "Baby Room"
+                },
+                {
+                    "icon": "mdi:thermometer",
+                    "panel": false,
+                    "path": "climate",
+                    "title": "Climate Station",
+                    "badges": [],
+                    "cards": [
+                        {
+                            "type": "history-graph",
+                            "entities": [
+                                {
+                                    "entity": "sensor.multisensor_6_air_temperature"
+                                },
+                                {
+                                    "entity": "climate.my_ecobee"
+                                },
+                                {
+                                    "entity": "sensor.kyle_office_temperature"
+                                },
+                                {
+                                    "entity": "climate.thermostat"
+                                }
+                            ],
+                            "hours_to_show": 24,
+                            "refresh_interval": 0
+                        },
+                        {
+                            "type": "history-graph",
+                            "entities": [
+                                {
+                                    "entity": "sensor.multisensor_6_air_temperature"
+                                },
+                                {
+                                    "entity": "climate.my_ecobee"
+                                },
+                                {
+                                    "entity": "sensor.kyle_office_temperature"
+                                },
+                                {
+                                    "entity": "climate.thermostat"
+                                }
+                            ],
+                            "hours_to_show": 2,
+                            "refresh_interval": 0
+                        },
+                        {
+                            "type": "thermostat",
+                            "entity": "climate.thermostat"
+                        },
+                        {
+                            "type": "entities",
+                            "entities": [
+                                {
+                                    "entity": "binary_sensor.thermostat_fan",
+                                    "icon": "hass:fan",
+                                    "secondary_info": "last-changed"
+                                },
+                                {
+                                    "entity": "binary_sensor.thermostat_cooler",
+                                    "icon": "hass:snowflake",
+                                    "secondary_info": "last-changed"
+                                },
+                                {
+                                    "entity": "binary_sensor.thermostat_heater",
+                                    "icon": "hass:fire",
+                                    "secondary_info": "last-changed"
+                                }
+                            ],
+                            "state_color": true
+                        },
+                        {
+                            "type": "entities",
+                            "entities": [
+                                "sensor.a_c_on_today",
+                                "sensor.furnace_on_today"
+                            ]
+                        },
+                        {
+                            "entities": [
+                                {
+                                    "entity": "binary_sensor.thermostat_fan",
+                                    "icon": "mdi:fan",
+                                    "name": "Boost Fan",
+                                    "tap_action": {
+                                        "action": "call-service",
+                                        "service": "script.boost_fan"
+                                    }
+                                },
+                                {
+                                    "entity": "binary_sensor.thermostat_cooler",
+                                    "icon": "mdi:snowflake",
+                                    "name": "Boost A/C",
+                                    "tap_action": {
+                                        "action": "call-service",
+                                        "service": "script.boost_ac"
+                                    }
+                                },
+                                {
+                                    "entity": "binary_sensor.thermostat_heater",
+                                    "icon": "mdi:fire",
+                                    "name": "Boost Heating",
+                                    "tap_action": {
+                                        "action": "call-service",
+                                        "service": "script.boost_heat"
+                                    }
+                                }
+                            ],
+                            "show_state": false,
+                            "type": "glance",
+                            "show_name": true,
+                            "show_icon": true,
+                            "state_color": true,
+                            "title": "Boost"
+                        },
+                        {
+                            "type": "history-graph",
+                            "entities": [
+                                {
+                                    "entity": "sensor.multisensor_6_humidity"
+                                },
+                                {
+                                    "entity": "sensor.kyle_office_humidity"
+                                },
+                                {
+                                    "entity": "sensor.thermostat_humidity"
+                                }
+                            ],
+                            "hours_to_show": 24,
+                            "refresh_interval": 0
+                        },
+                        {
+                            "type": "history-graph",
+                            "entities": [
+                                {
+                                    "entity": "sensor.multisensor_6_humidity"
+                                },
+                                {
+                                    "entity": "sensor.kyle_office_humidity"
+                                },
+                                {
+                                    "entity": "sensor.thermostat_humidity"
+                                }
+                            ],
+                            "hours_to_show": 2,
+                            "refresh_interval": 0
+                        }
+                    ]
                 },
                 {
                     "title": "Office",

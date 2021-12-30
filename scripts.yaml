@@ -77,3 +77,86 @@ sunrise:
       transition: 120
   mode: parallel
   max: 10
+boost_ac:
+  alias: Boost AC
+  description: ''
+  sequence:
+  - service: climate.set_temperature
+    data:
+      target_temp_low: '{{ states.climate.thermostat.attributes.target_temp_low }}'
+      target_temp_high: '{{ states.climate.thermostat.attributes.target_temp_high
+        | float - 1 }}'
+    target:
+      entity_id: climate.thermostat
+  - delay:
+      hours: 1
+  - service: climate.set_temperature
+    data:
+      target_temp_low: '{{ states.climate.thermostat.attributes.target_temp_low }}'
+      target_temp_high: '{{ states.climate.thermostat.attributes.target_temp_high
+        | float + 1 }}'
+    target:
+      entity_id: climate.thermostat
+  mode: parallel
+  max: 10
+boost_heat:
+  alias: Boost Heat
+  sequence:
+  - service: climate.set_temperature
+    data:
+      target_temp_low: '{{ states.climate.thermostat.attributes.target_temp_low |
+        float + 1 }}'
+      target_temp_high: '{{ states.climate.thermostat.attributes.target_temp_high
+        }}'
+    target:
+      entity_id: climate.thermostat
+  - delay:
+      hours: 1
+  - service: climate.set_temperature
+    data:
+      target_temp_low: '{{ states.climate.thermostat.attributes.target_temp_low |
+        float - 1 }}'
+      target_temp_high: '{{ states.climate.thermostat.attributes.target_temp_high
+        }}'
+    target:
+      entity_id: climate.thermostat
+  description: ''
+  mode: parallel
+  max: 10
+boost_fan:
+  alias: Boost Fan
+  sequence:
+  - service: climate.set_fan_mode
+    data:
+      fan_mode: 'on'
+    target:
+      entity_id: climate.thermostat
+  - delay:
+      hours: 1
+  - condition: and
+    conditions:
+    - condition: state
+      state: 'off'
+      entity_id: binary_sensor.thermostat_cooler
+    - condition: state
+      entity_id: binary_sensor.thermostat_heater
+      state: 'off'
+  - service: climate.set_fan_mode
+    data:
+      fan_mode: 'off'
+    target:
+      entity_id: climate.thermostat
+  description: ''
+  mode: parallel
+  max: 10
+magic_button:
+  sequence:
+  - condition: or
+    conditions:
+    - condition: state
+      entity_id: light.baby_main
+      state: '> 50'
+      attribute: brightness
+  mode: single
+  alias: Magic Button
+  icon: mdi:auto-fix

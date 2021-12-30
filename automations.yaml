@@ -157,8 +157,8 @@
     value_template: '{{ states.light.baby_main.attributes.brightness > 10 }}'
   - condition: state
     entity_id: media_player.baby_room
-    state: Pink Noise HQ Audio.m4a
-    attribute: media_title
+    attribute: media_content_id
+    state: x-file-cifs://10.0.0.10/media/Music/Sounds/Baby/Pink%20Noise%20HQ%20Audio.m4a
   - condition: state
     entity_id: media_player.baby_room
     state: playing
@@ -388,27 +388,6 @@
     target:
       entity_id: cover.garage_door
   mode: single
-- id: '1627953007883'
-  alias: Boost AC
-  description: ''
-  trigger:
-  condition:
-  action:
-  - service: climate.set_temperature
-    data:
-      target_temp_high: '{{ states.climate.thermostat.attributes.target_temp_high
-        | float - 1 }}'
-    target:
-      entity_id: climate.thermostat
-  - delay:
-      hours: 1
-  - service: climate.set_temperature
-    data:
-      target_temp_high: '{{ states.climate.thermostat.attributes.temperature | float
-        + 1 }}'
-    target:
-      entity_id: climate.thermostat
-  mode: restart
 - id: '1634020365562'
   alias: Let there be light
   description: ''
