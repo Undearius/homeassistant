@@ -79,4 +79,5 @@ exclude:
     - sensor.wind_gust
     - sensor.wind_speed
     - sensor.wled_bed_estimated_current
+    - sun.sun 
 

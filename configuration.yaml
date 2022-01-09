@@ -34,7 +34,7 @@ binary_sensor:
     # - "Canada Day"
     # - "Civic Holiday"
     # - "Labour Day"
-    # - "Thanksgiving Day"
+    # - "Thanksgiving"
     # - "Christmas Day"
     # - "Boxing Day"
     #remove_holidays:

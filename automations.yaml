@@ -1,59 +1,53 @@
 - id: moviepaused
   alias: Movie Paused
   trigger:
-    platform: state
-    entity_id: media_player.plex_chromebook
+  - platform: state
     from: playing
     to: paused
+    entity_id: media_player.plex_oneplus_5t
   condition:
   - condition: template
-    value_template: '{{ is_state_attr(''media_player.plex_chromebook'', ''media_content_type'',
+    value_template: '{{ is_state_attr(''media_player.plex_oneplus_5t'', ''media_content_type'',
       ''movie'') }}'
   action:
-    service: light.turn_on
+  - service: light.turn_on
     data:
-      brightness: 25
-      xy_color:
-      - 0.58
-      - 0.39
-      entity_id:
-      - light.wled_bed
+      brightness_pct: 1
+    target:
+      entity_id: light.livingroom_pots
 - id: movieresumed
   alias: Movie Resumed
   trigger:
-    platform: state
-    entity_id: media_player.plex_chromebook
-    from: paused
+  - platform: state
     to: playing
+    entity_id: media_player.plex_oneplus_5t
   condition:
   - condition: template
-    value_template: '{{ is_state_attr(''media_player.plex_chromebook'', ''media_content_type'',
+    value_template: '{{ is_state_attr(''media_player.plex_oneplus_5t'', ''media_content_type'',
       ''movie'') }}'
   action:
-    service: light.turn_off
-    entity_id:
-    - light.wled_bed
+  - service: light.turn_off
+    data: {}
+    target:
+      entity_id: light.livingroom_pots
 - id: movieended
   alias: Movie Ended
   trigger:
-    platform: state
-    entity_id: media_player.plex_chromebook
+  - platform: state
     from: playing
     to: idle
+    entity_id: media_player.plex_oneplus_5t
   condition:
   - condition: template
-    value_template: '{{ is_state_attr(''media_player.plex_chromebook'', ''media_content_type'',
+    value_template: '{{ is_state_attr(''media_player.plex_oneplus_5t'', ''media_content_type'',
       ''movie'') }}'
   action:
   - service: light.turn_on
     data:
       transition: 10
-      brightness: 5
-      xy_color:
-      - 0.58
-      - 0.39
-      entity_id:
-      - light.wled_bed
+      brightness_pct: 30
+    target:
+      entity_id: light.livingroom_pots
   - service: light.turn_on
     data:
       transition: 10
@@ -64,22 +58,20 @@
 - id: moviestopped
   alias: Movie Stopped
   trigger:
-    platform: state
-    entity_id: media_player.plex_chromebook
-    from: paused
+  - platform: state
     to: idle
+    entity_id: media_player.plex_oneplus_5t
   condition:
   - condition: template
-    value_template: '{{ is_state_attr(''media_player.plex_chromebook'', ''media_content_type'',
+    value_template: '{{ is_state_attr(''media_player.plex_oneplus_5t'', ''media_content_type'',
       ''movie'') }}'
   action:
-    service: light.turn_on
+  - service: light.turn_on
     data:
       transition: 10
-      brightness_pct: 100
-      kelvin: 2600
-      entity_id:
-      - light.bed_main
+      brightness_pct: 30
+    target:
+      entity_id: light.livingroom_pots
 - id: babymainirbrightness
   alias: Baby Main IR Brightness
   trigger:
@@ -517,3 +509,39 @@
     target:
       entity_id: all
   mode: single
+- id: '1641689543179'
+  alias: Pot lights on motion
+  description: ''
+  trigger:
+  - platform: state
+    entity_id: binary_sensor.living_room_dimmer_motion
+    from: 'off'
+    to: 'on'
+  - platform: state
+    entity_id: input_boolean.potsoverride
+  condition:
+  - condition: state
+    entity_id: input_boolean.potsoverride
+    state: 'off'
+  action:
+  - service: light.turn_on
+    target:
+      entity_id: light.livingroom_pots
+    data:
+      brightness_pct: "{% if is_state(\"light.livingroom_pots\", \"on\") -%}\n  {{\
+        \ (state_attr(\"light.livingroom_pots\", \"brightness\") / 2.55 ) | round\
+        \ }}\n{%- else -%}\n  {% if now().hour >=22 or now().hour < 7 %} 1\n  {% elif\
+        \ now().hour >= 20 and now().hour < 22 %} 30\n  {% else %} 100\n  {% endif\
+        \ %}\n{%- endif %}"
+  - wait_template: '{{ is_state("binary_sensor.living_room_dimmer_motion", "off")
+      }}'
+  - delay:
+      minutes: '{% if now().hour >=17 and now().hour < 22 %} 30 {% else %} 15 {% endif
+        %}'
+  - condition: state
+    entity_id: input_boolean.potsoverride
+    state: 'off'
+  - service: light.turn_off
+    target:
+      entity_id: light.livingroom_pots
+  mode: restart

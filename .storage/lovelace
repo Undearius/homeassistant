@@ -12,9 +12,6 @@
                         {
                             "entities": [
                                 {
-                                    "entity": "scene.christmas_porch_lights"
-                                },
-                                {
                                     "entity": "light.porch_door"
                                 },
                                 {
@@ -40,11 +37,6 @@
                                 },
                                 {
                                     "entity": "light.sink_lights"
-                                },
-                                {
-                                    "entity": "switch.sonoff_s31_relay",
-                                    "name": "Garland",
-                                    "icon": "mdi:string-lights"
                                 }
                             ],
                             "title": "Lights",
@@ -103,6 +95,15 @@
                         {
                             "entity": "media_player.living_room",
                             "type": "media-control"
+                        },
+                        {
+                            "type": "button",
+                            "tap_action": {
+                                "action": "toggle"
+                            },
+                            "entity": "input_boolean.potsoverride",
+                            "icon_height": "50px",
+                            "name": "Manual Pot Lights"
                         }
                     ],
                     "icon": "mdi:home-assistant",
