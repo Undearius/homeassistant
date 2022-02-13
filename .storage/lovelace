@@ -21,7 +21,7 @@
                                     "entity": "light.wled_bed"
                                 },
                                 {
-                                    "entity": "light.baby_main"
+                                    "entity": "light.alistair_main"
                                 },
                                 {
                                     "entity": "light.livingroom_pots"
@@ -37,6 +37,9 @@
                                 },
                                 {
                                     "entity": "light.sink_lights"
+                                },
+                                {
+                                    "entity": "binary_sensor.living_room_dimmer_motion"
                                 }
                             ],
                             "title": "Lights",
@@ -174,14 +177,14 @@
                     "badges": [],
                     "cards": [
                         {
-                            "entity": "light.baby_main",
-                            "name": "Baby Main",
+                            "entity": "light.alistair_main",
+                            "name": "Alistair Main",
                             "type": "light"
                         },
                         {
                             "entities": [
                                 {
-                                    "entity": "light.baby_main",
+                                    "entity": "light.alistair_main",
                                     "icon": "mdi:lightbulb-on",
                                     "name": "Default",
                                     "tap_action": {
@@ -189,7 +192,7 @@
                                         "service": "lifx.set_state",
                                         "service_data": {
                                             "brightness_pct": 100,
-                                            "entity_id": "light.baby_main",
+                                            "entity_id": "light.alistair_main",
                                             "kelvin": 3500,
                                             "power": "on",
                                             "transition": 0.1
@@ -197,33 +200,42 @@
                                     }
                                 },
                                 {
-                                    "entity": "light.baby_main",
+                                    "entity": "light.alistair_main",
                                     "icon": "mdi:book-open",
                                     "name": "Reading",
                                     "tap_action": {
                                         "action": "call-service",
                                         "service": "automation.trigger",
                                         "service_data": {
-                                            "entity_id": "automation.baby_reading_light",
+                                            "entity_id": "automation.alistair_reading_light_long",
+                                            "skip_condition": false
+                                        }
+                                    },
+                                    "hold_action": {
+                                        "action": "call-service",
+                                        "service": "automation.trigger",
+                                        "service_data": {
+                                            "entity_id": "automation.alistair_reading_light",
                                             "skip_condition": false
                                         }
                                     }
                                 },
                                 {
-                                    "entity": "light.baby_main",
+                                    "entity": "light.alistair_main",
                                     "icon": "mdi:weather-night",
                                     "name": "Nightlight",
                                     "tap_action": {
                                         "action": "call-service",
                                         "service": "automation.trigger",
                                         "service_data": {
-                                            "entity_id": "automation.baby_nightlight_transition"
+                                            "entity_id": "automation.alistair_nightlight_transition"
                                         }
                                     }
                                 }
                             ],
                             "show_state": false,
-                            "type": "glance"
+                            "type": "glance",
+                            "state_color": false
                         },
                         {
                             "type": "conditional",
@@ -241,7 +253,7 @@
                                 "type": "glance",
                                 "entities": [
                                     {
-                                        "entity": "light.baby_main",
+                                        "entity": "light.alistair_main",
                                         "icon": "mdi:speaker",
                                         "name": "Lights off, Sound on",
                                         "tap_action": {
@@ -259,7 +271,7 @@
                         {
                             "entities": [
                                 {
-                                    "entity": "light.baby_main",
+                                    "entity": "light.alistair_main",
                                     "icon": "mdi:tent",
                                     "name": "Camping",
                                     "tap_action": {
@@ -285,14 +297,14 @@
                                     }
                                 },
                                 {
-                                    "entity": "light.baby_main",
+                                    "entity": "light.alistair_main",
                                     "icon": "mdi:book-open",
                                     "name": "Slow Reading",
                                     "tap_action": {
                                         "action": "call-service",
                                         "service": "automation.trigger",
                                         "service_data": {
-                                            "entity_id": "automation.baby_reading_light_long",
+                                            "entity_id": "automation.alistair_reading_light_long",
                                             "skip_condition": false
                                         }
                                     }
@@ -305,7 +317,7 @@
                             "state_color": false
                         },
                         {
-                            "entity": "light.baby_main_ir",
+                            "entity": "light.alistair_main_ir",
                             "type": "light"
                         },
                         {
@@ -320,8 +332,8 @@
                         }
                     ],
                     "icon": "mdi:baby",
-                    "path": "baby-room",
-                    "title": "Baby Room"
+                    "path": "alistair-room",
+                    "title": "alistair Room"
                 },
                 {
                     "icon": "mdi:thermometer",
@@ -334,7 +346,7 @@
                             "type": "history-graph",
                             "entities": [
                                 {
-                                    "entity": "sensor.multisensor_6_air_temperature"
+                                    "entity": "sensor.alistair_room_air_temperature"
                                 },
                                 {
                                     "entity": "climate.my_ecobee"
@@ -344,6 +356,9 @@
                                 },
                                 {
                                     "entity": "climate.thermostat"
+                                },
+                                {
+                                    "entity": "sensor.thermostat_temperature"
                                 }
                             ],
                             "hours_to_show": 24,
@@ -353,7 +368,7 @@
                             "type": "history-graph",
                             "entities": [
                                 {
-                                    "entity": "sensor.multisensor_6_air_temperature"
+                                    "entity": "sensor.alistair_room_air_temperature"
                                 },
                                 {
                                     "entity": "climate.my_ecobee"
@@ -363,6 +378,9 @@
                                 },
                                 {
                                     "entity": "climate.thermostat"
+                                },
+                                {
+                                    "entity": "sensor.thermostat_temperature"
                                 }
                             ],
                             "hours_to_show": 2,
@@ -441,7 +459,7 @@
                             "type": "history-graph",
                             "entities": [
                                 {
-                                    "entity": "sensor.multisensor_6_humidity"
+                                    "entity": "sensor.alistair_room_humidity"
                                 },
                                 {
                                     "entity": "sensor.kyle_office_humidity"
@@ -457,7 +475,7 @@
                             "type": "history-graph",
                             "entities": [
                                 {
-                                    "entity": "sensor.multisensor_6_humidity"
+                                    "entity": "sensor.alistair_room_humidity"
                                 },
                                 {
                                     "entity": "sensor.kyle_office_humidity"
@@ -478,6 +496,14 @@
                     "badges": [],
                     "cards": [
                         {
+                            "type": "entities",
+                            "entities": [
+                                {
+                                    "entity": "switch.kyle_office_outlet_relay"
+                                }
+                            ]
+                        },
+                        {
                             "type": "history-graph",
                             "entities": [
                                 {
@@ -489,14 +515,6 @@
                             ],
                             "hours_to_show": 24,
                             "refresh_interval": 0
-                        },
-                        {
-                            "type": "entities",
-                            "entities": [
-                                {
-                                    "entity": "switch.kyle_office_outlet_relay"
-                                }
-                            ]
                         }
                     ]
                 }

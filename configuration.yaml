@@ -42,31 +42,31 @@ binary_sensor:
 light:
   - platform: template
     lights:
-      baby_main_ir:
-        friendly_name: 'Baby Main Infrared'
-        unique_id: BabyMainInfrared
+      alistair_main_ir:
+        friendly_name: 'Alistair Main Infrared'
+        unique_id: AlistairMainInfrared
         icon_template: mdi:lightbulb-outline
         value_template:  >-
-          {% if states('input_number.baby_main_ir') | int > 0 %}
+          {% if states('input_number.alistair_main_ir') | int > 0 %}
             on
           {% else %}
             off
           {% endif %}
-        level_template: "{{ states('input_number.baby_main_ir') | int }}"
+        level_template: "{{ states('input_number.alistair_main_ir') | int }}"
         turn_on:
           service: input_number.set_value
           data_template:
-            entity_id: input_number.baby_main_ir
+            entity_id: input_number.alistair_main_ir
             value: 255
         turn_off:
           service: input_number.set_value
           data_template:
-            entity_id: input_number.baby_main_ir
+            entity_id: input_number.alistair_main_ir
             value: 0
         set_level:
           service: input_number.set_value
           data_template:
-            entity_id: input_number.baby_main_ir
+            entity_id: input_number.alistair_main_ir
             value: "{{ brightness | int }}"
   - platform: group
     name: Bedroom Lights
@@ -84,6 +84,28 @@ light:
 
 template:
   - sensor:
+      - name: Weighted Temp
+        unique_id: WeightedTemp
+        unit_of_measurement: "°C"
+        state: >
+          {#
+          {% set thermo = states("sensor.thermostat_temperature") | float %}
+          {% set alistair = states("sensor.alistair_room_air_temperature") | float %}
+          {% set kyle = states("sensor.kyle_office_temperature") | float %}
+          {% set weight = {"thermo": 0.00, "kyle": 1.00, "alistair": 0.00} %}
+          {% set weight = {"thermo": 1.00, "kyle": 0.00, "alistair": 0.00} %}
+          {% set weight = {"thermo": 0.30, "kyle": 0.30, "alistair": 0.40} %}
+          {% set weight = {"thermo": 0.01, "kyle": 0.01, "alistair": 0.98} %}
+          {% set perc_diff = 0.5 | float %} {#Needs to be between 0 and 1
+          {% set weight = {
+            "thermo": weight.thermo + (1 - weight.thermo) * perc_diff,
+            "kyle": weight.kyle - weight.kyle * perc_diff,
+            "alistair": weight.alistair - weight.alistair * perc_diff
+          } %}
+          {{ (thermo*weight.thermo + kyle*weight.kyle + alistair*weight.alistair) | round(1) }}
+          #}
+          {{ states("sensor.thermostat_temperature") | float }}
+  - sensor:
       - name: Hydro Ottawa Cost
         unique_id: HydroOttawaCost
         unit_of_measurement: "CAD/kWh"
@@ -96,7 +118,7 @@ template:
             "on_peak": 0.17,
           } %}
 
-          {% if "of" == "on" %}
+          {% if "on" == "on" %}
             {{ prices.tier1 }}
           {% else %}
             {% if states.binary_sensor.workday_sensor.state == "off" %}

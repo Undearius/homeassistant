@@ -4,11 +4,18 @@
   - platform: state
     from: playing
     to: paused
-    entity_id: media_player.plex_oneplus_5t
+    entity_id: media_player.plex_umbriel
   condition:
-  - condition: template
-    value_template: '{{ is_state_attr(''media_player.plex_oneplus_5t'', ''media_content_type'',
-      ''movie'') }}'
+  - condition: or
+    conditions:
+    - condition: state
+      entity_id: media_player.plex_umbriel
+      state: movie
+      attribute: media_content_type
+    - condition: state
+      entity_id: media_player.plex_umbriel
+      state: tvshow
+      attribute: media_content_type
   action:
   - service: light.turn_on
     data:
@@ -20,11 +27,18 @@
   trigger:
   - platform: state
     to: playing
-    entity_id: media_player.plex_oneplus_5t
+    entity_id: media_player.plex_umbriel
   condition:
-  - condition: template
-    value_template: '{{ is_state_attr(''media_player.plex_oneplus_5t'', ''media_content_type'',
-      ''movie'') }}'
+  - condition: or
+    conditions:
+    - condition: state
+      entity_id: media_player.plex_umbriel
+      state: movie
+      attribute: media_content_type
+    - condition: state
+      entity_id: media_player.plex_umbriel
+      state: tvshow
+      attribute: media_content_type
   action:
   - service: light.turn_off
     data: {}
@@ -36,11 +50,18 @@
   - platform: state
     from: playing
     to: idle
-    entity_id: media_player.plex_oneplus_5t
+    entity_id: media_player.plex_umbriel
   condition:
-  - condition: template
-    value_template: '{{ is_state_attr(''media_player.plex_oneplus_5t'', ''media_content_type'',
-      ''movie'') }}'
+  - condition: or
+    conditions:
+    - condition: state
+      entity_id: media_player.plex_umbriel
+      state: movie
+      attribute: media_content_type
+    - condition: state
+      entity_id: media_player.plex_umbriel
+      state: tvshow
+      attribute: media_content_type
   action:
   - service: light.turn_on
     data:
@@ -60,11 +81,8 @@
   trigger:
   - platform: state
     to: idle
-    entity_id: media_player.plex_oneplus_5t
-  condition:
-  - condition: template
-    value_template: '{{ is_state_attr(''media_player.plex_oneplus_5t'', ''media_content_type'',
-      ''movie'') }}'
+    entity_id: media_player.plex_umbriel
+  condition: []
   action:
   - service: light.turn_on
     data:
@@ -73,24 +91,24 @@
     target:
       entity_id: light.livingroom_pots
 - id: babymainirbrightness
-  alias: Baby Main IR Brightness
+  alias: Alistair Main IR Brightness
   trigger:
   - platform: state
-    entity_id: input_number.baby_main_ir
+    entity_id: input_number.alistair_main_ir
   action:
   - service: lifx.set_state
-    entity_id: light.baby_main
+    entity_id: light.alistair_main
     data_template:
-      infrared: '{{ states(''input_number.baby_main_ir'') | int }}'
+      infrared: '{{ states(''input_number.alistair_main_ir'') | int }}'
   initial_state: true
   mode: single
 - id: babynightlighttransition
-  alias: Baby Nightlight
+  alias: Alistair Nightlight
   trigger:
   action:
   - service: lifx.set_state
     data:
-      entity_id: light.baby_main
+      entity_id: light.alistair_main
       brightness_pct: 1
       transition: 10
       hs_color:
@@ -104,7 +122,7 @@
   trigger:
   - device_id: 7baa77eeb6604448a7c10fb87d16a286
     domain: light
-    entity_id: light.baby_main
+    entity_id: light.alistair_main
     platform: device
     type: turned_off
   condition:
@@ -130,23 +148,23 @@
       entity_id: media_player.baby_room
   - device_id: 7baa77eeb6604448a7c10fb87d16a286
     domain: light
-    entity_id: light.baby_main
+    entity_id: light.alistair_main
     type: turn_off
   - service: input_number.set_value
     data:
       value: 255
     target:
-      entity_id: input_number.baby_main_ir
+      entity_id: input_number.alistair_main_ir
   mode: single
 - id: '1598804150280'
   alias: Light on White Noise off
   description: ''
   trigger:
-  - entity_id: light.baby_main
+  - entity_id: light.alistair_main
     platform: state
   condition:
   - condition: template
-    value_template: '{{ states.light.baby_main.attributes.brightness > 10 }}'
+    value_template: '{{ states.light.alistair_main.attributes.brightness > 10 }}'
   - condition: state
     entity_id: media_player.baby_room
     attribute: media_content_id
@@ -161,19 +179,19 @@
     service: sonos.set_sleep_timer
   - service: input_number.set_value
     target:
-      entity_id: input_number.baby_main_ir
+      entity_id: input_number.alistair_main_ir
     data:
       value: 0
   mode: single
 - id: '1598808585001'
-  alias: Baby Reading Light
+  alias: Alistair Reading Light
   description: ''
   trigger: []
   condition: []
   action:
   - data:
       brightness_pct: 30
-      entity_id: light.baby_main
+      entity_id: light.alistair_main
       hs_color:
       - 40
       - 50
@@ -195,25 +213,25 @@
   alias: Sound Trigger off when brightness above 30%
   description: ''
   trigger:
-  - entity_id: light.baby_main
+  - entity_id: light.alistair_main
     platform: state
   condition:
   - condition: template
-    value_template: '{{ states.light.baby_main.attributes.brightness > 85 }}'
+    value_template: '{{ states.light.alistair_main.attributes.brightness > 85 }}'
   action:
   - data: {}
     entity_id: input_boolean.sound_trigger
     service: input_boolean.turn_off
   mode: single
 - id: '1607901677018'
-  alias: Baby Reading Light Long
+  alias: Alistair Reading Light Long
   description: ''
   trigger: []
   condition: []
   action:
   - data:
       brightness_pct: 30
-      entity_id: light.baby_main
+      entity_id: light.alistair_main
       hs_color:
       - 40
       - 50
@@ -280,10 +298,12 @@
         entity_id: input_text.saa_kyle
         state: alarm_alert_dismiss
   action:
-  - service: notify.mobile_app_oneplus_a5010
+  - service: notify.mobile_app_oneplus5t
     data:
+      message: A song was played while you were sleeping. Check Last.fm
       title: Music Scrobbled
-      message: Music was playing while you were asleep. Check Last.fm
+      data:
+        clickAction: https://last.fm/user/Undearius
   mode: single
 - id: '1614033769366'
   alias: Notify Kyle if Allynn left her computer on
@@ -300,13 +320,13 @@
     entity_id: device_tracker.allynnscomputer
     state: home
   action:
-  - service: notify.mobile_app_oneplus_a5010
+  - service: notify.mobile_app_oneplus5t
     data:
       title: Computer Running
       message: Allynn left her computer on. Shut it off.
   mode: single
 - id: '1615074707979'
-  alias: Notify Allynn and Kyle if Thermostat becomes unavailable
+  alias: Notify if Thermostat becomes unavailable
   description: ''
   trigger:
   - platform: state
@@ -316,17 +336,34 @@
       hours: 0
       minutes: 1
       seconds: 0
-      milliseconds: 0
+  - platform: state
+    entity_id: climate.thermostat
+    attribute: current_temperature
+    to: '0'
+    for:
+      hours: 0
+      minutes: 0
+      seconds: 30
   condition: []
   action:
-  - service: notify.mobile_app_oneplus_a5010
-    data:
-      title: Thermostat Unavailable
-      message: Check to see if furnace is on!
   - service: notify.mobile_app_sm_a515w
     data:
       title: Thermostat Unavailable
-      message: Check to see if furnace is on!
+      message: Check to see if the furnace is on!
+      data:
+        clickAction: /lovelace/climate
+  - service: notify.mobile_app_oneplus5t
+    data:
+      title: Thermostat Unavailable
+      message: Check to see if the furnace is on!
+      data:
+        clickAction: /lovelace/climate
+  - service: notify.mobile_app_oneplus5t
+    data:
+      message: TTS
+      title: Thermostat is offline
+      data:
+        channel: alarm_stream
   mode: single
 - id: '1615075704978'
   alias: Morning Sunrise
@@ -382,7 +419,7 @@
   mode: single
 - id: '1634020365562'
   alias: Let there be light
-  description: ''
+  description: Turn on all the lights in the kitchen/living room
   trigger:
   - platform: state
     entity_id: binary_sensor.in_wall_smart_motion_dimmer_home_security_motion_detection
@@ -507,7 +544,9 @@
   action:
   - service: light.turn_off
     target:
-      entity_id: all
+      entity_id:
+      - all
+    data: {}
   mode: single
 - id: '1641689543179'
   alias: Pot lights on motion
@@ -523,6 +562,10 @@
   - condition: state
     entity_id: input_boolean.potsoverride
     state: 'off'
+  - condition: template
+    value_template: "{% if states('weather.ottawa_kanata_orleans') in [\"snowy\",\"\
+      cloudy\"] %}\n  {% set ele = 7 %}\n{% else %}\n  {% set ele = 6 %}\n{% endif\
+      \ %}\n{{ state_attr('sun.sun', 'elevation') < ele }}"
   action:
   - service: light.turn_on
     target:
@@ -531,7 +574,7 @@
       brightness_pct: "{% if is_state(\"light.livingroom_pots\", \"on\") -%}\n  {{\
         \ (state_attr(\"light.livingroom_pots\", \"brightness\") / 2.55 ) | round\
         \ }}\n{%- else -%}\n  {% if now().hour >=22 or now().hour < 7 %} 1\n  {% elif\
-        \ now().hour >= 20 and now().hour < 22 %} 30\n  {% else %} 100\n  {% endif\
+        \ now().hour >= 20 and now().hour < 22 %} 24\n  {% else %} 100\n  {% endif\
         \ %}\n{%- endif %}"
   - wait_template: '{{ is_state("binary_sensor.living_room_dimmer_motion", "off")
       }}'
@@ -544,4 +587,85 @@
   - service: light.turn_off
     target:
       entity_id: light.livingroom_pots
+    data: {}
   mode: restart
+- id: '1641781795297'
+  alias: Notify Kyle if furnace about to turn on
+  description: ''
+  trigger:
+  - platform: state
+    entity_id: climate.thermostat
+    attribute: current_temperature
+    to: '20.7'
+  condition: []
+  action:
+  - service: notify.mobile_app_oneplus5t
+    data:
+      message: Furnace is about to turn on
+  mode: single
+- id: '1641799136107'
+  alias: Sink lights on motion
+  description: ''
+  trigger:
+  - platform: state
+    entity_id: binary_sensor.living_room_dimmer_motion
+    from: 'off'
+    to: 'on'
+  condition: []
+  action:
+  - service: light.turn_on
+    target:
+      entity_id: light.sink_lights
+  - wait_template: '{{ is_state("binary_sensor.living_room_dimmer_motion", "off")
+      }}'
+  - service: light.turn_off
+    target:
+      entity_id: light.sink_lights
+  mode: restart
+- id: '1643432818705'
+  alias: Kitchen light on for cooking
+  description: ''
+  trigger:
+  - platform: state
+    entity_id: light.livingroom_pots
+    to: 'on'
+  condition:
+  - condition: or
+    conditions:
+    - condition: time
+      weekday:
+      - mon
+      - tue
+      - wed
+      - thu
+      - fri
+      after: '16:00:00'
+      before: '19:00:00'
+    - condition: time
+      after: '17:00:00'
+      before: '19:00:00'
+      weekday:
+      - sat
+      - sun
+  action:
+  - service: light.turn_on
+    target:
+      entity_id: light.kitchen
+  mode: single
+- id: '1643434691823'
+  alias: Welcome home
+  description: ''
+  trigger:
+  - platform: state
+    entity_id: person.allynn
+    to: home
+  condition:
+  - condition: time
+    after: '16:00:00'
+    before: '20:00:00'
+  action:
+  - service: notify.mobile_app_sm_a515w
+    data:
+      message: TTS
+      title: Welcome home, Allynn
+  mode: single
