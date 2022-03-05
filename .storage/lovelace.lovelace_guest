@@ -1,13 +1,56 @@
 {
+    "version": 1,
+    "minor_version": 1,
+    "key": "lovelace.lovelace_guest",
     "data": {
         "config": {
             "title": "Home",
             "views": [
                 {
+                    "title": "Home",
+                    "badges": [],
                     "cards": [
                         {
-                            "entity": "light.computer_main",
-                            "type": "light"
+                            "entities": [
+                                {
+                                    "entity": "light.porch_door"
+                                },
+                                {
+                                    "entity": "light.porch_garage"
+                                },
+                                {
+                                    "entity": "light.wled_bed"
+                                },
+                                {
+                                    "entity": "light.alistair_main"
+                                },
+                                {
+                                    "entity": "light.livingroom_pots"
+                                },
+                                {
+                                    "entity": "light.living_room_main"
+                                },
+                                {
+                                    "entity": "light.kitchen"
+                                },
+                                {
+                                    "entity": "light.dining_table"
+                                },
+                                {
+                                    "entity": "light.sink_lights"
+                                }
+                            ],
+                            "title": "Lights",
+                            "type": "entities"
+                        },
+                        {
+                            "type": "button",
+                            "tap_action": {
+                                "action": "toggle"
+                            },
+                            "entity": "input_boolean.potsoverride",
+                            "icon_height": "50px",
+                            "name": "Manual Pot Lights"
                         },
                         {
                             "entity": "media_player.living_room",
@@ -15,15 +58,292 @@
                         },
                         {
                             "entity": "weather.ottawa_kanata_orleans",
+                            "show_forecast": true,
                             "type": "weather-forecast"
                         }
                     ],
-                    "path": "default_view",
-                    "title": "Home"
+                    "icon": "mdi:home-assistant",
+                    "path": "default_view"
+                },
+                {
+                    "title": "Alistair Room",
+                    "icon": "mdi:baby",
+                    "path": "alistair-room",
+                    "badges": [],
+                    "cards": [
+                        {
+                            "entity": "light.alistair_main",
+                            "name": "Alistair Main",
+                            "type": "light"
+                        },
+                        {
+                            "entities": [
+                                {
+                                    "entity": "light.alistair_main",
+                                    "icon": "mdi:lightbulb-on",
+                                    "name": "Default",
+                                    "tap_action": {
+                                        "action": "call-service",
+                                        "service": "script.alistair_light",
+                                        "service_data": {
+                                            "brightness_pct": 100,
+                                            "colour": "45.000, 6.258",
+                                            "transition": 0.1
+                                        }
+                                    },
+                                    "hold_action": {
+                                        "action": "call-service",
+                                        "service": "script.alistair_light",
+                                        "service_data": {
+                                            "brightness_pct": 100,
+                                            "colour": "45.000, 6.258"
+                                        }
+                                    }
+                                },
+                                {
+                                    "entity": "light.alistair_main",
+                                    "icon": "mdi:book-open",
+                                    "name": "Reading",
+                                    "tap_action": {
+                                        "action": "call-service",
+                                        "service": "script.alistair_trigger_light",
+                                        "service_data": {
+                                            "brightness_pct": 30,
+                                            "colour": "40, 50",
+                                            "transition": 5
+                                        }
+                                    },
+                                    "hold_action": {
+                                        "action": "call-service",
+                                        "service": "script.alistair_trigger_light",
+                                        "service_data": {
+                                            "brightness_pct": 30,
+                                            "colour": "40, 50"
+                                        }
+                                    }
+                                },
+                                {
+                                    "entity": "light.alistair_main",
+                                    "icon": "mdi:weather-night",
+                                    "name": "Nightlight",
+                                    "tap_action": {
+                                        "action": "call-service",
+                                        "service": "script.alistair_light",
+                                        "service_data": {
+                                            "brightness_pct": 1,
+                                            "colour": "37, 100",
+                                            "transition": 10
+                                        }
+                                    },
+                                    "hold_action": {
+                                        "action": "call-service",
+                                        "service": "script.alistair_light",
+                                        "service_data": {
+                                            "brightness_pct": 1,
+                                            "colour": "37, 100"
+                                        }
+                                    }
+                                }
+                            ],
+                            "show_state": false,
+                            "type": "glance",
+                            "state_color": false
+                        },
+                        {
+                            "type": "entities",
+                            "entities": [
+                                "input_number.fade_time"
+                            ]
+                        },
+                        {
+                            "type": "conditional",
+                            "conditions": [
+                                {
+                                    "entity": "input_boolean.alistair_sound_trigger",
+                                    "state": "off"
+                                },
+                                {
+                                    "entity": "media_player.alistair_room",
+                                    "state_not": "playing"
+                                }
+                            ],
+                            "card": {
+                                "show_name": true,
+                                "show_icon": true,
+                                "show_state": false,
+                                "type": "glance",
+                                "entities": [
+                                    {
+                                        "entity": "light.alistair_main",
+                                        "icon": "mdi:speaker",
+                                        "name": "Lights off, Sound on",
+                                        "tap_action": {
+                                            "action": "call-service",
+                                            "service": "automation.trigger",
+                                            "service_data": {
+                                                "entity_id": "automation.turn_on_white_noise",
+                                                "skip_condition": true
+                                            }
+                                        }
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "entities": [
+                                {
+                                    "entity": "light.alistair_main",
+                                    "icon": "mdi:tent",
+                                    "name": "Camping",
+                                    "tap_action": {
+                                        "action": "call-service",
+                                        "service": "scene.turn_on",
+                                        "service_data": {
+                                            "entity_id": "scene.camping",
+                                            "transition": 5
+                                        }
+                                    }
+                                },
+                                {
+                                    "entity": "media_player.alistair_room",
+                                    "icon": "mdi:speaker",
+                                    "name": "Lights off, Sound on",
+                                    "tap_action": {
+                                        "action": "call-service",
+                                        "service": "automation.trigger",
+                                        "service_data": {
+                                            "entity_id": "automation.turn_on_white_noise",
+                                            "skip_condition": true
+                                        }
+                                    }
+                                },
+                                {
+                                    "entity": "light.alistair_main",
+                                    "icon": "mdi:close-thick",
+                                    "name": "Don't press",
+                                    "tap_action": {
+                                        "action": "call-service",
+                                        "service": "script.turn_on",
+                                        "service_data": {
+                                            "entity_id": "script.party_time"
+                                        }
+                                    }
+                                }
+                            ],
+                            "show_state": false,
+                            "type": "glance",
+                            "show_name": true,
+                            "show_icon": true,
+                            "state_color": false
+                        },
+                        {
+                            "entity": "light.alistair_main_ir",
+                            "type": "light"
+                        },
+                        {
+                            "entity": "media_player.alistair_room",
+                            "type": "media-control"
+                        }
+                    ]
+                },
+                {
+                    "icon": "mdi:thermometer",
+                    "panel": false,
+                    "path": "climate",
+                    "title": "Climate Station",
+                    "badges": [],
+                    "cards": [
+                        {
+                            "type": "thermostat",
+                            "entity": "climate.thermostat"
+                        },
+                        {
+                            "type": "history-graph",
+                            "entities": [
+                                {
+                                    "entity": "sensor.alistair_room_air_temperature"
+                                },
+                                {
+                                    "entity": "sensor.kyle_office_temperature"
+                                },
+                                {
+                                    "entity": "climate.thermostat"
+                                },
+                                {
+                                    "entity": "sensor.thermostat_temperature"
+                                }
+                            ],
+                            "hours_to_show": 24,
+                            "refresh_interval": 0
+                        },
+                        {
+                            "type": "history-graph",
+                            "entities": [
+                                {
+                                    "entity": "sensor.alistair_room_humidity"
+                                },
+                                {
+                                    "entity": "sensor.kyle_office_humidity"
+                                },
+                                {
+                                    "entity": "sensor.thermostat_humidity"
+                                }
+                            ],
+                            "hours_to_show": 24,
+                            "refresh_interval": 0
+                        },
+                        {
+                            "entities": [
+                                {
+                                    "entity": "binary_sensor.thermostat_fan",
+                                    "icon": "mdi:fan",
+                                    "name": "Boost Fan",
+                                    "tap_action": {
+                                        "action": "call-service",
+                                        "service": "script.kickstart_fan"
+                                    },
+                                    "hold_action": {
+                                        "action": "call-service",
+                                        "service": "script.boost_fan"
+                                    }
+                                },
+                                {
+                                    "entity": "binary_sensor.thermostat_cooler",
+                                    "icon": "mdi:snowflake",
+                                    "name": "Boost A/C",
+                                    "tap_action": {
+                                        "action": "call-service",
+                                        "service": "script.kickstart_ac"
+                                    },
+                                    "hold_action": {
+                                        "action": "call-service",
+                                        "service": "script.boost_ac"
+                                    }
+                                },
+                                {
+                                    "entity": "binary_sensor.thermostat_heater",
+                                    "icon": "mdi:fire",
+                                    "name": "Boost Heating",
+                                    "tap_action": {
+                                        "action": "call-service",
+                                        "service": "script.kickstart_heat"
+                                    },
+                                    "hold_action": {
+                                        "action": "call-service",
+                                        "service": "script.boost_heat"
+                                    }
+                                }
+                            ],
+                            "show_state": false,
+                            "type": "glance",
+                            "show_name": true,
+                            "show_icon": true,
+                            "state_color": true,
+                            "title": "Boost"
+                        }
+                    ]
                 }
             ]
         }
-    },
-    "key": "lovelace.lovelace_guest",
-    "version": 1
+    }
 }

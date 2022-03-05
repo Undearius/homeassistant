@@ -2,15 +2,32 @@ sunset:
   alias: Sunset
   sequence:
   - scene: scene.sunset_yellow
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 10
+      milliseconds: 0
   - scene: scene.sunset_orange
-  - delay: '10'
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 10
+      milliseconds: 0
   - scene: scene.sunset_red
-  - delay: '10'
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 10
+      milliseconds: 0
   - scene: scene.sunset_purple
-  - delay: '10'
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 10
+      milliseconds: 0
   - type: turn_off
     device_id: 7baa77eeb6604448a7c10fb87d16a286
-    entity_id: light.baby_main
+    entity_id: light.alistair_main
     domain: light
   mode: single
 sunrise:
@@ -78,13 +95,14 @@ sunrise:
   mode: parallel
   max: 10
 boost_ac:
-  alias: Boost AC
+  alias: Boost A/C
   description: ''
   sequence:
   - service: climate.set_temperature
     data:
-      target_temp_low: '{{ states.climate.thermostat.attributes.target_temp_low }}'
-      target_temp_high: '{{ states.climate.thermostat.attributes.target_temp_high
+      target_temp_low: '{{ state_attr(''climate.thermostat'',''target_temp_low'')
+        }}'
+      target_temp_high: '{{ state_attr(''climate.thermostat'',''target_temp_high'')
         | float - 1 }}'
     target:
       entity_id: climate.thermostat
@@ -92,8 +110,9 @@ boost_ac:
       hours: 1
   - service: climate.set_temperature
     data:
-      target_temp_low: '{{ states.climate.thermostat.attributes.target_temp_low }}'
-      target_temp_high: '{{ states.climate.thermostat.attributes.target_temp_high
+      target_temp_low: '{{ state_attr(''climate.thermostat'',''target_temp_low'')
+        }}'
+      target_temp_high: '{{ state_attr(''climate.thermostat'',''target_temp_high'')
         | float + 1 }}'
     target:
       entity_id: climate.thermostat
@@ -104,9 +123,9 @@ boost_heat:
   sequence:
   - service: climate.set_temperature
     data:
-      target_temp_low: '{{ states.climate.thermostat.attributes.target_temp_low |
-        float + 1 }}'
-      target_temp_high: '{{ states.climate.thermostat.attributes.target_temp_high
+      target_temp_low: '{{ state_attr(''climate.thermostat'',''target_temp_low'')
+        | float + 1 }}'
+      target_temp_high: '{{ state_attr(''climate.thermostat'',''target_temp_high'')
         }}'
     target:
       entity_id: climate.thermostat
@@ -114,15 +133,34 @@ boost_heat:
       hours: 1
   - service: climate.set_temperature
     data:
-      target_temp_low: '{{ states.climate.thermostat.attributes.target_temp_low |
-        float - 1 }}'
-      target_temp_high: '{{ states.climate.thermostat.attributes.target_temp_high
+      target_temp_low: '{{ state_attr(''climate.thermostat'',''target_temp_low'')
+        | float - 1 }}'
+      target_temp_high: '{{ state_attr(''climate.thermostat'',''target_temp_high'')
         }}'
     target:
       entity_id: climate.thermostat
   description: ''
   mode: parallel
   max: 10
+kickstart_heat:
+  alias: Kickstart Heat
+  sequence:
+  - service: scene.create
+    data:
+      snapshot_entities: climate.thermostat
+      scene_id: climate_before
+  - service: climate.set_temperature
+    data:
+      target_temp_low: '{{ state_attr("climate.thermostat","current_temperature")
+        | float + 1 }}'
+      target_temp_high: '{{ state_attr("climate.thermostat","target_temp_high") }}'
+    target:
+      entity_id: climate.thermostat
+  - delay:
+      seconds: 1
+  - scene: scene.climate_before
+  description: ''
+  mode: single
 boost_fan:
   alias: Boost Fan
   sequence:
@@ -181,10 +219,10 @@ magic_button:
       - condition: not
         conditions:
         - condition: state
-          entity_id: media_player.baby_room
+          entity_id: media_player.alistair_room
           state: playing
         - condition: state
-          entity_id: input_boolean.sound_trigger
+          entity_id: input_boolean.alistair_sound_trigger
           state: 'on'
       sequence:
       - service: light.turn_on
@@ -209,7 +247,7 @@ magic_button:
           after: '11:30:00'
           before: '12:30:00'
       - condition: state
-        entity_id: input_boolean.sound_trigger
+        entity_id: input_boolean.alistair_sound_trigger
         state: 'off'
       sequence:
       - service: automation.trigger
@@ -218,7 +256,7 @@ magic_button:
         data: {}
     - conditions:
       - condition: state
-        entity_id: input_boolean.sound_trigger
+        entity_id: input_boolean.alistair_sound_trigger
         state: 'on'
       sequence:
       - service: automation.trigger
@@ -238,3 +276,208 @@ magic_button:
   mode: single
   alias: Magic Button
   icon: mdi:auto-fix
+party_time:
+  alias: Party Time
+  sequence:
+  - data:
+      entity_id: media_player.alistair_room
+    service: sonos.unjoin
+  - data:
+      volume_level: 0.5
+    service: media_player.volume_set
+    target:
+      entity_id: media_player.alistair_room
+  - service: media_player.play_media
+    data:
+      media_content_id: x-file-cifs://10.0.0.10/media/Music/Darude/2000-Before%20the%20Storm/01%20Sandstorm.mp3
+      media_content_type: music
+    target:
+      entity_id: media_player.alistair_room
+  - wait_for_trigger:
+    - platform: state
+      entity_id: media_player.alistair_room
+      to: playing
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 1
+      milliseconds: 0
+  - service: lifx.set_state
+    data:
+      power: true
+      brightness_pct: 100
+      hs_color:
+      - 40
+      - 50
+    target:
+      entity_id: light.alistair_main
+  - service: lifx.set_state
+    data:
+      power: false
+      transition: 2
+    target:
+      entity_id: light.alistair_main
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 13
+      milliseconds: 500
+  - service: lifx.effect_pulse
+    data:
+      brightness: 50
+      color_name: blue
+      cycles: 4
+      period: 0.15
+    target:
+      entity_id: light.alistair_main
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 3
+      milliseconds: 500
+  - service: lifx.effect_pulse
+    data:
+      period: 0.15
+      cycles: 4
+      brightness: 50
+      color_name: red
+    target:
+      entity_id: light.alistair_main
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 10
+      milliseconds: 500
+  - service: lifx.effect_colorloop
+    data:
+      brightness: 255
+      change: 22
+      period: 0.05
+    target:
+      entity_id: light.alistair_main
+  mode: restart
+  icon: mdi:party-popper
+alistair_trigger_light:
+  alias: Alistair Light with Trigger
+  variables:
+    transition: '{{ states("input_number.fade_time") | float * 60 }}'
+  fields:
+    brightness_pct:
+      description: Brightness percent
+      example: 75
+      selector:
+        number:
+          min: 0
+          max: 100
+          step: 1
+          unit_of_measurement: '%'
+          mode: slider
+    colour:
+      description: HS colour values
+      example: 45, 10
+    transition:
+      description: Time to transition to these settings
+      example: 5
+      selector:
+        number:
+          min: 0
+          max: 10
+          step: 1
+          unit_of_measurement: seconds
+          mode: slider
+  sequence:
+  - service: lifx.set_state
+    data:
+      brightness_pct: '{{ brightness_pct }}'
+      entity_id: light.alistair_main
+      hs_color: '[ {{colour}} ]'
+      power: 'on'
+      transition: '{{ transition | float }}'
+  - delay:
+      seconds: '{{ transition | float }}'
+  - service: input_boolean.turn_on
+    entity_id: input_boolean.alistair_sound_trigger
+  - delay:
+      hours: 0
+      minutes: 20
+      seconds: 0
+      milliseconds: 0
+  - service: input_boolean.turn_off
+    entity_id: input_boolean.alistair_sound_trigger
+  mode: restart
+alistair_light:
+  alias: Alistair Light
+  variables:
+    transition: '{{ states("input_number.fade_time") | float * 60 }}'
+  fields:
+    brightness_pct:
+      description: Brightness percent
+      example: 75
+      selector:
+        number:
+          min: 0
+          max: 100
+          step: 1
+          unit_of_measurement: '%'
+          mode: slider
+    colour:
+      description: HS colour values
+      example: 45, 10
+    transition:
+      description: Time to transition to these settings
+      example: 5
+      selector:
+        number:
+          min: 0
+          max: 10
+          step: 1
+          unit_of_measurement: seconds
+          mode: slider
+  sequence:
+  - service: lifx.set_state
+    data:
+      brightness_pct: '{{ brightness_pct }}'
+      entity_id: light.alistair_main
+      hs_color: '[ {{colour}} ]'
+      power: 'on'
+      transition: '{{ transition | float }}'
+  mode: restart
+kickstart_ac:
+  alias: Kickstart A/C
+  sequence:
+  - service: scene.create
+    data:
+      snapshot_entities: climate.thermostat
+      scene_id: climate_before
+  - service: climate.set_temperature
+    data:
+      target_temp_low: '{{ state_attr("climate.thermostat","target_temp_low") }}'
+      target_temp_high: '{{ state_attr("climate.thermostat","current_temperature")
+        | float - 1 }}'
+    target:
+      entity_id: climate.thermostat
+  - delay:
+      seconds: 1
+  - scene: scene.climate_before
+  description: ''
+  mode: single
+kickstart_fan:
+  alias: Kickstart Fan
+  sequence:
+  - service: climate.set_fan_mode
+    data:
+      fan_mode: 'on'
+    target:
+      entity_id: climate.thermostat
+  - delay:
+      hours: 0
+      minutes: 15
+      seconds: 0
+      milliseconds: 0
+  - service: climate.set_fan_mode
+    data:
+      fan_mode: 'off'
+    target:
+      entity_id: climate.thermostat
+  description: ''
+  mode: single

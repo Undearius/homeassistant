@@ -33,13 +33,13 @@
 - id: '1599403234467'
   name: Camping
   entities:
-    light.baby_main:
+    light.alistair_main:
       brightness: 51
       effect_list:
       - effect_colorloop
       - effect_pulse
       - effect_stop
-      friendly_name: Baby Main
+      friendly_name: Alistair Main
       hs_color:
       - 206.722
       - 84.314
@@ -54,11 +54,11 @@
       xy_color:
       - 0.15
       - 0.187
-    media_player.baby_room:
-      friendly_name: Sonos Baby Room
+    media_player.alistair_room:
+      friendly_name: Sonos Alistair Room
       icon: mdi:speaker
       is_volume_muted: false
-      media_content_id: x-file-cifs://10.0.0.10/media/Music/Playlists/../Sounds/Crackling%20Fire%20Sounds%20-%20No%20Music.m4a
+      media_content_id: x-file-cifs://10.0.0.10/media/Music/Sounds/Crackling%20Fire%20Sounds%20-%20No%20Music.m4a
       media_content_type: music
       media_duration: 0
       media_position: 1
@@ -67,7 +67,7 @@
       queue_position: 1
       shuffle: false
       sonos_group:
-      - media_player.baby_room
+      - media_player.alistair_room
       source_list:
       - 106.1 CHEZ
       - Baby
@@ -78,7 +78,7 @@
 - id: '1605747556949'
   name: Sunset Yellow
   entities:
-    light.baby_main:
+    light.alistair_main:
       min_mireds: 111
       max_mireds: 400
       effect_list:
@@ -87,13 +87,13 @@
       - effect_stop
       brightness: 255
       color_temp: 285
-      friendly_name: Baby Main
+      friendly_name: Alistair Main
       supported_features: 55
       state: 'on'
 - id: '1605747574101'
   name: Sunset Orange
   entities:
-    light.baby_main:
+    light.alistair_main:
       min_mireds: 111
       max_mireds: 400
       effect_list:
@@ -111,14 +111,14 @@
       xy_color:
       - 0.444
       - 0.378
-      friendly_name: Baby Main
+      friendly_name: Alistair Main
       supported_features: 55
       state: 'on'
       transition: 10
 - id: '1605747588354'
   name: Sunset Red
   entities:
-    light.baby_main:
+    light.alistair_main:
       min_mireds: 111
       max_mireds: 400
       effect_list:
@@ -136,14 +136,14 @@
       xy_color:
       - 0.531
       - 0.345
-      friendly_name: Baby Main
+      friendly_name: Alistair Main
       supported_features: 55
       state: 'on'
       transition: 10
 - id: '1605747604584'
   name: Sunset Purple
   entities:
-    light.baby_main:
+    light.alistair_main:
       min_mireds: 111
       max_mireds: 400
       effect_list:
@@ -161,12 +161,12 @@
       xy_color:
       - 0.434
       - 0.199
-      friendly_name: Baby Main
+      friendly_name: Alistair Main
       supported_features: 55
       state: 'on'
       transition: 10
 - id: '1635647827055'
-  name: Halloween Porch Lights
+  name: 'Porch Lights: Halloween'
   entities:
     light.porch_garage:
       min_mireds: 153
@@ -204,7 +204,7 @@
       state: 'on'
   icon: hass:pumpkin
 - id: '1635813627481'
-  name: Christmas Porch Lights
+  name: 'Porch Lights: Christmas '
   entities:
     light.porch_garage:
       min_mireds: 153
@@ -257,3 +257,29 @@
       supported_features: 63
       state: 'on'
   icon: mdi:pine-tree
+- id: '1645726239268'
+  name: 'Porch Lights: Ukraine'
+  entities:
+    light.porch_garage:
+      min_mireds: 153
+      max_mireds: 500
+      color_mode: hs
+      brightness: 255
+      hs_color:
+      - 250.189
+      - 62.353
+      effect: none
+      friendly_name: Porch Garage-side
+      state: 'on'
+    light.porch_door:
+      min_mireds: 153
+      max_mireds: 500
+      color_mode: hs
+      brightness: 255
+      hs_color:
+      - 50.909
+      - 77.647
+      effect: none
+      friendly_name: Porch Door-side
+      state: 'on'
+  icon: mdi:flag

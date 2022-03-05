@@ -1,56 +1,24 @@
-- id: moviepaused
-  alias: Movie Paused
+- id: movielights
+  alias: Movie Lights
   trigger:
   - platform: state
     from: playing
     to: paused
     entity_id: media_player.plex_umbriel
-  condition:
-  - condition: or
-    conditions:
-    - condition: state
-      entity_id: media_player.plex_umbriel
-      state: movie
-      attribute: media_content_type
-    - condition: state
-      entity_id: media_player.plex_umbriel
-      state: tvshow
-      attribute: media_content_type
-  action:
-  - service: light.turn_on
-    data:
-      brightness_pct: 1
-    target:
-      entity_id: light.livingroom_pots
-- id: movieresumed
-  alias: Movie Resumed
-  trigger:
+    id: paused
   - platform: state
     to: playing
     entity_id: media_player.plex_umbriel
-  condition:
-  - condition: or
-    conditions:
-    - condition: state
-      entity_id: media_player.plex_umbriel
-      state: movie
-      attribute: media_content_type
-    - condition: state
-      entity_id: media_player.plex_umbriel
-      state: tvshow
-      attribute: media_content_type
-  action:
-  - service: light.turn_off
-    data: {}
-    target:
-      entity_id: light.livingroom_pots
-- id: movieended
-  alias: Movie Ended
-  trigger:
+    id: playing
   - platform: state
     from: playing
     to: idle
     entity_id: media_player.plex_umbriel
+    id: ended
+  - platform: state
+    to: idle
+    entity_id: media_player.plex_umbriel
+    id: stopped
   condition:
   - condition: or
     conditions:
@@ -63,34 +31,40 @@
       state: tvshow
       attribute: media_content_type
   action:
-  - service: light.turn_on
-    data:
-      transition: 10
-      brightness_pct: 30
-    target:
-      entity_id: light.livingroom_pots
-  - service: light.turn_on
-    data:
-      transition: 10
-      brightness_pct: 50
-      kelvin: 2600
-      entity_id:
-      - light.bed_main
-- id: moviestopped
-  alias: Movie Stopped
-  trigger:
-  - platform: state
-    to: idle
-    entity_id: media_player.plex_umbriel
-  condition: []
-  action:
-  - service: light.turn_on
-    data:
-      transition: 10
-      brightness_pct: 30
-    target:
-      entity_id: light.livingroom_pots
-- id: babymainirbrightness
+  - choose:
+    - conditions:
+      - condition: trigger
+        id: paused
+      sequence:
+      - service: light.turn_on
+        data:
+          brightness_pct: 1
+        target:
+          entity_id: light.livingroom_pots
+    - conditions:
+      - condition: or
+        conditions:
+        - condition: trigger
+          id: ended
+        - condition: trigger
+          id: stopped
+      sequence:
+      - service: light.turn_on
+        data:
+          transition: 10
+          brightness_pct: 30
+        target:
+          entity_id: light.livingroom_pots
+    - conditions:
+      - condition: trigger
+        id: playing
+      sequence:
+      - service: light.turn_off
+        target:
+          entity_id: light.livingroom_pots
+        data: {}
+    default: []
+- id: alistairmainirbrightness
   alias: Alistair Main IR Brightness
   trigger:
   - platform: state
@@ -102,7 +76,7 @@
       infrared: '{{ states(''input_number.alistair_main_ir'') | int }}'
   initial_state: true
   mode: single
-- id: babynightlighttransition
+- id: alistairnightlighttransition
   alias: Alistair Nightlight
   trigger:
   action:
@@ -128,24 +102,24 @@
   condition:
   - condition: state
     state: 'on'
-    entity_id: input_boolean.sound_trigger
+    entity_id: input_boolean.alistair_sound_trigger
   action:
   - data:
-      entity_id: media_player.baby_room
+      entity_id: media_player.alistair_room
     service: sonos.unjoin
   - data:
-      entity_id: media_player.baby_room
+      entity_id: media_player.alistair_room
       volume_level: 0.13
     service: media_player.volume_set
   - data:
-      entity_id: media_player.baby_room
+      entity_id: media_player.alistair_room
       source: Baby
     service: media_player.select_source
   - service: media_player.repeat_set
     data:
       repeat: one
     target:
-      entity_id: media_player.baby_room
+      entity_id: media_player.alistair_room
   - device_id: 7baa77eeb6604448a7c10fb87d16a286
     domain: light
     entity_id: light.alistair_main
@@ -166,15 +140,15 @@
   - condition: template
     value_template: '{{ states.light.alistair_main.attributes.brightness > 10 }}'
   - condition: state
-    entity_id: media_player.baby_room
+    entity_id: media_player.alistair_room
     attribute: media_content_id
     state: x-file-cifs://10.0.0.10/media/Music/Sounds/Baby/Pink%20Noise%20HQ%20Audio.m4a
   - condition: state
-    entity_id: media_player.baby_room
+    entity_id: media_player.alistair_room
     state: playing
   action:
   - data:
-      entity_id: media_player.baby_room
+      entity_id: media_player.alistair_room
       sleep_time: 0
     service: sonos.set_sleep_timer
   - service: input_number.set_value
@@ -204,10 +178,10 @@
       seconds: 5
       milliseconds: 0
   - service: input_boolean.turn_on
-    entity_id: input_boolean.sound_trigger
+    entity_id: input_boolean.alistair_sound_trigger
   - delay: 00:20:00
   - service: input_boolean.turn_off
-    entity_id: input_boolean.sound_trigger
+    entity_id: input_boolean.alistair_sound_trigger
   mode: restart
 - id: '1599327200195'
   alias: Sound Trigger off when brightness above 30%
@@ -220,7 +194,7 @@
     value_template: '{{ states.light.alistair_main.attributes.brightness > 85 }}'
   action:
   - data: {}
-    entity_id: input_boolean.sound_trigger
+    entity_id: input_boolean.alistair_sound_trigger
     service: input_boolean.turn_off
   mode: single
 - id: '1607901677018'
@@ -236,22 +210,22 @@
       - 40
       - 50
       power: 'on'
-      transition: 300
+      transition: '{{ states(''input_number.fade_time'') | int * 60 }}'
     service: lifx.set_state
   - delay:
       hours: 0
-      minutes: 5
+      minutes: '{{ states(''input_number.fade_time'') | int }}'
       seconds: 0
       milliseconds: 0
   - service: input_boolean.turn_on
-    entity_id: input_boolean.sound_trigger
+    entity_id: input_boolean.alistair_sound_trigger
   - delay:
       hours: 0
       minutes: 25
       seconds: 0
       milliseconds: 0
   - service: input_boolean.turn_off
-    entity_id: input_boolean.sound_trigger
+    entity_id: input_boolean.alistair_sound_trigger
   mode: restart
 - id: '1613327902048'
   alias: SaA Webhhok Kyle
@@ -543,10 +517,11 @@
       state: home
   action:
   - service: light.turn_off
-    target:
-      entity_id:
-      - all
-    data: {}
+    entity_id: all
+  - device_id: 7eb71993650f9a57276a8f9e8fd99f6d
+    domain: cover
+    entity_id: cover.garage_door
+    type: close
   mode: single
 - id: '1641689543179'
   alias: Pot lights on motion
@@ -574,7 +549,7 @@
       brightness_pct: "{% if is_state(\"light.livingroom_pots\", \"on\") -%}\n  {{\
         \ (state_attr(\"light.livingroom_pots\", \"brightness\") / 2.55 ) | round\
         \ }}\n{%- else -%}\n  {% if now().hour >=22 or now().hour < 7 %} 1\n  {% elif\
-        \ now().hour >= 20 and now().hour < 22 %} 24\n  {% else %} 100\n  {% endif\
+        \ now().hour >= 20 and now().hour < 22 %} 20\n  {% else %} 100\n  {% endif\
         \ %}\n{%- endif %}"
   - wait_template: '{{ is_state("binary_sensor.living_room_dimmer_motion", "off")
       }}'
@@ -623,7 +598,7 @@
       entity_id: light.sink_lights
   mode: restart
 - id: '1643432818705'
-  alias: Kitchen light on for cooking
+  alias: Kitchen light on
   description: ''
   trigger:
   - platform: state
@@ -647,10 +622,20 @@
       weekday:
       - sat
       - sun
+    - condition: time
+      after: 06:30:00
+      before: 08:30:00
+      weekday:
+      - mon
+      - tue
+      - wed
+      - thu
+      - fri
   action:
   - service: light.turn_on
     target:
       entity_id: light.kitchen
+    data: {}
   mode: single
 - id: '1643434691823'
   alias: Welcome home
@@ -668,4 +653,130 @@
     data:
       message: TTS
       title: Welcome home, Allynn
+  mode: single
+- id: '1644961012560'
+  alias: Power off workstation if idle
+  description: ''
+  trigger:
+  - platform: numeric_state
+    entity_id: sensor.kyle_office_outlet_power
+    below: '30'
+    for:
+      hours: 0
+      minutes: 5
+      seconds: 0
+    above: '0'
+  condition: []
+  action:
+  - service: notify.mobile_app_oneplus5t
+    data:
+      message: Workstation power left on. Switching off in 5 minutes
+      title: Workstation idling
+  - delay:
+      hours: 0
+      minutes: 5
+      seconds: 0
+      milliseconds: 0
+  - service: switch.turn_off
+    data: {}
+    target:
+      entity_id: switch.kyle_office_outlet_relay
+  mode: single
+- id: '1644967380579'
+  alias: Power on workstation
+  description: ''
+  trigger:
+  - platform: time
+    at: 08:20:00
+  condition:
+  - condition: state
+    entity_id: binary_sensor.workday_sensor
+    state: 'on'
+  action:
+  - service: switch.turn_on
+    data: {}
+    target:
+      entity_id: switch.kyle_office_outlet_relay
+  mode: single
+- id: '1645727158023'
+  alias: 'Lights: Set porch scene'
+  description: ''
+  trigger:
+  - platform: device
+    type: turned_on
+    device_id: 06efffd362e64ab2ab3d31b1b9a7536c
+    entity_id: light.porch_door
+    domain: light
+  - platform: device
+    type: turned_on
+    device_id: 86eeede02253437d93516e7083c15338
+    entity_id: light.porch_garage
+    domain: light
+  condition: []
+  action:
+  - choose:
+    - conditions:
+      - condition: template
+        value_template: '{{ now().month == 10 }}'
+      sequence:
+      - service: scene.turn_on
+        data: {}
+        target:
+          entity_id: scene.porch_lights_halloween
+    - conditions:
+      - condition: template
+        value_template: '{{ now().month == 12 and now().day < 30 }}'
+      sequence:
+      - service: scene.turn_on
+        data: {}
+        target:
+          entity_id:
+          - scene.porch_lights_christmas
+    default: []
+  - service: scene.turn_on
+    data: {}
+    target:
+      entity_id: scene.porch_lights_ukraine
+  mode: single
+- id: '1645878364914'
+  alias: Notify if motion in Alistair's room
+  description: ''
+  trigger:
+  - platform: state
+    for:
+      hours: 0
+      minutes: 1
+      seconds: 0
+    entity_id: binary_sensor.alistair_room_home_security_motion_detection
+    from: 'off'
+    to: 'on'
+  condition:
+  - condition: state
+    state: 'on'
+    entity_id: light.alistair_main_ir
+  action:
+  - service: notify.mobile_app_sm_a515w
+    data:
+      data:
+        clickAction: /lovelace/alistair
+      message: Something moved in Alistair's room
+      title: He's awake!
+  - service: notify.mobile_app_sm_a515w
+    data:
+      message: TTS
+      data:
+        channel: alarm_stream
+      title: Alistair is out of bed
+  - service: notify.mobile_app_oneplus5t
+    data:
+      data:
+        clickAction: /lovelace/alistair
+      message: Something moved in Alistair's room
+      title: He's awake!
+  - service: notify.mobile_app_oneplus5t
+    data:
+      message: TTS
+      data:
+        channel: alarm_stream
+      title: Alistair is out of bed
   mode: single

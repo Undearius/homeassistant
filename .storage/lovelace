@@ -7,6 +7,9 @@
             "title": "Home",
             "views": [
                 {
+                    "title": "Home",
+                    "icon": "mdi:home-assistant",
+                    "path": "default_view",
                     "badges": [],
                     "cards": [
                         {
@@ -62,12 +65,12 @@
                         },
                         {
                             "card": {
-                                "entity": "media_player.plex_chromebook",
+                                "entity": "media_player.plex_umbriel",
                                 "type": "media-control"
                             },
                             "conditions": [
                                 {
-                                    "entity": "media_player.plex_chromebook",
+                                    "entity": "media_player.plex_umbriel",
                                     "state_not": "unavailable"
                                 }
                             ],
@@ -108,15 +111,12 @@
                             "icon_height": "50px",
                             "name": "Manual Pot Lights"
                         }
-                    ],
-                    "icon": "mdi:home-assistant",
-                    "path": "default_view",
-                    "title": "Home"
+                    ]
                 },
                 {
+                    "title": "Bedroom",
                     "icon": "mdi:bed",
                     "path": "bedroom",
-                    "title": "Bedroom",
                     "badges": [],
                     "cards": [
                         {
@@ -174,6 +174,9 @@
                     ]
                 },
                 {
+                    "title": "Alistair Room",
+                    "icon": "mdi:baby",
+                    "path": "alistair-room",
                     "badges": [],
                     "cards": [
                         {
@@ -189,13 +192,19 @@
                                     "name": "Default",
                                     "tap_action": {
                                         "action": "call-service",
-                                        "service": "lifx.set_state",
+                                        "service": "script.alistair_light",
                                         "service_data": {
                                             "brightness_pct": 100,
-                                            "entity_id": "light.alistair_main",
-                                            "kelvin": 3500,
-                                            "power": "on",
+                                            "colour": "45.000, 6.258",
                                             "transition": 0.1
+                                        }
+                                    },
+                                    "hold_action": {
+                                        "action": "call-service",
+                                        "service": "script.alistair_light",
+                                        "service_data": {
+                                            "brightness_pct": 100,
+                                            "colour": "45.000, 6.258"
                                         }
                                     }
                                 },
@@ -205,18 +214,19 @@
                                     "name": "Reading",
                                     "tap_action": {
                                         "action": "call-service",
-                                        "service": "automation.trigger",
+                                        "service": "script.alistair_trigger_light",
                                         "service_data": {
-                                            "entity_id": "automation.alistair_reading_light_long",
-                                            "skip_condition": false
+                                            "brightness_pct": 30,
+                                            "colour": "40, 50",
+                                            "transition": 5
                                         }
                                     },
                                     "hold_action": {
                                         "action": "call-service",
-                                        "service": "automation.trigger",
+                                        "service": "script.alistair_trigger_light",
                                         "service_data": {
-                                            "entity_id": "automation.alistair_reading_light",
-                                            "skip_condition": false
+                                            "brightness_pct": 30,
+                                            "colour": "40, 50"
                                         }
                                     }
                                 },
@@ -226,9 +236,19 @@
                                     "name": "Nightlight",
                                     "tap_action": {
                                         "action": "call-service",
-                                        "service": "automation.trigger",
+                                        "service": "script.alistair_light",
                                         "service_data": {
-                                            "entity_id": "automation.alistair_nightlight_transition"
+                                            "brightness_pct": 1,
+                                            "colour": "37, 100",
+                                            "transition": 10
+                                        }
+                                    },
+                                    "hold_action": {
+                                        "action": "call-service",
+                                        "service": "script.alistair_light",
+                                        "service_data": {
+                                            "brightness_pct": 1,
+                                            "colour": "37, 100"
                                         }
                                     }
                                 }
@@ -238,18 +258,27 @@
                             "state_color": false
                         },
                         {
+                            "type": "entities",
+                            "entities": [
+                                "input_number.fade_time"
+                            ]
+                        },
+                        {
                             "type": "conditional",
                             "conditions": [
                                 {
-                                    "entity": "input_boolean.sound_trigger",
+                                    "entity": "input_boolean.alistair_sound_trigger",
                                     "state": "off"
                                 },
                                 {
-                                    "entity": "media_player.baby_room",
+                                    "entity": "media_player.alistair_room",
                                     "state_not": "playing"
                                 }
                             ],
                             "card": {
+                                "show_name": true,
+                                "show_icon": true,
+                                "show_state": false,
                                 "type": "glance",
                                 "entities": [
                                     {
@@ -284,7 +313,7 @@
                                     }
                                 },
                                 {
-                                    "entity": "media_player.baby_room",
+                                    "entity": "media_player.alistair_room",
                                     "icon": "mdi:speaker",
                                     "name": "Lights off, Sound on",
                                     "tap_action": {
@@ -298,14 +327,13 @@
                                 },
                                 {
                                     "entity": "light.alistair_main",
-                                    "icon": "mdi:book-open",
-                                    "name": "Slow Reading",
+                                    "icon": "mdi:close-thick",
+                                    "name": "Don't press",
                                     "tap_action": {
                                         "action": "call-service",
-                                        "service": "automation.trigger",
+                                        "service": "script.turn_on",
                                         "service_data": {
-                                            "entity_id": "automation.alistair_reading_light_long",
-                                            "skip_condition": false
+                                            "entity_id": "script.party_time"
                                         }
                                     }
                                 }
@@ -321,25 +349,16 @@
                             "type": "light"
                         },
                         {
-                            "entity": "media_player.baby_room",
+                            "entity": "media_player.alistair_room",
                             "type": "media-control"
-                        },
-                        {
-                            "type": "entities",
-                            "entities": [
-                                "input_number.fade_time"
-                            ]
                         }
-                    ],
-                    "icon": "mdi:baby",
-                    "path": "alistair-room",
-                    "title": "alistair Room"
+                    ]
                 },
                 {
+                    "title": "Climate Station",
                     "icon": "mdi:thermometer",
                     "panel": false,
                     "path": "climate",
-                    "title": "Climate Station",
                     "badges": [],
                     "cards": [
                         {
@@ -347,9 +366,6 @@
                             "entities": [
                                 {
                                     "entity": "sensor.alistair_room_air_temperature"
-                                },
-                                {
-                                    "entity": "climate.my_ecobee"
                                 },
                                 {
                                     "entity": "sensor.kyle_office_temperature"
@@ -369,9 +385,6 @@
                             "entities": [
                                 {
                                     "entity": "sensor.alistair_room_air_temperature"
-                                },
-                                {
-                                    "entity": "climate.my_ecobee"
                                 },
                                 {
                                     "entity": "sensor.kyle_office_temperature"
@@ -426,6 +439,10 @@
                                     "name": "Boost Fan",
                                     "tap_action": {
                                         "action": "call-service",
+                                        "service": "script.kickstart_fan"
+                                    },
+                                    "hold_action": {
+                                        "action": "call-service",
                                         "service": "script.boost_fan"
                                     }
                                 },
@@ -435,6 +452,10 @@
                                     "name": "Boost A/C",
                                     "tap_action": {
                                         "action": "call-service",
+                                        "service": "script.kickstart_ac"
+                                    },
+                                    "hold_action": {
+                                        "action": "call-service",
                                         "service": "script.boost_ac"
                                     }
                                 },
@@ -443,6 +464,10 @@
                                     "icon": "mdi:fire",
                                     "name": "Boost Heating",
                                     "tap_action": {
+                                        "action": "call-service",
+                                        "service": "script.kickstart_heat"
+                                    },
+                                    "hold_action": {
                                         "action": "call-service",
                                         "service": "script.boost_heat"
                                     }
@@ -515,6 +540,16 @@
                             ],
                             "hours_to_show": 24,
                             "refresh_interval": 0
+                        },
+                        {
+                            "type": "history-graph",
+                            "entities": [
+                                {
+                                    "entity": "sensor.kyle_office_outlet_power"
+                                }
+                            ],
+                            "refresh_interval": 0,
+                            "hours_to_show": 0.1
                         }
                     ]
                 }
