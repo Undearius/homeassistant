@@ -91,8 +91,9 @@ template:
           {% set thermo = states("sensor.thermostat_temperature") | float %}
           {% set alistair = states("sensor.alistair_room_air_temperature") | float %}
           {% set kyle = states("sensor.kyle_office_temperature") | float %}
-          {% set alistair_sleeping = is_state('light.alistair_main_ir', 'on') %}
           {% set weight = {"thermo": 1.00, "kyle": 0.00, "alistair": 0.00} %}
+          {% set alistair_sleeping = is_state('light.alistair_main_ir', 'on') %}
+
           {% if alistair_sleeping  %}
             {% set perc_diff = 0.3 %} 
             {% set weight = {
@@ -111,10 +112,15 @@ template:
           {#This calculates the weighted average only if the value of the sensor is above 0#}
           {% set wAvg = namespace(x=0,y=0) %}     
           {% for sensor in sensors if sensor[0] > 0 %}
-            {% set wAvg.x = sensor[0] * sensor[1] + wAvg.x %}
-            {% set wAvg.y = sensor[1] + wAvg.y %}
-            {% if loop.last %} 
-              {% set wAvg.x = wAvg.x / wAvg.y %}
+            {#Sets the output value to the only active sensor#}
+            {% if loop.length == 1 %}
+              {% set wAvg.x = sensor[0] %}
+            {% else %}
+              {% set wAvg.x = sensor[0] * sensor[1] + wAvg.x %}
+              {% set wAvg.y = sensor[1] + wAvg.y %}
+              {% if loop.last %}
+                {% set wAvg.x = wAvg.x / wAvg.y %}
+              {% endif %}
             {% endif %}
           {% endfor %}
 
