@@ -92,12 +92,7 @@ template:
           {% set alistair = states("sensor.alistair_room_air_temperature") | float %}
           {% set kyle = states("sensor.kyle_office_temperature") | float %}
           {% set alistair_sleeping = is_state('light.alistair_main_ir', 'on') %}
-          {% set dht_offline = is_state('sensor.thermostat_humidity', 'unknown')%}
-          {% set temp_high = 23 %}
           {% set weight = {"thermo": 1.00, "kyle": 0.00, "alistair": 0.00} %}
-
-          {% if dht_offline %}{% set weight = {"thermo": 0.00, "kyle": 0.00, "alistair": 1.00} %}{% endif %}
-
           {% if alistair_sleeping  %}
             {% set perc_diff = 0.3 %} 
             {% set weight = {
@@ -107,7 +102,23 @@ template:
             } %}
           {% endif %}
          
-          {{ (thermo*weight.thermo + kyle*weight.kyle + alistair*weight.alistair) | round(1) }}
+          {% set sensors = [
+            [thermo, weight.thermo],
+            [alistair, weight.alistair],
+            [kyle, weight.kyle]
+          ] %}
+
+          {#This calculates the weighted average only if the value of the sensor is above 0#}
+          {% set wAvg = namespace(x=0,y=0) %}     
+          {% for sensor in sensors if sensor[0] > 0 %}
+            {% set wAvg.x = sensor[0] * sensor[1] + wAvg.x %}
+            {% set wAvg.y = sensor[1] + wAvg.y %}
+            {% if loop.last %} 
+              {% set wAvg.x = wAvg.x / wAvg.y %}
+            {% endif %}
+          {% endfor %}
+
+          {{ wAvg.x | round(1) }}
   - sensor:
       - name: Hydro Ottawa Cost
         unique_id: HydroOttawaCost
