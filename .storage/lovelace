@@ -15,10 +15,16 @@
                         {
                             "entities": [
                                 {
+                                    "entity": "light.porch_garage"
+                                },
+                                {
+                                    "entity": "light.porch_front"
+                                },
+                                {
                                     "entity": "light.porch_door"
                                 },
                                 {
-                                    "entity": "light.porch_garage"
+                                    "entity": "light.stairs"
                                 },
                                 {
                                     "entity": "light.wled_bed"
@@ -166,16 +172,13 @@
                             "show_state": false,
                             "title": null,
                             "type": "glance"
-                        },
-                        {
-                            "entity": "media_player.bedroom",
-                            "type": "media-control"
                         }
                     ]
                 },
                 {
+                    "theme": "Backend-selected",
                     "title": "Alistair Room",
-                    "icon": "mdi:baby",
+                    "icon": "mdi:human-child",
                     "path": "alistair-room",
                     "badges": [],
                     "cards": [
@@ -195,7 +198,7 @@
                                         "service": "script.alistair_light",
                                         "service_data": {
                                             "brightness_pct": 100,
-                                            "colour": "45.000, 6.258",
+                                            "colour": "45, 5",
                                             "transition": 0.1
                                         }
                                     },
@@ -204,7 +207,7 @@
                                         "service": "script.alistair_light",
                                         "service_data": {
                                             "brightness_pct": 100,
-                                            "colour": "45.000, 6.258"
+                                            "colour": "45, 5"
                                         }
                                     }
                                 },
@@ -217,7 +220,7 @@
                                         "service": "script.alistair_trigger_light",
                                         "service_data": {
                                             "brightness_pct": 30,
-                                            "colour": "40, 50",
+                                            "colour": "17, 50",
                                             "transition": 5
                                         }
                                     },
@@ -226,7 +229,7 @@
                                         "service": "script.alistair_trigger_light",
                                         "service_data": {
                                             "brightness_pct": 30,
-                                            "colour": "40, 50"
+                                            "colour": "17, 50"
                                         }
                                     }
                                 },
@@ -238,17 +241,17 @@
                                         "action": "call-service",
                                         "service": "script.alistair_light",
                                         "service_data": {
-                                            "brightness_pct": 1,
-                                            "colour": "37, 100",
-                                            "transition": 10
+                                            "brightness_pct": 3,
+                                            "colour": "10, 100",
+                                            "transition": 5
                                         }
                                     },
                                     "hold_action": {
                                         "action": "call-service",
                                         "service": "script.alistair_light",
                                         "service_data": {
-                                            "brightness_pct": 1,
-                                            "colour": "37, 100"
+                                            "brightness_pct": 3,
+                                            "colour": "10, 100"
                                         }
                                     }
                                 }
@@ -302,14 +305,10 @@
                                 {
                                     "entity": "light.alistair_main",
                                     "icon": "mdi:tent",
-                                    "name": "Camping",
+                                    "name": "Quiet Time",
                                     "tap_action": {
                                         "action": "call-service",
-                                        "service": "scene.turn_on",
-                                        "service_data": {
-                                            "entity_id": "scene.camping",
-                                            "transition": 5
-                                        }
+                                        "service": "script.alistair_quiet_time"
                                     }
                                 },
                                 {
@@ -368,13 +367,16 @@
                                     "entity": "sensor.alistair_room_air_temperature"
                                 },
                                 {
-                                    "entity": "sensor.kyle_office_temperature"
+                                    "entity": "sensor.rowan_temperature"
                                 },
                                 {
                                     "entity": "climate.thermostat"
                                 },
                                 {
                                     "entity": "sensor.thermostat_temperature"
+                                },
+                                {
+                                    "entity": "sensor.basement_temperature"
                                 }
                             ],
                             "hours_to_show": 24,
@@ -387,13 +389,16 @@
                                     "entity": "sensor.alistair_room_air_temperature"
                                 },
                                 {
-                                    "entity": "sensor.kyle_office_temperature"
+                                    "entity": "sensor.rowan_temperature"
                                 },
                                 {
                                     "entity": "climate.thermostat"
                                 },
                                 {
                                     "entity": "sensor.thermostat_temperature"
+                                },
+                                {
+                                    "entity": "sensor.basement_temperature"
                                 }
                             ],
                             "hours_to_show": 2,
@@ -487,10 +492,13 @@
                                     "entity": "sensor.alistair_room_humidity"
                                 },
                                 {
-                                    "entity": "sensor.kyle_office_humidity"
+                                    "entity": "sensor.rowan_humidity"
                                 },
                                 {
                                     "entity": "sensor.thermostat_humidity"
+                                },
+                                {
+                                    "entity": "sensor.basement_humidity"
                                 }
                             ],
                             "hours_to_show": 24,
@@ -503,10 +511,13 @@
                                     "entity": "sensor.alistair_room_humidity"
                                 },
                                 {
-                                    "entity": "sensor.kyle_office_humidity"
+                                    "entity": "sensor.rowan_humidity"
                                 },
                                 {
                                     "entity": "sensor.thermostat_humidity"
+                                },
+                                {
+                                    "entity": "sensor.basement_humidity"
                                 }
                             ],
                             "hours_to_show": 2,
@@ -532,7 +543,7 @@
                             "type": "history-graph",
                             "entities": [
                                 {
-                                    "entity": "sensor.kyle_office_temperature"
+                                    "entity": "sensor.basement_temperature"
                                 },
                                 {
                                     "entity": "sensor.kyle_office_outlet_power"
@@ -550,6 +561,34 @@
                             ],
                             "refresh_interval": 0,
                             "hours_to_show": 0.1
+                        },
+                        {
+                            "type": "history-graph",
+                            "entities": [
+                                {
+                                    "entity": "sensor.sonoff_s31_power"
+                                }
+                            ],
+                            "hours_to_show": 24,
+                            "refresh_interval": 0
+                        },
+                        {
+                            "type": "history-graph",
+                            "entities": [
+                                {
+                                    "entity": "sensor.sonoff_s31_power"
+                                }
+                            ],
+                            "hours_to_show": 2,
+                            "refresh_interval": 0
+                        },
+                        {
+                            "type": "entities",
+                            "entities": [
+                                {
+                                    "entity": "sensor.hot_water_heater_on_today"
+                                }
+                            ]
                         }
                     ]
                 }

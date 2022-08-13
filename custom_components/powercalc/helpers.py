@@ -1,16 +1,13 @@
-import os
+from decimal import Decimal
 from typing import Union
 
-import homeassistant.helpers.entity_registry as er
-from homeassistant.core import callback
 from homeassistant.helpers.template import Template
-from homeassistant.helpers.typing import HomeAssistantType
 
 
-async def evaluate_power(power: Union[Template, float]) -> float:
+async def evaluate_power(power: Union[Template, Decimal]) -> Decimal:
     """When power is a template render it."""
 
     if isinstance(power, Template):
         return power.async_render()
 
-    return power
+    return Decimal(power)

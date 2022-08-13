@@ -264,7 +264,7 @@
                                     "entity": "sensor.alistair_room_air_temperature"
                                 },
                                 {
-                                    "entity": "sensor.kyle_office_temperature"
+                                    "entity": "sensor.rowan_temperature"
                                 },
                                 {
                                     "entity": "climate.thermostat"
@@ -283,7 +283,7 @@
                                     "entity": "sensor.alistair_room_humidity"
                                 },
                                 {
-                                    "entity": "sensor.kyle_office_humidity"
+                                    "entity": "sensor.rowan_humidity"
                                 },
                                 {
                                     "entity": "sensor.thermostat_humidity"

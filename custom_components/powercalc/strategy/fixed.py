@@ -1,11 +1,13 @@
 from __future__ import annotations
 
+from decimal import Decimal
 from typing import Optional, Union
 
 import homeassistant.helpers.config_validation as cv
 import voluptuous as vol
 from homeassistant.components import climate, vacuum
 from homeassistant.core import State
+from homeassistant.helpers.event import TrackTemplate
 from homeassistant.helpers.template import Template
 
 from custom_components.powercalc.common import SourceEntity
@@ -39,7 +41,7 @@ class FixedStrategy(PowerCalculationStrategyInterface):
         self._power = power
         self._per_state_power = per_state_power
 
-    async def calculate(self, entity_state: State) -> Optional[float]:
+    async def calculate(self, entity_state: State) -> Optional[Decimal]:
         if self._per_state_power is not None:
             # Lookup by state
             if entity_state.state in self._per_state_power:
@@ -51,8 +53,11 @@ class FixedStrategy(PowerCalculationStrategyInterface):
                 for state_key, power in self._per_state_power.items():
                     if "|" in state_key:
                         attribute, value = state_key.split("|", 2)
-                        if entity_state.attributes.get(attribute) == value:
+                        if str(entity_state.attributes.get(attribute)) == value:
                             return await evaluate_power(power)
+
+        if self._power is None:
+            return None
 
         return await evaluate_power(self._power)
 
@@ -66,3 +71,16 @@ class FixedStrategy(PowerCalculationStrategyInterface):
             raise StrategyConfigurationError(
                 "This entity can only work with 'states_power' not 'power'"
             )
+
+    def get_entities_to_track(self) -> list[str, TrackTemplate]:
+        track_templates = []
+
+        if isinstance(self._power, Template):
+            track_templates.append(TrackTemplate(self._power, None))
+
+        if self._per_state_power:
+            for power in list(self._per_state_power.values()):
+                if isinstance(power, Template):
+                    track_templates.append(TrackTemplate(power, None))
+
+        return track_templates

@@ -1,0 +1,485 @@
+{
+  "version": 1,
+  "minor_version": 1,
+  "key": "lovelace.lovelace_climate",
+  "data": {
+    "config": {
+      "title": "Home",
+      "views": [
+        {
+          "theme": "Backend-selected",
+          "path": "default_view",
+          "title": "Home",
+          "type": "sidebar",
+          "badges": [],
+          "cards": [
+            {
+              "type": "history-graph",
+              "entities": [
+                {
+                  "entity": "sensor.alistair_room_air_temperature"
+                },
+                {
+                  "entity": "sensor.rowan_temperature"
+                },
+                {
+                  "entity": "climate.thermostat"
+                },
+                {
+                  "entity": "sensor.thermostat_temperature"
+                },
+                {
+                  "entity": "sensor.basement_temperature"
+                },
+                {
+                  "entity": "sensor.temperature"
+                }
+              ],
+              "title": "Temperature"
+            },
+            {
+              "type": "history-graph",
+              "entities": [
+                {
+                  "entity": "sensor.alistair_room_humidity"
+                },
+                {
+                  "entity": "sensor.rowan_humidity"
+                },
+                {
+                  "entity": "sensor.thermostat_humidity"
+                },
+                {
+                  "entity": "sensor.basement_humidity"
+                }
+              ],
+              "title": "Humidity"
+            }
+          ]
+        },
+        {
+          "theme": "Backend-selected",
+          "badges": [],
+          "cards": [
+            {
+              "type": "grid",
+              "square": false,
+              "columns": 1,
+              "cards": [
+                {
+                  "type": "entities",
+                  "entities": [
+                    "sensor.alistair_room_air_temperature",
+                    "binary_sensor.alistair_room_home_security_motion_detection",
+                    "sensor.alistair_room_humidity",
+                    "light.alistair_main",
+                    "input_boolean.alistair_sound_trigger"
+                  ],
+                  "title": "Alistair's Room"
+                },
+                {
+                  "type": "media-control",
+                  "entity": "media_player.alistair_room"
+                }
+              ]
+            },
+            {
+              "type": "entities",
+              "entities": [
+                {
+                  "entity": "sensor.basement_temperature",
+                  "name": "Temperature"
+                },
+                {
+                  "entity": "sensor.basement_humidity",
+                  "name": "Humidity"
+                }
+              ],
+              "title": "Basement"
+            },
+            {
+              "type": "grid",
+              "square": false,
+              "columns": 1,
+              "cards": [
+                {
+                  "type": "entities",
+                  "entities": [
+                    "light.wled_bed",
+                    "select.wled_bed_preset",
+                    "select.wled_bed_playlist",
+                    "light.wled_bed_master",
+                    "light.wled_bed_segment_1",
+                    {
+                      "entity": "light.bedroom_lights",
+                      "name": "Lights"
+                    },
+                    "sensor.wled_bed_power",
+                    "sensor.wled_bed_energy"
+                  ],
+                  "title": "Bedroom"
+                },
+                {
+                  "type": "media-control",
+                  "entity": "media_player.rowan_room"
+                }
+              ]
+            },
+            {
+              "type": "entities",
+              "entities": [
+                "light.stairs"
+              ],
+              "title": "Hallway"
+            },
+            {
+              "type": "entities",
+              "entities": [
+                "sensor.kyle_office_outlet_voltage",
+                "sensor.kyle_office_outlet_current",
+                "sensor.kyle_office_outlet_power",
+                "binary_sensor.kyle_office_outlet_button",
+                "switch.kyle_office_outlet_relay",
+                "light.kyle_office_outlet_led",
+                "sensor.kyle_office_humidity",
+                "sensor.kyle_office_temperature"
+              ],
+              "title": "Kyle's Office"
+            },
+            {
+              "type": "grid",
+              "square": false,
+              "columns": 1,
+              "cards": [
+                {
+                  "type": "entities",
+                  "entities": [
+                    {
+                      "entity": "light.livingroom_pots",
+                      "name": "Pots"
+                    },
+                    "light.dining_table",
+                    "sensor.dining_table_power",
+                    "sensor.dining_table_energy",
+                    "light.kitchen",
+                    {
+                      "entity": "light.living_room_main",
+                      "name": "Main"
+                    },
+                    "light.sink_lights",
+                    "sensor.sink_lights_energy",
+                    "sensor.sink_lights_power",
+                    "sensor.kitchen_energy",
+                    "sensor.kitchen_power",
+                    {
+                      "entity": "sensor.living_room_main_energy",
+                      "name": "Main Energy"
+                    },
+                    {
+                      "entity": "sensor.living_room_main_power",
+                      "name": "Main Power"
+                    },
+                    {
+                      "entity": "binary_sensor.living_room_dimmer_motion",
+                      "name": "Dimmer Motion"
+                    },
+                    "input_boolean.potsoverride"
+                  ],
+                  "title": "Living Room"
+                },
+                {
+                  "type": "media-control",
+                  "entity": "media_player.living_room"
+                },
+                {
+                  "type": "media-control",
+                  "entity": "media_player.living_room_r"
+                }
+              ]
+            },
+            {
+              "type": "entities",
+              "entities": [
+                "light.porch_door",
+                "light.porch_garage",
+                "sensor.porch_door_power",
+                "sensor.porch_door_energy",
+                "sensor.porch_garage_power",
+                "sensor.porch_garage_energy"
+              ],
+              "title": "Outside"
+            },
+            {
+              "type": "media-control",
+              "entity": "media_player.sonos_roam"
+            },
+            {
+              "title": "Energy distribution today",
+              "type": "energy-distribution",
+              "link_dashboard": true
+            },
+            {
+              "type": "grid",
+              "square": true,
+              "columns": 3,
+              "cards": [
+                {
+                  "type": "picture-entity",
+                  "entity": "person.allynn",
+                  "aspect_ratio": "1",
+                  "show_name": false,
+                  "image": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 50 50' width='50' height='50' style='background-color:%23b3e5fC'%3E%3Cg%3E%3Ctext font-family='roboto' x='50%25' y='50%25' text-anchor='middle' stroke='%23212121' font-size='1.3em' dy='.3em'%3EA%3C/text%3E%3C/g%3E%3C/svg%3E"
+                },
+                {
+                  "type": "picture-entity",
+                  "entity": "person.kyle",
+                  "aspect_ratio": "1",
+                  "show_name": false,
+                  "image": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 50 50' width='50' height='50' style='background-color:%23b3e5fC'%3E%3Cg%3E%3Ctext font-family='roboto' x='50%25' y='50%25' text-anchor='middle' stroke='%23212121' font-size='1.3em' dy='.3em'%3EK%3C/text%3E%3C/g%3E%3C/svg%3E"
+                },
+                {
+                  "type": "picture-entity",
+                  "entity": "person.guest",
+                  "aspect_ratio": "1",
+                  "show_name": false,
+                  "image": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 50 50' width='50' height='50' style='background-color:%23b3e5fC'%3E%3Cg%3E%3Ctext font-family='roboto' x='50%25' y='50%25' text-anchor='middle' stroke='%23212121' font-size='1.3em' dy='.3em'%3EG%3C/text%3E%3C/g%3E%3C/svg%3E"
+                },
+                {
+                  "type": "picture-entity",
+                  "entity": "person.david",
+                  "aspect_ratio": "1",
+                  "show_name": false,
+                  "image": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 50 50' width='50' height='50' style='background-color:%23b3e5fC'%3E%3Cg%3E%3Ctext font-family='roboto' x='50%25' y='50%25' text-anchor='middle' stroke='%23212121' font-size='1.3em' dy='.3em'%3ED%3C/text%3E%3C/g%3E%3C/svg%3E"
+                },
+                {
+                  "type": "picture-entity",
+                  "entity": "person.sadie",
+                  "aspect_ratio": "1",
+                  "show_name": false,
+                  "image": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 50 50' width='50' height='50' style='background-color:%23b3e5fC'%3E%3Cg%3E%3Ctext font-family='roboto' x='50%25' y='50%25' text-anchor='middle' stroke='%23212121' font-size='1.3em' dy='.3em'%3ES%3C/text%3E%3C/g%3E%3C/svg%3E"
+                },
+                {
+                  "type": "picture-entity",
+                  "entity": "person.alyssa",
+                  "aspect_ratio": "1",
+                  "show_name": false,
+                  "image": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 50 50' width='50' height='50' style='background-color:%23b3e5fC'%3E%3Cg%3E%3Ctext font-family='roboto' x='50%25' y='50%25' text-anchor='middle' stroke='%23212121' font-size='1.3em' dy='.3em'%3EA%3C/text%3E%3C/g%3E%3C/svg%3E"
+                },
+                {
+                  "type": "picture-entity",
+                  "entity": "person.taylor",
+                  "aspect_ratio": "1",
+                  "show_name": false,
+                  "image": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 50 50' width='50' height='50' style='background-color:%23b3e5fC'%3E%3Cg%3E%3Ctext font-family='roboto' x='50%25' y='50%25' text-anchor='middle' stroke='%23212121' font-size='1.3em' dy='.3em'%3ET%3C/text%3E%3C/g%3E%3C/svg%3E"
+                },
+                {
+                  "type": "picture-entity",
+                  "entity": "person.gray",
+                  "aspect_ratio": "1",
+                  "show_name": false,
+                  "image": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 50 50' width='50' height='50' style='background-color:%23b3e5fC'%3E%3Cg%3E%3Ctext font-family='roboto' x='50%25' y='50%25' text-anchor='middle' stroke='%23212121' font-size='1.3em' dy='.3em'%3EG%3C/text%3E%3C/g%3E%3C/svg%3E"
+                }
+              ]
+            },
+            {
+              "type": "entities",
+              "entities": [
+                "binary_sensor.sonoff_s31_button",
+                "binary_sensor.thermostat_cooler",
+                "binary_sensor.thermostat_fan",
+                "binary_sensor.thermostat_heater",
+                "binary_sensor.updater",
+                "binary_sensor.workday_sensor"
+              ],
+              "title": "Binary sensor"
+            },
+            {
+              "type": "picture-entity",
+              "entity": "camera.ottawa_kanata_orleans_radar"
+            },
+            {
+              "type": "thermostat",
+              "entity": "climate.thermostat"
+            },
+            {
+              "type": "entities",
+              "entities": [
+                "cover.garage_door"
+              ],
+              "title": "Cover"
+            },
+            {
+              "type": "entities",
+              "entities": [
+                "input_number.alistair_main_ir",
+                "input_select.allynn",
+                "input_number.fade_time",
+                "input_select.kyle",
+                "input_text.saa_allynn",
+                "input_text.saa_kyle"
+              ],
+              "title": "Helpers"
+            },
+            {
+              "type": "entities",
+              "entities": [
+                "light.alistair_main_ir",
+                "light.bedroom_main",
+                "light.sonoff_s31_led",
+                "light.hue_color_light_1"
+              ],
+              "title": "Light"
+            },
+            {
+              "type": "grid",
+              "square": false,
+              "columns": 1,
+              "cards": [
+                {
+                  "type": "media-control",
+                  "entity": "media_player.plex_macbook"
+                },
+                {
+                  "type": "media-control",
+                  "entity": "media_player.plex_umbriel"
+                },
+                {
+                  "type": "media-control",
+                  "entity": "media_player.plex_solitude"
+                },
+                {
+                  "type": "media-control",
+                  "entity": "media_player.plex_plex_web_firefox"
+                },
+                {
+                  "type": "media-control",
+                  "entity": "media_player.plex_plex_for_sonos_sonos"
+                },
+                {
+                  "type": "media-control",
+                  "entity": "media_player.plex_plex_for_ios_bipad"
+                },
+                {
+                  "type": "media-control",
+                  "entity": "media_player.plex_galaxy_a51"
+                },
+                {
+                  "type": "media-control",
+                  "entity": "media_player.plex_oneplus_5t"
+                },
+                {
+                  "type": "media-control",
+                  "entity": "media_player.plex_surface_pro"
+                }
+              ]
+            },
+            {
+              "type": "entities",
+              "entities": [
+                "scene.bed_bedtime",
+                "scene.bed_default",
+                "scene.camping",
+                "scene.computer_bedtime",
+                "scene.computer_default",
+                "scene.porch_lights_christmas",
+                "scene.porch_lights_halloween",
+                "scene.porch_lights_ukraine",
+                "scene.sunset_orange",
+                "scene.sunset_purple",
+                "scene.sunset_red",
+                "scene.sunset_yellow",
+                "scene.climate_before"
+              ],
+              "title": "Scene"
+            },
+            {
+              "type": "entities",
+              "entities": [
+                "sensor.a_c_on_today",
+                "sensor.cloudnas_energy",
+                "sensor.cloudnas_power",
+                "sensor.cyberpower_load",
+                "sensor.cyberpower_load_energy",
+                "sensor.cyberpower_load_power",
+                "sensor.cyberpower_status",
+                "sensor.cyberpower_status_data",
+                "sensor.date",
+                "sensor.date_time",
+                "sensor.furnace_on_today",
+                "sensor.sql_ha_db_size",
+                "sensor.hydro_ottawa_cost",
+                "sensor.kyle_office_outlet_energy",
+                "sensor.ottawa_kanata_orleans_aqhi",
+                "sensor.advisories",
+                "sensor.pressure",
+                "sensor.chance_of_precip",
+                "sensor.condition",
+                "sensor.dew_point",
+                "sensor.endings",
+                "sensor.high_temperature",
+                "sensor.humidex",
+                "sensor.humidity",
+                "sensor.icon_code",
+                "sensor.low_temperature",
+                "sensor.ottawa_kanata_orleans_normal_high_temperature",
+                "sensor.ottawa_kanata_orleans_normal_low_temperature",
+                "sensor.ottawa_kanata_orleans_observation_time",
+                "sensor.precipitation_yesterday",
+                "sensor.statements",
+                "sensor.forecast",
+                "sensor.temperature",
+                "sensor.tendency",
+                "sensor.uv_index",
+                "sensor.visibility",
+                "sensor.warnings",
+                "sensor.watches",
+                "sensor.wind_bearing",
+                "sensor.wind_chill",
+                "sensor.wind_direction",
+                "sensor.wind_gust",
+                "sensor.wind_speed",
+                "sensor.sql_synapse_db_size",
+                "sensor.sonoff_s31_current",
+                "sensor.sonoff_s31_energy",
+                "sensor.sonoff_s31_power",
+                "sensor.sonoff_s31_voltage",
+                "sensor.sun_elevation",
+                "sensor.thermostat_humidity",
+                "sensor.thermostat_temperature",
+                "sensor.time",
+                "sensor.weighted_temp",
+                "sensor.hue_color_light_1_energy",
+                "sensor.hue_color_light_1_power"
+              ],
+              "title": "Sensor"
+            },
+            {
+              "type": "entities",
+              "entities": [
+                "switch.sonoff_s31_relay"
+              ],
+              "title": "Switch"
+            },
+            {
+              "type": "grid",
+              "square": false,
+              "columns": 1,
+              "cards": [
+                {
+                  "type": "weather-forecast",
+                  "entity": "weather.ottawa_kanata_orleans",
+                  "show_forecast": false
+                },
+                {
+                  "type": "weather-forecast",
+                  "entity": "weather.ottawa_kanata_orleans_hourly",
+                  "show_forecast": false
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

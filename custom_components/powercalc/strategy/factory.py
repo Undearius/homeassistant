@@ -8,6 +8,7 @@ from custom_components.powercalc.const import (
     CONF_FIXED,
     CONF_LINEAR,
     CONF_POWER,
+    CONF_STANDBY_POWER,
     CONF_STATES_POWER,
     CONF_WLED,
     MODE_FIXED,
@@ -65,7 +66,9 @@ class PowerCalculatorStrategyFactory:
         if linear_config is None and light_model is not None:
             linear_config = light_model.linear_mode_config
 
-        return LinearStrategy(linear_config, self._hass, source_entity)
+        return LinearStrategy(
+            linear_config, self._hass, source_entity, config.get(CONF_STANDBY_POWER)
+        )
 
     def _create_fixed(self, config: dict, light_model: LightModel) -> FixedStrategy:
         """Create the fixed strategy"""
@@ -97,5 +100,8 @@ class PowerCalculatorStrategyFactory:
     def _create_wled(self, config: dict, source_entity: SourceEntity) -> WledStrategy:
         """Create the WLED strategy"""
         return WledStrategy(
-            config=config.get(CONF_WLED), light_entity=source_entity, hass=self._hass
+            config=config.get(CONF_WLED),
+            light_entity=source_entity,
+            hass=self._hass,
+            standby_power=config.get(CONF_STANDBY_POWER),
         )

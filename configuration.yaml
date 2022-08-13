@@ -68,19 +68,6 @@ light:
           data_template:
             entity_id: input_number.alistair_main_ir
             value: "{{ brightness | int }}"
-  - platform: group
-    name: Bedroom Lights
-    unique_id: BedroomLights
-    entities:
-      - light.bedroom_d
-      - light.bedroom_w
-      - light.wled_bed
-  - platform: group
-    name: Bedroom Main
-    unique_id: BedroomMain
-    entities:
-      - light.bedroom_d
-      - light.bedroom_w
 
 template:
   - sensor:
@@ -88,17 +75,17 @@ template:
         unique_id: WeightedTemp
         unit_of_measurement: "°C"
         state: >
-          {% set thermo = states("sensor.thermostat_temperature") | float %}
-          {% set alistair = states("sensor.alistair_room_air_temperature") | float %}
-          {% set kyle = states("sensor.kyle_office_temperature") | float %}
-          {% set weight = {"thermo": 1.00, "kyle": 0.00, "alistair": 0.00} %}
+          {% set thermo = states("sensor.thermostat_temperature") | float(0) %}
+          {% set alistair = states("sensor.alistair_room_air_temperature") | float(0) %}
+          {% set rowan = states("sensor.rowan_temperature") | float(0) %}
+          {% set weight = {"thermo": 1.00, "rowan": 0.00, "alistair": 0.00} %}
           {% set alistair_sleeping = is_state('light.alistair_main_ir', 'on') %}
 
           {% if alistair_sleeping  %}
             {% set perc_diff = 0.3 %} 
             {% set weight = {
               "thermo": weight.thermo - weight.thermo * perc_diff,
-              "kyle": weight.kyle - weight.kyle * perc_diff,
+              "rowan": weight.rowan - weight.rowan * perc_diff,
               "alistair": weight.alistair + (1-weight.alistair) * perc_diff
             } %}
           {% endif %}
@@ -106,7 +93,7 @@ template:
           {% set sensors = [
             [thermo, weight.thermo],
             [alistair, weight.alistair],
-            [kyle, weight.kyle]
+            [rowan, weight.rowan]
           ] %}
 
           {#This calculates the weighted average only if the value of the sensor is above 0#}

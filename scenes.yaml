@@ -171,23 +171,12 @@
     light.porch_garage:
       min_mireds: 153
       max_mireds: 500
-      color_mode: hs
-      brightness: 255
-      hs_color:
-      - 26.87
-      - 90.196
-      rgb_color:
-      - 255
-      - 128
-      - 25
-      xy_color:
-      - 0.606
-      - 0.372
-      effect: none
-      state: 'on'
-    light.porch_door:
-      min_mireds: 153
-      max_mireds: 500
+      effect_list:
+      - colorloop
+      - random
+      supported_color_modes:
+      - color_temp
+      - hs
       color_mode: hs
       brightness: 255
       hs_color:
@@ -200,6 +189,61 @@
       xy_color:
       - 0.222
       - 0.079
+      effect: none
+      icon: mdi:coach-lamp
+      friendly_name: Porch Garage-side
+      supported_features: 63
+      state: 'on'
+    light.porch_door:
+      min_mireds: 153
+      max_mireds: 500
+      effect_list:
+      - colorloop
+      - random
+      supported_color_modes:
+      - color_temp
+      - hs
+      color_mode: hs
+      brightness: 255
+      hs_color:
+      - 271.765
+      - 100
+      rgb_color:
+      - 135
+      - 0
+      - 255
+      xy_color:
+      - 0.227
+      - 0.082
+      effect: none
+      icon: mdi:coach-lamp
+      friendly_name: Porch Door-side
+      supported_features: 63
+      state: 'on'
+    light.porch_front:
+      min_mireds: 153
+      max_mireds: 500
+      effect_list:
+      - colorloop
+      - random
+      supported_color_modes:
+      - color_temp
+      - hs
+      icon: mdi:coach-lamp
+      friendly_name: Porch Front-side
+      supported_features: 63
+      color_mode: hs
+      brightness: 255
+      hs_color:
+      - 26.87
+      - 90.196
+      rgb_color:
+      - 255
+      - 128
+      - 25
+      xy_color:
+      - 0.606
+      - 0.372
       effect: none
       state: 'on'
   icon: hass:pumpkin
@@ -218,16 +262,17 @@
       color_mode: hs
       brightness: 255
       hs_color:
-      - 17.48
-      - 99.608
+      - 66.383
+      - 73.725
       rgb_color:
+      - 235
       - 255
-      - 74
-      - 0
+      - 67
       xy_color:
-      - 0.669
-      - 0.326
+      - 0.409
+      - 0.518
       effect: none
+      icon: mdi:coach-lamp
       friendly_name: Porch Garage-side
       supported_features: 63
       state: 'on'
@@ -253,8 +298,35 @@
       - 0.409
       - 0.518
       effect: none
+      icon: mdi:coach-lamp
       friendly_name: Porch Door-side
       supported_features: 63
+      state: 'on'
+    light.porch_front:
+      min_mireds: 153
+      max_mireds: 500
+      effect_list:
+      - colorloop
+      - random
+      supported_color_modes:
+      - color_temp
+      - hs
+      icon: mdi:coach-lamp
+      friendly_name: Porch Front-side
+      supported_features: 63
+      color_mode: hs
+      brightness: 255
+      hs_color:
+      - 16.471
+      - 100
+      rgb_color:
+      - 255
+      - 70
+      - 0
+      xy_color:
+      - 0.672
+      - 0.324
+      effect: none
       state: 'on'
   icon: mdi:pine-tree
 - id: '1645726239268'
@@ -263,23 +335,243 @@
     light.porch_garage:
       min_mireds: 153
       max_mireds: 500
+      effect_list:
+      - colorloop
+      - random
+      supported_color_modes:
+      - color_temp
+      - hs
       color_mode: hs
       brightness: 255
       hs_color:
-      - 250.189
-      - 62.353
+      - 60.635
+      - 74.118
+      rgb_color:
+      - 252
+      - 255
+      - 65
+      xy_color:
+      - 0.43
+      - 0.503
       effect: none
+      icon: mdi:coach-lamp
       friendly_name: Porch Garage-side
+      supported_features: 63
       state: 'on'
     light.porch_door:
       min_mireds: 153
       max_mireds: 500
+      effect_list:
+      - colorloop
+      - random
+      supported_color_modes:
+      - color_temp
+      - hs
       color_mode: hs
       brightness: 255
       hs_color:
-      - 50.909
-      - 77.647
+      - 60.235
+      - 100
+      rgb_color:
+      - 254
+      - 255
+      - 0
+      xy_color:
+      - 0.443
+      - 0.518
       effect: none
+      icon: mdi:coach-lamp
       friendly_name: Porch Door-side
+      supported_features: 63
+      state: 'on'
+    light.porch_front:
+      min_mireds: 153
+      max_mireds: 500
+      effect_list:
+      - colorloop
+      - random
+      supported_color_modes:
+      - color_temp
+      - hs
+      icon: mdi:coach-lamp
+      friendly_name: Porch Front-side
+      supported_features: 63
+      color_mode: hs
+      brightness: 255
+      hs_color:
+      - 259.529
+      - 100
+      rgb_color:
+      - 82
+      - 0
+      - 255
+      xy_color:
+      - 0.171
+      - 0.056
+      effect: none
       state: 'on'
   icon: mdi:flag
+- id: '1653872186485'
+  name: 'Porch Lights: Canada'
+  entities:
+    light.porch_garage:
+      min_mireds: 153
+      max_mireds: 500
+      effect_list:
+      - colorloop
+      - random
+      supported_color_modes:
+      - color_temp
+      - hs
+      color_mode: hs
+      brightness: 255
+      hs_color:
+      - 16.471
+      - 100
+      rgb_color:
+      - 255
+      - 70
+      - 0
+      xy_color:
+      - 0.672
+      - 0.324
+      effect: none
+      icon: mdi:coach-lamp
+      friendly_name: Porch Garage-side
+      supported_features: 63
+      state: 'on'
+    light.porch_door:
+      min_mireds: 153
+      max_mireds: 500
+      effect_list:
+      - colorloop
+      - random
+      supported_color_modes:
+      - color_temp
+      - hs
+      color_mode: hs
+      brightness: 255
+      hs_color:
+      - 16.471
+      - 100
+      rgb_color:
+      - 255
+      - 70
+      - 0
+      xy_color:
+      - 0.672
+      - 0.324
+      effect: none
+      icon: mdi:coach-lamp
+      friendly_name: Porch Door-side
+      supported_features: 63
+      state: 'on'
+    light.porch_front:
+      min_mireds: 153
+      max_mireds: 500
+      effect_list:
+      - colorloop
+      - random
+      supported_color_modes:
+      - color_temp
+      - hs
+      icon: mdi:coach-lamp
+      friendly_name: Porch Front-side
+      supported_features: 63
+      color_mode: hs
+      brightness: 255
+      hs_color:
+      - 0
+      - 0.392
+      rgb_color:
+      - 255
+      - 254
+      - 254
+      xy_color:
+      - 0.324
+      - 0.329
+      effect: none
+      state: 'on'
+  icon: mdi:leaf-maple
+- id: '1653872323202'
+  name: 'Porch Lights: USA'
+  entities:
+    light.porch_garage:
+      min_mireds: 153
+      max_mireds: 500
+      effect_list:
+      - colorloop
+      - random
+      supported_color_modes:
+      - color_temp
+      - hs
+      color_mode: hs
+      brightness: 255
+      hs_color:
+      - 259.529
+      - 100
+      rgb_color:
+      - 82
+      - 0
+      - 255
+      xy_color:
+      - 0.171
+      - 0.056
+      effect: none
+      icon: mdi:coach-lamp
+      friendly_name: Porch Garage-side
+      supported_features: 63
+      state: 'on'
+    light.porch_door:
+      min_mireds: 153
+      max_mireds: 500
+      effect_list:
+      - colorloop
+      - random
+      supported_color_modes:
+      - color_temp
+      - hs
+      color_mode: hs
+      brightness: 255
+      hs_color:
+      - 16.471
+      - 100
+      rgb_color:
+      - 255
+      - 70
+      - 0
+      xy_color:
+      - 0.672
+      - 0.324
+      effect: none
+      icon: mdi:coach-lamp
+      friendly_name: Porch Door-side
+      supported_features: 63
+      state: 'on'
+    light.porch_front:
+      min_mireds: 153
+      max_mireds: 500
+      effect_list:
+      - colorloop
+      - random
+      supported_color_modes:
+      - color_temp
+      - hs
+      icon: mdi:coach-lamp
+      friendly_name: Porch Front-side
+      supported_features: 63
+      color_mode: hs
+      brightness: 255
+      hs_color:
+      - 0
+      - 0.392
+      rgb_color:
+      - 255
+      - 254
+      - 254
+      xy_color:
+      - 0.324
+      - 0.329
+      effect: none
+      state: 'on'
+  icon: mdi:football

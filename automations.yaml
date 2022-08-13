@@ -1,5 +1,5 @@
 - id: movielights
-  alias: Movie Lights
+  alias: 'Lights: Movie Lights'
   trigger:
   - platform: state
     from: playing
@@ -76,22 +76,8 @@
       infrared: '{{ states(''input_number.alistair_main_ir'') | int }}'
   initial_state: true
   mode: single
-- id: alistairnightlighttransition
-  alias: Alistair Nightlight
-  trigger:
-  action:
-  - service: lifx.set_state
-    data:
-      entity_id: light.alistair_main
-      brightness_pct: 1
-      transition: 10
-      hs_color:
-      - 37
-      - 100
-      power: true
-  mode: single
 - id: '1598760479433'
-  alias: Light off White Noise on
+  alias: Alistair Light off White Noise on
   description: ''
   trigger:
   - device_id: 7baa77eeb6604448a7c10fb87d16a286
@@ -106,7 +92,7 @@
   action:
   - data:
       entity_id: media_player.alistair_room
-    service: sonos.unjoin
+    service: media_player.unjoin
   - data:
       entity_id: media_player.alistair_room
       volume_level: 0.13
@@ -124,14 +110,13 @@
     domain: light
     entity_id: light.alistair_main
     type: turn_off
-  - service: input_number.set_value
-    data:
-      value: 255
+  - service: light.turn_on
+    data: {}
     target:
-      entity_id: input_number.alistair_main_ir
+      entity_id: light.alistair_main_ir
   mode: single
 - id: '1598804150280'
-  alias: Light on White Noise off
+  alias: Alistair Light on White Noise off
   description: ''
   trigger:
   - entity_id: light.alistair_main
@@ -140,51 +125,24 @@
   - condition: template
     value_template: '{{ states.light.alistair_main.attributes.brightness > 10 }}'
   - condition: state
-    entity_id: media_player.alistair_room
-    attribute: media_content_id
-    state: x-file-cifs://10.0.0.10/media/Music/Sounds/Baby/Pink%20Noise%20HQ%20Audio.m4a
-  - condition: state
-    entity_id: media_player.alistair_room
-    state: playing
+    entity_id: light.alistair_main_ir
+    for:
+      hours: 0
+      minutes: 1
+      seconds: 0
+    state: 'on'
   action:
   - data:
       entity_id: media_player.alistair_room
       sleep_time: 0
     service: sonos.set_sleep_timer
-  - service: input_number.set_value
+  - service: light.turn_off
+    data: {}
     target:
-      entity_id: input_number.alistair_main_ir
-    data:
-      value: 0
+      entity_id: light.alistair_main_ir
   mode: single
-- id: '1598808585001'
-  alias: Alistair Reading Light
-  description: ''
-  trigger: []
-  condition: []
-  action:
-  - data:
-      brightness_pct: 30
-      entity_id: light.alistair_main
-      hs_color:
-      - 40
-      - 50
-      power: 'on'
-      transition: 5
-    service: lifx.set_state
-  - delay:
-      hours: 0
-      minutes: 0
-      seconds: 5
-      milliseconds: 0
-  - service: input_boolean.turn_on
-    entity_id: input_boolean.alistair_sound_trigger
-  - delay: 00:20:00
-  - service: input_boolean.turn_off
-    entity_id: input_boolean.alistair_sound_trigger
-  mode: restart
 - id: '1599327200195'
-  alias: Sound Trigger off when brightness above 30%
+  alias: Alistair Sound Trigger off when brightness above 30%
   description: ''
   trigger:
   - entity_id: light.alistair_main
@@ -197,36 +155,6 @@
     entity_id: input_boolean.alistair_sound_trigger
     service: input_boolean.turn_off
   mode: single
-- id: '1607901677018'
-  alias: Alistair Reading Light Long
-  description: ''
-  trigger: []
-  condition: []
-  action:
-  - data:
-      brightness_pct: 30
-      entity_id: light.alistair_main
-      hs_color:
-      - 40
-      - 50
-      power: 'on'
-      transition: '{{ states(''input_number.fade_time'') | int * 60 }}'
-    service: lifx.set_state
-  - delay:
-      hours: 0
-      minutes: '{{ states(''input_number.fade_time'') | int }}'
-      seconds: 0
-      milliseconds: 0
-  - service: input_boolean.turn_on
-    entity_id: input_boolean.alistair_sound_trigger
-  - delay:
-      hours: 0
-      minutes: 25
-      seconds: 0
-      milliseconds: 0
-  - service: input_boolean.turn_off
-    entity_id: input_boolean.alistair_sound_trigger
-  mode: restart
 - id: '1613327902048'
   alias: SaA Webhhok Kyle
   description: ''
@@ -340,7 +268,7 @@
         channel: alarm_stream
   mode: single
 - id: '1615075704978'
-  alias: Morning Sunrise
+  alias: 'Lights: Morning Sunrise'
   description: ''
   trigger:
   - platform: time
@@ -353,6 +281,18 @@
     - wed
     - thu
     - fri
+    before: 00:00:00
+    after: 00:00:00
+  - condition: or
+    conditions:
+    - condition: state
+      entity_id: person.kyle
+      state: home
+    - condition: state
+      entity_id: person.allynn
+      state: home
+  - condition: sun
+    before: sunrise
   action:
   - service: script.turn_on
     target:
@@ -360,36 +300,6 @@
     data:
       variables:
         light: light.wled_bed
-  mode: single
-- id: '1616884736419'
-  alias: Close the garage when no one is home
-  description: ''
-  trigger:
-  - platform: state
-    entity_id: person.allynn
-    to: not_home
-  - platform: state
-    entity_id: person.kyle
-    to: not_home
-  condition:
-  - condition: and
-    conditions:
-    - condition: state
-      entity_id: person.allynn
-      state: not_home
-    - condition: state
-      entity_id: person.kyle
-      state: not_home
-    - condition: state
-      entity_id: person.guest
-      state: not_home
-    - condition: state
-      entity_id: cover.garage_door
-      state: open
-  action:
-  - service: cover.close_cover
-    target:
-      entity_id: cover.garage_door
   mode: single
 - id: '1634020365562'
   alias: Let there be light
@@ -494,8 +404,8 @@
       entity_id: media_player.living_room
   mode: single
 - id: '1639164820573'
-  alias: Lights off when no one is home
-  description: ''
+  alias: House shutoff when no one is home
+  description: Lights off, Garage closed, Thermostat to away
   trigger:
   - platform: state
     entity_id: person.allynn
@@ -522,9 +432,14 @@
     domain: cover
     entity_id: cover.garage_door
     type: close
+  - service: climate.set_preset_mode
+    data:
+      preset_mode: away
+    target:
+      entity_id: climate.thermostat
   mode: single
 - id: '1641689543179'
-  alias: Pot lights on motion
+  alias: 'Lights: Pots on motion'
   description: ''
   trigger:
   - platform: state
@@ -538,19 +453,31 @@
     entity_id: input_boolean.potsoverride
     state: 'off'
   - condition: template
-    value_template: "{% if states('weather.ottawa_kanata_orleans') in [\"snowy\",\"\
-      cloudy\"] %}\n  {% set ele = 7 %}\n{% else %}\n  {% set ele = 6 %}\n{% endif\
-      \ %}\n{{ state_attr('sun.sun', 'elevation') < ele }}"
+    value_template: "{% if states('weather.ottawa_kanata_orleans') in [\"snowy\",\"cloudy\",\"rainy\"]
+      %}\n  {% set ele = 7 %}\n{% else %}\n  {% set ele = 6 %}\n{% endif %}\n{{ state_attr('sun.sun',
+      'elevation') < ele }}"
+  - condition: or
+    conditions:
+    - condition: state
+      entity_id: light.livingroom_pots
+      state: 'On'
+    - condition: state
+      entity_id: light.livingroom_pots
+      state: 'off'
+      for:
+        hours: 0
+        minutes: 0
+        seconds: 5
   action:
   - service: light.turn_on
     target:
       entity_id: light.livingroom_pots
     data:
-      brightness_pct: "{% if is_state(\"light.livingroom_pots\", \"on\") -%}\n  {{\
-        \ (state_attr(\"light.livingroom_pots\", \"brightness\") / 2.55 ) | round\
-        \ }}\n{%- else -%}\n  {% if now().hour >=22 or now().hour < 7 %} 1\n  {% elif\
-        \ now().hour >= 20 and now().hour < 22 %} 20\n  {% else %} 100\n  {% endif\
-        \ %}\n{%- endif %}"
+      brightness_pct: "{% if is_state(\"light.livingroom_pots\", \"on\") -%}\n  {{
+        (state_attr(\"light.livingroom_pots\", \"brightness\") / 2.55 ) | round }}\n{%-
+        else -%}\n  {% if now().hour >=22 or now().hour < 7 %} 1\n  {% elif now().hour
+        >= 20 and now().hour < 22 %} 20\n  {% else %} 100\n  {% endif %}\n{%- endif
+        %}"
   - wait_template: '{{ is_state("binary_sensor.living_room_dimmer_motion", "off")
       }}'
   - delay:
@@ -571,12 +498,13 @@
   - platform: state
     entity_id: climate.thermostat
     attribute: current_temperature
-    to: '20.7'
+    to: '21.2'
   condition: []
   action:
   - service: notify.mobile_app_oneplus5t
     data:
       message: Furnace is about to turn on
+      title: 'Furnace '
   mode: single
 - id: '1641799136107'
   alias: Sink lights on motion
@@ -598,7 +526,7 @@
       entity_id: light.sink_lights
   mode: restart
 - id: '1643432818705'
-  alias: Kitchen light on
+  alias: 'Lights: Kitchen light on'
   description: ''
   trigger:
   - platform: state
@@ -637,23 +565,6 @@
       entity_id: light.kitchen
     data: {}
   mode: single
-- id: '1643434691823'
-  alias: Welcome home
-  description: ''
-  trigger:
-  - platform: state
-    entity_id: person.allynn
-    to: home
-  condition:
-  - condition: time
-    after: '16:00:00'
-    before: '20:00:00'
-  action:
-  - service: notify.mobile_app_sm_a515w
-    data:
-      message: TTS
-      title: Welcome home, Allynn
-  mode: single
 - id: '1644961012560'
   alias: Power off workstation if idle
   description: ''
@@ -681,17 +592,26 @@
     data: {}
     target:
       entity_id: switch.kyle_office_outlet_relay
-  mode: single
+  mode: restart
 - id: '1644967380579'
   alias: Power on workstation
   description: ''
   trigger:
-  - platform: time
-    at: 08:20:00
+  - platform: state
+    entity_id:
+    - person.kyle
+    to: home
+    for:
+      hours: 0
+      minutes: 0
+      seconds: 40
   condition:
   - condition: state
     entity_id: binary_sensor.workday_sensor
     state: 'on'
+  - condition: time
+    before: 09:00:00
+    after: 08:15:00
   action:
   - service: switch.turn_on
     data: {}
@@ -710,11 +630,34 @@
   - platform: device
     type: turned_on
     device_id: 86eeede02253437d93516e7083c15338
+    entity_id: light.porch_front
+    domain: light
+  - platform: device
+    type: turned_on
+    device_id: 7aebf5aee400c5e711739c9fe1445c40
     entity_id: light.porch_garage
     domain: light
   condition: []
   action:
   - choose:
+    - conditions:
+      - condition: template
+        value_template: '{{ now().month == 7 and now().day == 1 }}'
+      sequence:
+      - service: scene.turn_on
+        data: {}
+        target:
+          entity_id:
+          - scene.porch_lights_canada
+    - conditions:
+      - condition: template
+        value_template: '{{ now().month == 7 and now().day == 4 }}'
+      sequence:
+      - service: scene.turn_on
+        data: {}
+        target:
+          entity_id:
+          - scene.porch_lights_usa
     - conditions:
       - condition: template
         value_template: '{{ now().month == 10 }}'
@@ -732,11 +675,11 @@
         target:
           entity_id:
           - scene.porch_lights_christmas
-    default: []
-  - service: scene.turn_on
-    data: {}
-    target:
-      entity_id: scene.porch_lights_ukraine
+    default:
+    - service: scene.turn_on
+      data: {}
+      target:
+        entity_id: scene.porch_lights_ukraine
   mode: single
 - id: '1645878364914'
   alias: Notify if motion in Alistair's room
@@ -779,4 +722,158 @@
       data:
         channel: alarm_stream
       title: Alistair is out of bed
+  mode: single
+- id: '1646622549758'
+  alias: Climate Preset to Home
+  description: ''
+  trigger:
+  - platform: state
+    entity_id: person.allynn
+    to: home
+  - platform: state
+    entity_id: person.kyle
+    to: home
+  - platform: time
+    at: 09:00:00
+    id: Time
+  condition:
+  - condition: or
+    conditions:
+    - condition: device
+      device_id: 03340c90280e45fb5531642771532b70
+      domain: climate
+      entity_id: climate.thermostat
+      type: is_preset_mode
+      preset_mode: away
+    - condition: and
+      conditions:
+      - condition: trigger
+        id: Time
+      - condition: time
+        weekday:
+        - sun
+  action:
+  - service: climate.set_preset_mode
+    data:
+      preset_mode: home
+    target:
+      entity_id: climate.thermostat
+  mode: single
+- id: '1647738110786'
+  alias: Notify Kyle if Thermostat becomes unavailable
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - climate.thermostat
+    to: unavailable
+    for:
+      hours: 0
+      minutes: 0
+      seconds: 0
+  - platform: state
+    entity_id: climate.thermostat
+    attribute: current_temperature
+    to: '0'
+    for:
+      hours: 0
+      minutes: 0
+      seconds: 1
+  condition: []
+  action:
+  - service: notify.mobile_app_oneplus5t
+    data:
+      title: Thermostat Unavailable
+      message: Check to see if the furnace is on!
+      data:
+        clickAction: /lovelace/climate
+  - service: notify.mobile_app_oneplus5t
+    data:
+      message: TTS
+      title: Thermostat is offline
+      data:
+        channel: alarm_stream
+  mode: single
+- id: '1650116919646'
+  alias: 'Notify: Garage door open'
+  description: ''
+  trigger:
+  - platform: device
+    device_id: 7eb71993650f9a57276a8f9e8fd99f6d
+    domain: cover
+    entity_id: cover.garage_door
+    type: opened
+    for:
+      hours: 1
+      minutes: 0
+      seconds: 0
+  condition: []
+  action:
+  - service: script.1646789693540
+    data: {}
+  mode: single
+- id: '1650118685335'
+  alias: 'Notify: Allynn to water plants'
+  description: ''
+  trigger:
+  - platform: time
+    at: 07:30:00
+  condition:
+  - condition: time
+    weekday:
+    - sun
+    before: '11:00:00'
+    after: 07:00:00
+  action:
+  - service: notify.mobile_app_sm_a515w
+    data:
+      message: Water your damn plants!
+      title: Water plants
+  mode: single
+- id: '1656953507090'
+  alias: 'Climate: Toggle fan'
+  description: ''
+  trigger:
+  - type: temperature
+    platform: device
+    device_id: 03340c90280e45fb5531642771532b70
+    entity_id: sensor.thermostat_temperature
+    domain: sensor
+    id: Fanon
+    above: 23
+  - type: temperature
+    platform: device
+    device_id: 03340c90280e45fb5531642771532b70
+    entity_id: sensor.thermostat_temperature
+    domain: sensor
+    below: 22.5
+    id: Fanoff
+  condition:
+  - condition: device
+    device_id: 03340c90280e45fb5531642771532b70
+    domain: climate
+    entity_id: climate.thermostat
+    type: is_preset_mode
+    preset_mode: home
+  action:
+  - choose:
+    - conditions:
+      - condition: trigger
+        id: Fanon
+      sequence:
+      - service: climate.set_fan_mode
+        data:
+          fan_mode: 'On'
+        target:
+          entity_id: climate.thermostat
+    - conditions:
+      - condition: trigger
+        id: Fanoff
+      sequence:
+      - service: climate.set_fan_mode
+        data:
+          fan_mode: 'Off'
+        target:
+          entity_id: climate.thermostat
+    default: []
   mode: single

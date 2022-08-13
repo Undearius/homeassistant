@@ -21,6 +21,15 @@
                 "show_in_sidebar": false,
                 "title": "Baby",
                 "url_path": "lovelace-baby"
+            },
+            {
+                "show_in_sidebar": true,
+                "icon": "mdi:thermometer",
+                "title": "Climate",
+                "require_admin": false,
+                "mode": "storage",
+                "url_path": "lovelace-climate",
+                "id": "lovelace_climate"
             }
         ]
     }

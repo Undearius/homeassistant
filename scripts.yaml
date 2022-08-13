@@ -279,9 +279,14 @@ magic_button:
 party_time:
   alias: Party Time
   sequence:
+  - service: lifx.set_state
+    data:
+      power: false
+    target:
+      entity_id: light.alistair_main
   - data:
       entity_id: media_player.alistair_room
-    service: sonos.unjoin
+    service: media_player.unjoin
   - data:
       volume_level: 0.5
     service: media_player.volume_set
@@ -339,15 +344,58 @@ party_time:
     data:
       period: 0.15
       cycles: 4
-      brightness: 50
+      brightness: 120
       color_name: red
     target:
       entity_id: light.alistair_main
   - delay:
       hours: 0
       minutes: 0
-      seconds: 10
+      seconds: 3
       milliseconds: 500
+  - service: lifx.effect_pulse
+    data:
+      period: 0.15
+      cycles: 4
+      brightness: 60
+      color_name: green
+    target:
+      entity_id: light.alistair_main
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 7
+      milliseconds: 0
+  - service: lifx.effect_colorloop
+    data:
+      brightness: 255
+      change: 22
+      period: 0.05
+    target:
+      entity_id: light.alistair_main
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 56
+      milliseconds: 0
+  - service: lifx.set_state
+    data:
+      power: true
+      brightness_pct: 100
+      color_name: blue
+    target:
+      entity_id: light.alistair_main
+  - service: lifx.set_state
+    data:
+      power: false
+      transition: 3
+    target:
+      entity_id: light.alistair_main
+  - delay:
+      hours: 0
+      minutes: 1
+      seconds: 4
+      milliseconds: 0
   - service: lifx.effect_colorloop
     data:
       brightness: 255
@@ -481,3 +529,160 @@ kickstart_fan:
       entity_id: climate.thermostat
   description: ''
   mode: single
+'1646789693540':
+  alias: Garage Door Notification
+  use_blueprint:
+    path: homeassistant/confirmable_notification.yaml
+    input:
+      notify_device: f68ca7289cd6c034a440fb2d285a5013
+      title: Garage Door open
+      message: The garage door has been open for 1 hour. Do you want to close it?
+      confirm_text: Close Door
+      confirm_action:
+      - device_id: 7eb71993650f9a57276a8f9e8fd99f6d
+        domain: cover
+        entity_id: cover.garage_door
+        type: close
+  mode: single
+alistair_quiet_time:
+  alias: Alistair Quiet Time
+  sequence:
+  - data:
+      entity_id: media_player.alistair_room
+    service: media_player.unjoin
+  - data:
+      volume_level: 0.18
+    service: media_player.volume_set
+    target:
+      entity_id: media_player.alistair_room
+  - service: media_player.play_media
+    data:
+      media_content_id: S://10.0.0.10/media/Music/Playlists/QuietTime.m3u
+      media_content_type: playlist
+    target:
+      entity_id: media_player.alistair_room
+    metadata:
+      title: QuietTime.m3u
+      thumbnail:
+      media_class: playlist
+      children_media_class:
+      navigateIds:
+      - {}
+      - media_content_type: library
+        media_content_id: ''
+      - media_content_type: playlist
+        media_content_id: A:PLAYLISTS
+  - service: media_player.shuffle_set
+    data:
+      shuffle: true
+    target:
+      entity_id: media_player.alistair_room
+  - service: media_player.repeat_set
+    data:
+      repeat: all
+    target:
+      entity_id: media_player.alistair_room
+  - service: script.alistair_light
+    data:
+      brightness_pct: 25
+      transition: 10
+      colour: 15, 50
+  - service: light.turn_on
+    data: {}
+    target:
+      entity_id: light.alistair_main_ir
+  mode: single
+'1647729706760':
+  alias: Party Time (Duplicate)
+  sequence:
+  - data:
+      entity_id: media_player.alistair_room
+    service: sonos.unjoin
+  - data:
+      volume_level: 0.5
+    service: media_player.volume_set
+    target:
+      entity_id: media_player.alistair_room
+  - service: media_player.play_media
+    data:
+      media_content_id: x-file-cifs://10.0.0.10/media/Music/Darude/2000-Before%20the%20Storm/01%20Sandstorm.mp3
+      media_content_type: music
+    target:
+      entity_id: media_player.alistair_room
+  - wait_for_trigger:
+    - platform: state
+      entity_id: media_player.alistair_room
+      to: playing
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 1
+      milliseconds: 0
+  - service: lifx.set_state
+    data:
+      power: true
+      brightness_pct: 100
+      hs_color:
+      - 40
+      - 50
+    target:
+      entity_id: light.alistair_main
+  - service: lifx.set_state
+    data:
+      power: false
+      transition: 2
+    target:
+      entity_id: light.alistair_main
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 13
+      milliseconds: 500
+  - service: lifx.effect_pulse
+    data:
+      brightness: 50
+      color_name: blue
+      cycles: 4
+      period: 0.15
+    target:
+      entity_id: light.alistair_main
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 3
+      milliseconds: 500
+  - service: lifx.effect_pulse
+    data:
+      period: 0.15
+      cycles: 4
+      brightness: 80
+      color_name: red
+    target:
+      entity_id: light.alistair_main
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 3
+      milliseconds: 500
+  - service: lifx.effect_pulse
+    data:
+      period: 0.15
+      cycles: 4
+      brightness: 60
+      color_name: green
+    target:
+      entity_id: light.alistair_main
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 7
+      milliseconds: 0
+  - service: lifx.effect_colorloop
+    data:
+      brightness: 255
+      change: 22
+      period: 0.05
+    target:
+      entity_id: light.alistair_main
+  mode: restart
+  icon: mdi:party-popper
