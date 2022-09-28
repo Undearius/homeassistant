@@ -1,18 +1,22 @@
 {
-    "version": 1,
-    "minor_version": 1,
-    "key": "input_boolean",
-    "data": {
-        "items": [
-            {
-                "id": "reading_on",
-                "name": "Alistair Sound Machine Trigger"
-            },
-            {
-                "name": "PotsOverride",
-                "icon": "mdi:lightbulb-off",
-                "id": "potsoverride"
-            }
-        ]
-    }
+  "version": 1,
+  "minor_version": 1,
+  "key": "input_boolean",
+  "data": {
+    "items": [
+      {
+        "id": "reading_on",
+        "name": "Alistair Sound Machine Trigger"
+      },
+      {
+        "id": "rowan_reading_on",
+        "name": "Rowan Sound Machine Trigger"
+      },
+      {
+        "name": "PotsOverride",
+        "icon": "mdi:lightbulb-off",
+        "id": "potsoverride"
+      }
+    ]
+  }
 }

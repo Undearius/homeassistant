@@ -77,83 +77,135 @@
   initial_state: true
   mode: single
 - id: '1598760479433'
-  alias: Alistair Light off White Noise on
+  alias: Rowan Light off White Noise on
   description: ''
   trigger:
-  - device_id: 7baa77eeb6604448a7c10fb87d16a286
-    domain: light
-    entity_id: light.alistair_main
-    platform: device
+  - platform: device
     type: turned_off
+    device_id: ec3547b4fd1a140b8125fedb3a35cf68
+    entity_id: light.rowan_main
+    domain: light
+    id: Rowan
   condition:
   - condition: state
     state: 'on'
-    entity_id: input_boolean.alistair_sound_trigger
+    entity_id: input_boolean.rowan_sound_trigger
+    for:
+      hours: 0
+      minutes: 1
+      seconds: 0
   action:
   - data:
-      entity_id: media_player.alistair_room
+      entity_id: media_player.rowan_room
     service: media_player.unjoin
   - data:
-      entity_id: media_player.alistair_room
-      volume_level: 0.13
+      volume_level: 0.07
     service: media_player.volume_set
+    target:
+      entity_id: media_player.rowan_room
   - data:
-      entity_id: media_player.alistair_room
+      entity_id: media_player.rowan_room
       source: Baby
     service: media_player.select_source
   - service: media_player.repeat_set
     data:
       repeat: one
     target:
-      entity_id: media_player.alistair_room
-  - device_id: 7baa77eeb6604448a7c10fb87d16a286
+      entity_id: media_player.rowan_room
+  - type: turn_off
+    device_id: ec3547b4fd1a140b8125fedb3a35cf68
+    entity_id: light.rowan_main
     domain: light
-    entity_id: light.alistair_main
-    type: turn_off
   - service: light.turn_on
     data: {}
     target:
-      entity_id: light.alistair_main_ir
+      entity_id: light.rowan_main_ir
   mode: single
 - id: '1598804150280'
-  alias: Alistair Light on White Noise off
+  alias: Light on White Noise off
   description: ''
   trigger:
   - entity_id: light.alistair_main
     platform: state
-  condition:
-  - condition: template
-    value_template: '{{ states.light.alistair_main.attributes.brightness > 10 }}'
-  - condition: state
-    entity_id: light.alistair_main_ir
-    for:
-      hours: 0
-      minutes: 1
-      seconds: 0
-    state: 'on'
+    id: Alistair
+  - entity_id: light.rowan_main
+    platform: state
+    id: Rowan
+  condition: []
   action:
-  - data:
-      entity_id: media_player.alistair_room
-      sleep_time: 0
-    service: sonos.set_sleep_timer
-  - service: light.turn_off
-    data: {}
-    target:
-      entity_id: light.alistair_main_ir
+  - choose:
+    - conditions:
+      - condition: trigger
+        id: Alistair
+      - condition: template
+        value_template: '{{ states.light.alistair_main.attributes.brightness > 10
+          }}'
+      - condition: state
+        entity_id: light.alistair_main_ir
+        for:
+          minutes: 1
+        state: 'on'
+      sequence:
+      - service: sonos.set_sleep_timer
+        data:
+          entity_id: media_player.alistair_room
+          sleep_time: 0
+      - service: light.turn_off
+        data: {}
+        target:
+          entity_id: light.alistair_main_ir
+    - conditions:
+      - condition: trigger
+        id: Rowan
+      - condition: template
+        value_template: '{{ states.light.rowan_main.attributes.brightness > 10 }}'
+      - condition: state
+        entity_id: light.rowan_main_ir
+        for:
+          minutes: 1
+        state: 'on'
+      sequence:
+      - service: sonos.set_sleep_timer
+        data:
+          entity_id: media_player.rowan_room
+          sleep_time: 0
+      - service: light.turn_off
+        data: {}
+        target:
+          entity_id: light.rowan_main_ir
   mode: single
 - id: '1599327200195'
-  alias: Alistair Sound Trigger off when brightness above 30%
+  alias: Sound Trigger off when brightness above 30%
   description: ''
   trigger:
   - entity_id: light.alistair_main
     platform: state
-  condition:
-  - condition: template
-    value_template: '{{ states.light.alistair_main.attributes.brightness > 85 }}'
+    id: Alistair
+  - entity_id: light.rowan_main
+    platform: state
+    id: Rowan
+  condition: []
   action:
-  - data: {}
-    entity_id: input_boolean.alistair_sound_trigger
-    service: input_boolean.turn_off
+  - choose:
+    - conditions:
+      - condition: trigger
+        id: Alistair
+      - condition: template
+        value_template: '{{ states.light.alistair_main.attributes.brightness > 85
+          }}'
+      sequence:
+      - data: {}
+        entity_id: input_boolean.alistair_sound_trigger
+        service: input_boolean.turn_off
+    - conditions:
+      - condition: trigger
+        id: Rowan
+      - condition: template
+        value_template: '{{ states.light.rowan_main.attributes.brightness > 85 }}'
+      sequence:
+      - data: {}
+        entity_id: input_boolean.rowan_sound_trigger
+        service: input_boolean.turn_off
   mode: single
 - id: '1613327902048'
   alias: SaA Webhhok Kyle
@@ -460,7 +512,7 @@
     conditions:
     - condition: state
       entity_id: light.livingroom_pots
-      state: 'On'
+      state: 'on'
     - condition: state
       entity_id: light.livingroom_pots
       state: 'off'
@@ -733,25 +785,16 @@
   - platform: state
     entity_id: person.kyle
     to: home
-  - platform: time
-    at: 09:00:00
+  - platform: template
+    value_template: '{{ now().weekday() == 6 and now().hour == 9}}'
     id: Time
   condition:
-  - condition: or
-    conditions:
-    - condition: device
-      device_id: 03340c90280e45fb5531642771532b70
-      domain: climate
-      entity_id: climate.thermostat
-      type: is_preset_mode
-      preset_mode: away
-    - condition: and
-      conditions:
-      - condition: trigger
-        id: Time
-      - condition: time
-        weekday:
-        - sun
+  - condition: device
+    device_id: 03340c90280e45fb5531642771532b70
+    domain: climate
+    entity_id: climate.thermostat
+    type: is_preset_mode
+    preset_mode: away
   action:
   - service: climate.set_preset_mode
     data:
@@ -876,4 +919,61 @@
         target:
           entity_id: climate.thermostat
     default: []
+  mode: single
+- id: '1663896073423'
+  alias: Rowan Main IR Brightness
+  description: ''
+  trigger:
+  - platform: state
+    entity_id: input_number.rowan_main_ir
+  condition: []
+  action:
+  - service: lifx.set_state
+    entity_id: light.rowan_main
+    data_template:
+      infrared: '{{ states(''input_number.rowan_main_ir'') | int }}'
+  mode: single
+  initial_state: true
+- id: '1664322732696'
+  alias: Alistair Light off White noise on
+  description: ''
+  trigger:
+  - platform: device
+    type: turned_off
+    device_id: 7baa77eeb6604448a7c10fb87d16a286
+    entity_id: light.alistair_main
+    domain: light
+  condition:
+  - condition: state
+    state: 'on'
+    entity_id: input_boolean.alistair_sound_trigger
+    for:
+      hours: 0
+      minutes: 1
+      seconds: 0
+  action:
+  - data:
+      entity_id: media_player.alistair_room
+    service: media_player.unjoin
+  - data:
+      entity_id: media_player.alistair_room
+      volume_level: 0.13
+    service: media_player.volume_set
+  - data:
+      entity_id: media_player.alistair_room
+      source: Baby
+    service: media_player.select_source
+  - service: media_player.repeat_set
+    data:
+      repeat: one
+    target:
+      entity_id: media_player.alistair_room
+  - type: turn_off
+    device_id: ec3547b4fd1a140b8125fedb3a35cf68
+    entity_id: light.rowan_main
+    domain: light
+  - service: light.turn_on
+    data: {}
+    target:
+      entity_id: light.alistair_main_ir
   mode: single

@@ -575,3 +575,273 @@
       effect: none
       state: 'on'
   icon: mdi:football
+- id: '1662507410293'
+  name: Planet 1
+  entities:
+    light.alistair_main:
+      min_mireds: 111
+      max_mireds: 666
+      effect_list:
+      - effect_colorloop
+      - effect_pulse
+      - effect_stop
+      supported_color_modes:
+      - color_temp
+      - hs
+      color_mode: hs
+      brightness: 224
+      hs_color:
+      - 355.095
+      - 22.142
+      rgb_color:
+      - 255
+      - 198
+      - 203
+      xy_color:
+      - 0.391
+      - 0.318
+      friendly_name: Alistair Main
+      supported_features: 36
+      state: 'on'
+  icon: mdi:earth
+  metadata: {}
+- id: '1662507443184'
+  name: Planet 2
+  entities:
+    light.alistair_main:
+      min_mireds: 111
+      max_mireds: 666
+      effect_list:
+      - effect_colorloop
+      - effect_pulse
+      - effect_stop
+      supported_color_modes:
+      - color_temp
+      - hs
+      color_mode: hs
+      brightness: 224
+      hs_color:
+      - 355.095
+      - 22.141
+      rgb_color:
+      - 255
+      - 198
+      - 203
+      xy_color:
+      - 0.391
+      - 0.318
+      friendly_name: Alistair Main
+      supported_features: 36
+      state: 'on'
+  icon: mdi:earth
+  metadata: {}
+- id: '1662507449811'
+  name: Planet 3
+  entities:
+    light.alistair_main:
+      min_mireds: 111
+      max_mireds: 666
+      effect_list:
+      - effect_colorloop
+      - effect_pulse
+      - effect_stop
+      supported_color_modes:
+      - color_temp
+      - hs
+      color_mode: hs
+      brightness: 224
+      hs_color:
+      - 355.095
+      - 22.141
+      rgb_color:
+      - 255
+      - 198
+      - 203
+      xy_color:
+      - 0.391
+      - 0.318
+      friendly_name: Alistair Main
+      supported_features: 36
+      state: 'on'
+  icon: mdi:earth
+  metadata: {}
+- id: '1662507456608'
+  name: Planet 3a
+  entities:
+    light.alistair_main:
+      min_mireds: 111
+      max_mireds: 666
+      effect_list:
+      - effect_colorloop
+      - effect_pulse
+      - effect_stop
+      supported_color_modes:
+      - color_temp
+      - hs
+      color_mode: hs
+      brightness: 224
+      hs_color:
+      - 355.095
+      - 22.141
+      rgb_color:
+      - 255
+      - 198
+      - 203
+      xy_color:
+      - 0.391
+      - 0.318
+      friendly_name: Alistair Main
+      supported_features: 36
+      state: 'on'
+  icon: mdi:earth
+  metadata: {}
+- id: '1662507462114'
+  name: Planet 4
+  entities:
+    light.alistair_main:
+      min_mireds: 111
+      max_mireds: 666
+      effect_list:
+      - effect_colorloop
+      - effect_pulse
+      - effect_stop
+      supported_color_modes:
+      - color_temp
+      - hs
+      color_mode: hs
+      brightness: 224
+      hs_color:
+      - 2.928
+      - 73.422
+      rgb_color:
+      - 255
+      - 76
+      - 67
+      xy_color:
+      - 0.634
+      - 0.31
+      friendly_name: Alistair Main Light
+      supported_features: 36
+      state: 'on'
+  icon: mdi:earth
+  metadata: {}
+- id: '1662507467756'
+  name: Planet 5
+  entities:
+    light.alistair_main:
+      min_mireds: 111
+      max_mireds: 666
+      effect_list:
+      - effect_colorloop
+      - effect_pulse
+      - effect_stop
+      supported_color_modes:
+      - color_temp
+      - hs
+      color_mode: hs
+      brightness: 224
+      hs_color:
+      - 17.622
+      - 95.428
+      rgb_color:
+      - 255
+      - 83
+      - 11
+      xy_color:
+      - 0.659
+      - 0.332
+      friendly_name: Alistair Main
+      supported_features: 36
+      state: 'on'
+  icon: mdi:earth
+  metadata: {}
+- id: '1662507472394'
+  name: Planet 6
+  entities:
+    light.alistair_main:
+      min_mireds: 111
+      max_mireds: 666
+      effect_list:
+      - effect_colorloop
+      - effect_pulse
+      - effect_stop
+      supported_color_modes:
+      - color_temp
+      - hs
+      color_mode: hs
+      brightness: 224
+      hs_color:
+      - 14.997
+      - 57.142
+      rgb_color:
+      - 255
+      - 145
+      - 109
+      xy_color:
+      - 0.529
+      - 0.347
+      friendly_name: Alistair Main
+      supported_features: 36
+      state: 'on'
+  icon: mdi:earth
+  metadata: {}
+- id: '1662507477252'
+  name: Planet 7
+  entities:
+    light.alistair_main:
+      min_mireds: 111
+      max_mireds: 666
+      effect_list:
+      - effect_colorloop
+      - effect_pulse
+      - effect_stop
+      supported_color_modes:
+      - color_temp
+      - hs
+      color_mode: hs
+      brightness: 224
+      hs_color:
+      - 194.999
+      - 71.427
+      rgb_color:
+      - 72
+      - 209
+      - 255
+      xy_color:
+      - 0.166
+      - 0.269
+      friendly_name: Alistair Main
+      supported_features: 36
+      state: 'on'
+  icon: mdi:earth
+  metadata: {}
+- id: '1662507482061'
+  name: Planet 8
+  entities:
+    light.alistair_main:
+      min_mireds: 111
+      max_mireds: 666
+      effect_list:
+      - effect_colorloop
+      - effect_pulse
+      - effect_stop
+      supported_color_modes:
+      - color_temp
+      - hs
+      color_mode: hs
+      brightness: 224
+      hs_color:
+      - 230.37
+      - 84.06
+      rgb_color:
+      - 40
+      - 75
+      - 255
+      xy_color:
+      - 0.146
+      - 0.079
+      friendly_name: Alistair Main
+      supported_features: 36
+      state: 'on'
+  icon: mdi:earth
+  metadata: {}

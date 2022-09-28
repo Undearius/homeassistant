@@ -686,3 +686,136 @@ alistair_quiet_time:
       entity_id: light.alistair_main
   mode: restart
   icon: mdi:party-popper
+rowan_light:
+  alias: Rowan Light
+  sequence:
+  - service: lifx.set_state
+    data:
+      brightness_pct: '{{ brightness_pct }}'
+      entity_id: light.rowan_main
+      hs_color: '[ {{colour}} ]'
+      power: 'on'
+      transition: '{{ transition | float }}'
+  variables:
+    transition: '{{ states("input_number.fade_time") | float * 60 }}'
+  fields:
+    brightness_pct:
+      description: Brightness percent
+      example: 75
+      selector:
+        number:
+          min: 0
+          max: 100
+          step: 1
+          unit_of_measurement: '%'
+          mode: slider
+    colour:
+      description: HS colour values
+      example: 45, 10
+    transition:
+      description: Time to transition to these settings
+      example: 5
+      selector:
+        number:
+          min: 0
+          max: 10
+          step: 1
+          unit_of_measurement: seconds
+          mode: slider
+  mode: restart
+rowan_trigger_light:
+  alias: Rowan Light with Trigger
+  sequence:
+  - service: lifx.set_state
+    data:
+      brightness_pct: '{{ brightness_pct }}'
+      entity_id: light.rowan_main
+      hs_color: '[ {{colour}} ]'
+      power: 'on'
+      transition: '{{ transition | float }}'
+  - delay:
+      seconds: '{{ transition | float }}'
+  - service: input_boolean.turn_on
+    entity_id: input_boolean.rowan_sound_trigger
+  - delay:
+      hours: 0
+      minutes: 20
+      seconds: 0
+      milliseconds: 0
+  - service: input_boolean.turn_off
+    entity_id: input_boolean.rowan_sound_trigger
+  variables:
+    transition: '{{ states("input_number.fade_time") | float * 60 }}'
+  fields:
+    brightness_pct:
+      description: Brightness percent
+      example: 75
+      selector:
+        number:
+          min: 0
+          max: 100
+          step: 1
+          unit_of_measurement: '%'
+          mode: slider
+    colour:
+      description: HS colour values
+      example: 45, 10
+    transition:
+      description: Time to transition to these settings
+      example: 5
+      selector:
+        number:
+          min: 0
+          max: 10
+          step: 1
+          unit_of_measurement: seconds
+          mode: slider
+  mode: restart
+rowan_quiet_time:
+  alias: Rowan Quiet Time
+  sequence:
+  - data:
+      entity_id: media_player.rowan_room
+    service: media_player.unjoin
+  - data:
+      volume_level: 0.18
+    service: media_player.volume_set
+    target:
+      entity_id: media_player.rowan_room
+  - service: media_player.play_media
+    data:
+      media_content_id: S://10.0.0.10/media/Music/Playlists/QuietTime.m3u
+      media_content_type: playlist
+    target:
+      entity_id: media_player.rowan_room
+    metadata:
+      title: QuietTime.m3u
+      thumbnail:
+      media_class: playlist
+      children_media_class:
+      navigateIds:
+      - {}
+      - media_content_type: library
+        media_content_id: ''
+      - media_content_type: playlist
+        media_content_id: A:PLAYLISTS
+  - service: media_player.shuffle_set
+    data:
+      shuffle: true
+    target:
+      entity_id: media_player.rowan_room
+  - service: media_player.repeat_set
+    data:
+      repeat: all
+    target:
+      entity_id: media_player.rowan_room
+  - service: script.rowan_light
+    data:
+      brightness_pct: 25
+      transition: 10
+      colour: 15, 50
+  - service: light.turn_on
+    data: {}
+    target:
+      entity_id: light.rowan_main_ir
+  mode: single

@@ -68,6 +68,32 @@ light:
           data_template:
             entity_id: input_number.alistair_main_ir
             value: "{{ brightness | int }}"
+      rowan_main_ir:
+        friendly_name: 'Rowan Main Infrared'
+        unique_id: RowanMainInfrared
+        icon_template: mdi:lightbulb-outline
+        value_template:  >-
+          {% if states('input_number.rowan_main_ir') | int > 0 %}
+            on
+          {% else %}
+            off
+          {% endif %}
+        level_template: "{{ states('input_number.rowan_main_ir') | int }}"
+        turn_on:
+          service: input_number.set_value
+          data_template:
+            entity_id: input_number.rowan_main_ir
+            value: 255
+        turn_off:
+          service: input_number.set_value
+          data_template:
+            entity_id: input_number.rowan_main_ir
+            value: 0
+        set_level:
+          service: input_number.set_value
+          data_template:
+            entity_id: input_number.rowan_main_ir
+            value: "{{ brightness | int }}"
 
 template:
   - sensor:
