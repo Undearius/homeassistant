@@ -533,7 +533,7 @@
   - wait_template: '{{ is_state("binary_sensor.living_room_dimmer_motion", "off")
       }}'
   - delay:
-      minutes: '{% if now().hour >=17 and now().hour < 22 %} 30 {% else %} 15 {% endif
+      minutes: '{% if now().hour >=17 and now().hour < 22 %} 30 {% else %} 30 {% endif
         %}'
   - condition: state
     entity_id: input_boolean.potsoverride
@@ -969,8 +969,8 @@
     target:
       entity_id: media_player.alistair_room
   - type: turn_off
-    device_id: ec3547b4fd1a140b8125fedb3a35cf68
-    entity_id: light.rowan_main
+    device_id: 7baa77eeb6604448a7c10fb87d16a286
+    entity_id: light.alistair_main
     domain: light
   - service: light.turn_on
     data: {}
