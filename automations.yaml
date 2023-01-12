@@ -4,32 +4,35 @@
   - platform: state
     from: playing
     to: paused
-    entity_id: media_player.plex_umbriel
+    entity_id: media_player.jellyfin_surface_firefox
     id: paused
   - platform: state
     to: playing
-    entity_id: media_player.plex_umbriel
+    entity_id: media_player.jellyfin_surface_firefox
     id: playing
   - platform: state
     from: playing
     to: idle
-    entity_id: media_player.plex_umbriel
+    entity_id: media_player.jellyfin_surface_firefox
     id: ended
   - platform: state
     to: idle
-    entity_id: media_player.plex_umbriel
+    entity_id: media_player.jellyfin_surface_firefox
     id: stopped
   condition:
   - condition: or
     conditions:
     - condition: state
-      entity_id: media_player.plex_umbriel
+      entity_id: media_player.jellyfin_surface_firefox
       state: movie
       attribute: media_content_type
     - condition: state
-      entity_id: media_player.plex_umbriel
+      entity_id: media_player.jellyfin_surface_firefox
       state: tvshow
       attribute: media_content_type
+    - condition: template
+      value_template: '{{ states.media_player.jellyfin_surface_firefox.attributes.media_content_id
+        is not defined }}'
   action:
   - choose:
     - conditions:
@@ -99,7 +102,7 @@
       entity_id: media_player.rowan_room
     service: media_player.unjoin
   - data:
-      volume_level: 0.07
+      volume_level: 0.15
     service: media_player.volume_set
     target:
       entity_id: media_player.rowan_room
@@ -120,6 +123,22 @@
     data: {}
     target:
       entity_id: light.rowan_main_ir
+  - repeat:
+      while:
+      - condition: numeric_state
+        entity_id: media_player.rowan_room
+        attribute: volume_level
+        below: 0.2
+      sequence:
+      - service: media_player.volume_set
+        data:
+          volume_level: '{{ "%.2f"|format(states.media_player.rowan_room.attributes.volume_level
+            + 0.01) }}'
+        target:
+          entity_id: media_player.rowan_room
+        enabled: true
+      - delay: 2
+    enabled: true
   mode: single
 - id: '1598804150280'
   alias: Light on White Noise off
@@ -425,7 +444,7 @@
   action:
   - data:
       entity_id: media_player.living_room
-    service: sonos.unjoin
+    service: media_player.unjoin
   - data:
       volume_level: 0.25
     service: media_player.volume_set
@@ -434,6 +453,7 @@
   - service: media_player.clear_playlist
     target:
       entity_id: media_player.living_room
+    data: {}
   - service: media_player.play_media
     data:
       media_content_id: x-file-cifs://10.0.0.10/docs/kyle/Documents/Projects/Clock
@@ -454,6 +474,7 @@
   - service: sonos.play_queue
     target:
       entity_id: media_player.living_room
+    data: {}
   mode: single
 - id: '1639164820573'
   alias: House shutoff when no one is home
@@ -495,7 +516,9 @@
   description: ''
   trigger:
   - platform: state
-    entity_id: binary_sensor.living_room_dimmer_motion
+    entity_id:
+    - binary_sensor.living_room_dimmer_motion
+    - binary_sensor.living_room_multisensor_home_security_motion_detection
     from: 'off'
     to: 'on'
   - platform: state
@@ -504,10 +527,9 @@
   - condition: state
     entity_id: input_boolean.potsoverride
     state: 'off'
-  - condition: template
-    value_template: "{% if states('weather.ottawa_kanata_orleans') in [\"snowy\",\"cloudy\",\"rainy\"]
-      %}\n  {% set ele = 7 %}\n{% else %}\n  {% set ele = 6 %}\n{% endif %}\n{{ state_attr('sun.sun',
-      'elevation') < ele }}"
+  - condition: numeric_state
+    entity_id: sensor.living_room_multisensor_illuminance
+    below: 10
   - condition: or
     conditions:
     - condition: state
@@ -520,18 +542,20 @@
         hours: 0
         minutes: 0
         seconds: 5
+  - condition: template
+    value_template: "{% if states('weather.ottawa_kanata_orleans') in [\"snowy\",\"cloudy\",\"rainy\"]
+      %}\n  {% set ele = 7 %}\n{% else %}\n  {% set ele = 6 %}\n{% endif %}\n{{ state_attr('sun.sun',
+      'elevation') < ele }}"
+    enabled: false
   action:
   - service: light.turn_on
     target:
       entity_id: light.livingroom_pots
     data:
-      brightness_pct: "{% if is_state(\"light.livingroom_pots\", \"on\") -%}\n  {{
-        (state_attr(\"light.livingroom_pots\", \"brightness\") / 2.55 ) | round }}\n{%-
-        else -%}\n  {% if now().hour >=22 or now().hour < 7 %} 1\n  {% elif now().hour
-        >= 20 and now().hour < 22 %} 20\n  {% else %} 100\n  {% endif %}\n{%- endif
-        %}"
+      brightness_pct: '{{ states(''sensor.pots_brightness'') }}'
   - wait_template: '{{ is_state("binary_sensor.living_room_dimmer_motion", "off")
-      }}'
+      and is_state("binary_sensor.living_room_multisensor_home_security_motion_detection",
+      "off") }}'
   - delay:
       minutes: '{% if now().hour >=17 and now().hour < 22 %} 30 {% else %} 30 {% endif
         %}'
@@ -542,6 +566,7 @@
     target:
       entity_id: light.livingroom_pots
     data: {}
+  - wait_for_trigger: []
   mode: restart
 - id: '1641781795297'
   alias: Notify Kyle if furnace about to turn on
@@ -551,6 +576,10 @@
     entity_id: climate.thermostat
     attribute: current_temperature
     to: '21.2'
+  - platform: numeric_state
+    entity_id: climate.thermostat
+    attribute: current_temperature
+    below: 21.3
   condition: []
   action:
   - service: notify.mobile_app_oneplus5t
@@ -719,8 +748,13 @@
         target:
           entity_id: scene.porch_lights_halloween
     - conditions:
-      - condition: template
-        value_template: '{{ now().month == 12 and now().day < 30 }}'
+      - condition: state
+        entity_id: calendar.porch_lights
+        state: 'on'
+      - condition: state
+        entity_id: calendar.porch_lights
+        attribute: message
+        state: Christmas
       sequence:
       - service: scene.turn_on
         data: {}
@@ -732,48 +766,6 @@
       data: {}
       target:
         entity_id: scene.porch_lights_ukraine
-  mode: single
-- id: '1645878364914'
-  alias: Notify if motion in Alistair's room
-  description: ''
-  trigger:
-  - platform: state
-    for:
-      hours: 0
-      minutes: 1
-      seconds: 0
-    entity_id: binary_sensor.alistair_room_home_security_motion_detection
-    from: 'off'
-    to: 'on'
-  condition:
-  - condition: state
-    state: 'on'
-    entity_id: light.alistair_main_ir
-  action:
-  - service: notify.mobile_app_sm_a515w
-    data:
-      data:
-        clickAction: /lovelace/alistair
-      message: Something moved in Alistair's room
-      title: He's awake!
-  - service: notify.mobile_app_sm_a515w
-    data:
-      message: TTS
-      data:
-        channel: alarm_stream
-      title: Alistair is out of bed
-  - service: notify.mobile_app_oneplus5t
-    data:
-      data:
-        clickAction: /lovelace/alistair
-      message: Something moved in Alistair's room
-      title: He's awake!
-  - service: notify.mobile_app_oneplus5t
-    data:
-      message: TTS
-      data:
-        channel: alarm_stream
-      title: Alistair is out of bed
   mode: single
 - id: '1646622549758'
   alias: Climate Preset to Home
@@ -868,7 +860,7 @@
     before: '11:00:00'
     after: 07:00:00
   action:
-  - service: notify.mobile_app_sm_a515w
+  - service: notify.mobile_app_allynns_iphone
     data:
       message: Water your damn plants!
       title: Water plants
@@ -906,7 +898,7 @@
       sequence:
       - service: climate.set_fan_mode
         data:
-          fan_mode: 'On'
+          fan_mode: 'on'
         target:
           entity_id: climate.thermostat
     - conditions:
@@ -915,7 +907,7 @@
       sequence:
       - service: climate.set_fan_mode
         data:
-          fan_mode: 'Off'
+          fan_mode: 'off'
         target:
           entity_id: climate.thermostat
     default: []
@@ -956,9 +948,10 @@
       entity_id: media_player.alistair_room
     service: media_player.unjoin
   - data:
-      entity_id: media_player.alistair_room
-      volume_level: 0.13
+      volume_level: 0.05
     service: media_player.volume_set
+    target:
+      entity_id: media_player.alistair_room
   - data:
       entity_id: media_player.alistair_room
       source: Baby
@@ -976,4 +969,218 @@
     data: {}
     target:
       entity_id: light.alistair_main_ir
+  - repeat:
+      while:
+      - condition: numeric_state
+        entity_id: media_player.alistair_room
+        attribute: volume_level
+        below: 0.15
+      sequence:
+      - service: media_player.volume_up
+        data: {}
+        target:
+          entity_id: media_player.alistair_room
+        enabled: false
+      - service: media_player.volume_set
+        data:
+          volume_level: '{{ "%.2f" |format(states.media_player.alistair_room.attributes.volume_level
+            + 0.01) }}'
+        target:
+          entity_id: media_player.alistair_room
+        enabled: true
+      - delay: 2
+    enabled: true
+  mode: single
+- id: '1668998646926'
+  alias: 'Lights: Pots motion'
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - binary_sensor.living_room_dimmer_motion
+    - binary_sensor.living_room_multisensor_home_security_motion_detection
+    from: 'off'
+    to: 'on'
+    id: Motion detected
+  - platform: state
+    entity_id:
+    - binary_sensor.living_room_dimmer_motion
+    - binary_sensor.living_room_multisensor_home_security_motion_detection
+    from: 'on'
+    to: 'off'
+    id: Motion stopped
+  - platform: state
+    entity_id: input_boolean.potsoverride
+    id: Override
+  - platform: event
+    event_type: timer.finished
+    event_data:
+      entity_id: timer.pots_timer
+    id: Timer finished
+  condition:
+  - condition: state
+    entity_id: input_boolean.potsoverride
+    state: 'off'
+  - condition: numeric_state
+    entity_id: sensor.living_room_multisensor_illuminance
+    below: 10
+    enabled: false
+  action:
+  - choose:
+    - conditions:
+      - condition: trigger
+        id: Motion detected
+      - condition: numeric_state
+        entity_id: sensor.living_room_multisensor_illuminance
+        below: 10
+      - condition: or
+        conditions:
+        - condition: state
+          entity_id: light.livingroom_pots
+          state: 'on'
+        - condition: state
+          entity_id: light.livingroom_pots
+          state: 'off'
+          for:
+            hours: 0
+            minutes: 0
+            seconds: 5
+      sequence:
+      - service: light.turn_on
+        target:
+          entity_id: light.livingroom_pots
+        data:
+          brightness_pct: '{{ states(''sensor.pots_brightness'') }}'
+        enabled: false
+      - service: timer.cancel
+        data: {}
+        target:
+          entity_id: timer.pots_timer
+      - if:
+        - condition: time
+          before: 07:00:00
+          after: 00:00:00
+        then:
+        - service: light.turn_on
+          data: {}
+          target:
+            entity_id:
+            - light.wled_cabinet
+            - light.wled_kitchen
+        else:
+        - service: light.turn_on
+          target:
+            entity_id: light.livingroom_pots
+          data:
+            brightness_pct: '{{ states(''sensor.pots_brightness'') }}'
+    - conditions:
+      - condition: trigger
+        id: Motion stopped
+      - condition: numeric_state
+        entity_id: sensor.living_room_multisensor_illuminance
+        below: 10
+      sequence:
+      - service: timer.start
+        data:
+          duration: '{% if now().hour >=17 and now().hour < 22 %} 00:30:00 {% else
+            %} 00:30:00 {% endif %}'
+        target:
+          entity_id: timer.pots_timer
+    - conditions:
+      - condition: trigger
+        id: Timer finished
+      sequence:
+      - service: light.turn_off
+        data: {}
+        target:
+          entity_id: light.livingroom_pots
+  mode: restart
+- id: '1669330609999'
+  alias: Clock Chimes - Hour - Alistair
+  description: ''
+  trigger:
+  - platform: time_pattern
+    hours: '*'
+    seconds: '39'
+    minutes: '59'
+  condition:
+  - condition: time
+    after: 06:50:00
+    before: '21:05:00'
+  - condition: not
+    conditions:
+    - condition: state
+      state: playing
+      entity_id: media_player.alistair_room
+  action:
+  - data: {}
+    service: media_player.unjoin
+    target:
+      entity_id: media_player.alistair_room
+  - data:
+      volume_level: 0.25
+    service: media_player.volume_set
+    target:
+      entity_id: media_player.alistair_room
+  - service: media_player.clear_playlist
+    data: {}
+    target:
+      entity_id: media_player.alistair_room
+  - service: media_player.repeat_set
+    data:
+      repeat: 'off'
+    target:
+      entity_id: media_player.alistair_room
+  - service: media_player.play_media
+    data:
+      media_content_id: x-file-cifs://10.0.0.10/docs/kyle/Documents/Projects/Clock
+        Chimes/60.mp3
+      media_content_type: music
+      enqueue: true
+    target:
+      entity_id: media_player.alistair_room
+  - service: media_player.play_media
+    data:
+      media_content_id: x-file-cifs://10.0.0.10/docs/kyle/Documents/Projects/Clock
+        Chimes/{% if now().hour > 12 %}{{ now().hour - 11 }}{%- else -%}{{ now().hour
+        + 1 }}{%- endif %}.mp3
+      media_content_type: music
+      enqueue: true
+    target:
+      entity_id: media_player.alistair_room
+  - service: sonos.play_queue
+    data: {}
+    target:
+      entity_id: media_player.alistair_room
+  mode: single
+- id: '1672348945398'
+  alias: Notify Kyle when Allynn gets home
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - person.allynn
+    to: home
+  condition: []
+  action:
+  - service: notify.mobile_app_oneplus5t
+    data:
+      message: Allynn is home
+      title: Allynn is home
+  mode: single
+- id: '1673320514579'
+  alias: 'Light: Turn on WLED Kitchen when segments turn on'
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - light.wled_cabinet
+    - light.wled_counter
+    to: 'on'
+  condition: []
+  action:
+  - service: light.turn_on
+    data: {}
+    target:
+      entity_id: light.wled_kitchen
   mode: single

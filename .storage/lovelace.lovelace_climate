@@ -17,7 +17,7 @@
               "type": "history-graph",
               "entities": [
                 {
-                  "entity": "sensor.alistair_room_air_temperature"
+                  "entity": "sensor.alistair_temperature"
                 },
                 {
                   "entity": "sensor.rowan_temperature"
@@ -29,7 +29,7 @@
                   "entity": "sensor.thermostat_temperature"
                 },
                 {
-                  "entity": "sensor.basement_temperature"
+                  "entity": "sensor.living_room_multisensor_air_temperature"
                 },
                 {
                   "entity": "sensor.temperature"
@@ -41,7 +41,7 @@
               "type": "history-graph",
               "entities": [
                 {
-                  "entity": "sensor.alistair_room_humidity"
+                  "entity": "sensor.alistair_humidity"
                 },
                 {
                   "entity": "sensor.rowan_humidity"
@@ -50,7 +50,7 @@
                   "entity": "sensor.thermostat_humidity"
                 },
                 {
-                  "entity": "sensor.basement_humidity"
+                  "entity": "sensor.living_room_multisensor_humidity"
                 }
               ],
               "title": "Humidity"

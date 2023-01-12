@@ -1,349 +1,594 @@
 {
-    "version": 1,
-    "minor_version": 1,
-    "key": "lovelace.lovelace_guest",
-    "data": {
-        "config": {
-            "title": "Home",
-            "views": [
+  "version": 1,
+  "minor_version": 1,
+  "key": "lovelace.lovelace_guest",
+  "data": {
+    "config": {
+      "title": "Home",
+      "views": [
+        {
+          "title": "Home",
+          "icon": "mdi:home-assistant",
+          "path": "default_view",
+          "badges": [],
+          "cards": [
+            {
+              "entities": [
                 {
-                    "title": "Home",
-                    "badges": [],
-                    "cards": [
-                        {
-                            "entities": [
-                                {
-                                    "entity": "light.porch_door"
-                                },
-                                {
-                                    "entity": "light.porch_garage"
-                                },
-                                {
-                                    "entity": "light.wled_bed"
-                                },
-                                {
-                                    "entity": "light.alistair_main"
-                                },
-                                {
-                                    "entity": "light.livingroom_pots"
-                                },
-                                {
-                                    "entity": "light.living_room_main"
-                                },
-                                {
-                                    "entity": "light.kitchen"
-                                },
-                                {
-                                    "entity": "light.dining_table"
-                                },
-                                {
-                                    "entity": "light.sink_lights"
-                                }
-                            ],
-                            "title": "Lights",
-                            "type": "entities"
-                        },
-                        {
-                            "type": "button",
-                            "tap_action": {
-                                "action": "toggle"
-                            },
-                            "entity": "input_boolean.potsoverride",
-                            "icon_height": "50px",
-                            "name": "Manual Pot Lights"
-                        },
-                        {
-                            "entity": "media_player.living_room",
-                            "type": "media-control"
-                        },
-                        {
-                            "entity": "weather.ottawa_kanata_orleans",
-                            "show_forecast": true,
-                            "type": "weather-forecast"
-                        }
-                    ],
-                    "icon": "mdi:home-assistant",
-                    "path": "default_view"
+                  "entity": "light.livingroom_pots"
                 },
                 {
-                    "title": "Alistair Room",
-                    "icon": "mdi:baby",
-                    "path": "alistair-room",
-                    "badges": [],
-                    "cards": [
-                        {
-                            "entity": "light.alistair_main",
-                            "name": "Alistair Main",
-                            "type": "light"
-                        },
-                        {
-                            "entities": [
-                                {
-                                    "entity": "light.alistair_main",
-                                    "icon": "mdi:lightbulb-on",
-                                    "name": "Default",
-                                    "tap_action": {
-                                        "action": "call-service",
-                                        "service": "script.alistair_light",
-                                        "service_data": {
-                                            "brightness_pct": 100,
-                                            "colour": "45.000, 6.258",
-                                            "transition": 0.1
-                                        }
-                                    },
-                                    "hold_action": {
-                                        "action": "call-service",
-                                        "service": "script.alistair_light",
-                                        "service_data": {
-                                            "brightness_pct": 100,
-                                            "colour": "45.000, 6.258"
-                                        }
-                                    }
-                                },
-                                {
-                                    "entity": "light.alistair_main",
-                                    "icon": "mdi:book-open",
-                                    "name": "Reading",
-                                    "tap_action": {
-                                        "action": "call-service",
-                                        "service": "script.alistair_trigger_light",
-                                        "service_data": {
-                                            "brightness_pct": 30,
-                                            "colour": "40, 50",
-                                            "transition": 5
-                                        }
-                                    },
-                                    "hold_action": {
-                                        "action": "call-service",
-                                        "service": "script.alistair_trigger_light",
-                                        "service_data": {
-                                            "brightness_pct": 30,
-                                            "colour": "40, 50"
-                                        }
-                                    }
-                                },
-                                {
-                                    "entity": "light.alistair_main",
-                                    "icon": "mdi:weather-night",
-                                    "name": "Nightlight",
-                                    "tap_action": {
-                                        "action": "call-service",
-                                        "service": "script.alistair_light",
-                                        "service_data": {
-                                            "brightness_pct": 1,
-                                            "colour": "37, 100",
-                                            "transition": 10
-                                        }
-                                    },
-                                    "hold_action": {
-                                        "action": "call-service",
-                                        "service": "script.alistair_light",
-                                        "service_data": {
-                                            "brightness_pct": 1,
-                                            "colour": "37, 100"
-                                        }
-                                    }
-                                }
-                            ],
-                            "show_state": false,
-                            "type": "glance",
-                            "state_color": false
-                        },
-                        {
-                            "type": "entities",
-                            "entities": [
-                                "input_number.fade_time"
-                            ]
-                        },
-                        {
-                            "type": "conditional",
-                            "conditions": [
-                                {
-                                    "entity": "input_boolean.alistair_sound_trigger",
-                                    "state": "off"
-                                },
-                                {
-                                    "entity": "media_player.alistair_room",
-                                    "state_not": "playing"
-                                }
-                            ],
-                            "card": {
-                                "show_name": true,
-                                "show_icon": true,
-                                "show_state": false,
-                                "type": "glance",
-                                "entities": [
-                                    {
-                                        "entity": "light.alistair_main",
-                                        "icon": "mdi:speaker",
-                                        "name": "Lights off, Sound on",
-                                        "tap_action": {
-                                            "action": "call-service",
-                                            "service": "automation.trigger",
-                                            "service_data": {
-                                                "entity_id": "automation.turn_on_white_noise",
-                                                "skip_condition": true
-                                            }
-                                        }
-                                    }
-                                ]
-                            }
-                        },
-                        {
-                            "entities": [
-                                {
-                                    "entity": "light.alistair_main",
-                                    "icon": "mdi:tent",
-                                    "name": "Camping",
-                                    "tap_action": {
-                                        "action": "call-service",
-                                        "service": "scene.turn_on",
-                                        "service_data": {
-                                            "entity_id": "scene.camping",
-                                            "transition": 5
-                                        }
-                                    }
-                                },
-                                {
-                                    "entity": "media_player.alistair_room",
-                                    "icon": "mdi:speaker",
-                                    "name": "Lights off, Sound on",
-                                    "tap_action": {
-                                        "action": "call-service",
-                                        "service": "automation.trigger",
-                                        "service_data": {
-                                            "entity_id": "automation.turn_on_white_noise",
-                                            "skip_condition": true
-                                        }
-                                    }
-                                },
-                                {
-                                    "entity": "light.alistair_main",
-                                    "icon": "mdi:close-thick",
-                                    "name": "Don't press",
-                                    "tap_action": {
-                                        "action": "call-service",
-                                        "service": "script.turn_on",
-                                        "service_data": {
-                                            "entity_id": "script.party_time"
-                                        }
-                                    }
-                                }
-                            ],
-                            "show_state": false,
-                            "type": "glance",
-                            "show_name": true,
-                            "show_icon": true,
-                            "state_color": false
-                        },
-                        {
-                            "entity": "light.alistair_main_ir",
-                            "type": "light"
-                        },
-                        {
-                            "entity": "media_player.alistair_room",
-                            "type": "media-control"
-                        }
-                    ]
+                  "entity": "light.living_room_main"
                 },
                 {
-                    "icon": "mdi:thermometer",
-                    "panel": false,
-                    "path": "climate",
-                    "title": "Climate Station",
-                    "badges": [],
-                    "cards": [
-                        {
-                            "type": "thermostat",
-                            "entity": "climate.thermostat"
-                        },
-                        {
-                            "type": "history-graph",
-                            "entities": [
-                                {
-                                    "entity": "sensor.alistair_room_air_temperature"
-                                },
-                                {
-                                    "entity": "sensor.rowan_temperature"
-                                },
-                                {
-                                    "entity": "climate.thermostat"
-                                },
-                                {
-                                    "entity": "sensor.thermostat_temperature"
-                                }
-                            ],
-                            "hours_to_show": 24,
-                            "refresh_interval": 0
-                        },
-                        {
-                            "type": "history-graph",
-                            "entities": [
-                                {
-                                    "entity": "sensor.alistair_room_humidity"
-                                },
-                                {
-                                    "entity": "sensor.rowan_humidity"
-                                },
-                                {
-                                    "entity": "sensor.thermostat_humidity"
-                                }
-                            ],
-                            "hours_to_show": 24,
-                            "refresh_interval": 0
-                        },
-                        {
-                            "entities": [
-                                {
-                                    "entity": "binary_sensor.thermostat_fan",
-                                    "icon": "mdi:fan",
-                                    "name": "Boost Fan",
-                                    "tap_action": {
-                                        "action": "call-service",
-                                        "service": "script.kickstart_fan"
-                                    },
-                                    "hold_action": {
-                                        "action": "call-service",
-                                        "service": "script.boost_fan"
-                                    }
-                                },
-                                {
-                                    "entity": "binary_sensor.thermostat_cooler",
-                                    "icon": "mdi:snowflake",
-                                    "name": "Boost A/C",
-                                    "tap_action": {
-                                        "action": "call-service",
-                                        "service": "script.kickstart_ac"
-                                    },
-                                    "hold_action": {
-                                        "action": "call-service",
-                                        "service": "script.boost_ac"
-                                    }
-                                },
-                                {
-                                    "entity": "binary_sensor.thermostat_heater",
-                                    "icon": "mdi:fire",
-                                    "name": "Boost Heating",
-                                    "tap_action": {
-                                        "action": "call-service",
-                                        "service": "script.kickstart_heat"
-                                    },
-                                    "hold_action": {
-                                        "action": "call-service",
-                                        "service": "script.boost_heat"
-                                    }
-                                }
-                            ],
-                            "show_state": false,
-                            "type": "glance",
-                            "show_name": true,
-                            "show_icon": true,
-                            "state_color": true,
-                            "title": "Boost"
-                        }
-                    ]
+                  "entity": "light.kitchen"
+                },
+                {
+                  "entity": "light.dining_table"
+                },
+                {
+                  "entity": "light.sink_lights"
+                },
+                {
+                  "entity": "switch.sonoff_s31_relay",
+                  "name": "Garland",
+                  "icon": "mdi:string-lights"
+                },
+                {
+                  "entity": "light.stairs"
                 }
-            ]
+              ],
+              "title": "Main Floor Lights",
+              "type": "entities",
+              "show_header_toggle": true,
+              "state_color": true
+            },
+            {
+              "type": "button",
+              "tap_action": {
+                "action": "toggle"
+              },
+              "entity": "input_boolean.potsoverride",
+              "icon_height": "50px",
+              "name": "Manual Pot Lights"
+            },
+            {
+              "entities": [
+                {
+                  "entity": "light.porch_garage"
+                },
+                {
+                  "entity": "light.porch_front"
+                },
+                {
+                  "entity": "light.porch_door"
+                }
+              ],
+              "title": "Outside Lights",
+              "type": "entities",
+              "state_color": true
+            },
+            {
+              "entities": [
+                {
+                  "entity": "light.alistair_main"
+                },
+                {
+                  "entity": "light.rowan_main"
+                }
+              ],
+              "title": "Bedroom Lights",
+              "type": "entities",
+              "state_color": true
+            },
+            {
+              "entity": "weather.ottawa_kanata_orleans",
+              "show_forecast": true,
+              "type": "weather-forecast"
+            },
+            {
+              "type": "tile",
+              "entity": "vacuum.beemer",
+              "features": [
+                {
+                  "type": "vacuum-commands",
+                  "commands": [
+                    "start_pause",
+                    "stop",
+                    "locate"
+                  ]
+                }
+              ]
+            },
+            {
+              "entity": "media_player.living_room",
+              "type": "media-control"
+            }
+          ]
+        },
+        {
+          "theme": "Backend-selected",
+          "title": "Alistair Room",
+          "icon": "mdi:human-child",
+          "path": "alistair-room",
+          "badges": [],
+          "cards": [
+            {
+              "entity": "light.alistair_main",
+              "name": "Alistair Main",
+              "type": "light"
+            },
+            {
+              "entities": [
+                {
+                  "entity": "light.alistair_main",
+                  "icon": "mdi:lightbulb-on",
+                  "name": "Default",
+                  "tap_action": {
+                    "action": "call-service",
+                    "service": "script.alistair_light",
+                    "service_data": {
+                      "brightness_pct": 100,
+                      "colour": "45, 5",
+                      "transition": 0.1
+                    }
+                  },
+                  "hold_action": {
+                    "action": "call-service",
+                    "service": "script.alistair_light",
+                    "service_data": {
+                      "brightness_pct": 100,
+                      "colour": "45, 5"
+                    }
+                  }
+                },
+                {
+                  "entity": "light.alistair_main",
+                  "icon": "mdi:book-open",
+                  "name": "Reading",
+                  "tap_action": {
+                    "action": "call-service",
+                    "service": "script.alistair_trigger_light",
+                    "service_data": {
+                      "brightness_pct": 30,
+                      "colour": "17, 50",
+                      "transition": 5
+                    }
+                  },
+                  "hold_action": {
+                    "action": "call-service",
+                    "service": "script.alistair_trigger_light",
+                    "service_data": {
+                      "brightness_pct": 30,
+                      "colour": "17, 50"
+                    }
+                  }
+                },
+                {
+                  "entity": "light.alistair_main",
+                  "icon": "mdi:weather-night",
+                  "name": "Nightlight",
+                  "tap_action": {
+                    "action": "call-service",
+                    "service": "script.alistair_light",
+                    "service_data": {
+                      "brightness_pct": 3,
+                      "colour": "10, 100",
+                      "transition": 5
+                    }
+                  },
+                  "hold_action": {
+                    "action": "call-service",
+                    "service": "script.alistair_light",
+                    "service_data": {
+                      "brightness_pct": 3,
+                      "colour": "10, 100"
+                    }
+                  }
+                }
+              ],
+              "show_state": false,
+              "type": "glance",
+              "state_color": false
+            },
+            {
+              "type": "entities",
+              "entities": [
+                "input_number.fade_time"
+              ]
+            },
+            {
+              "type": "conditional",
+              "conditions": [
+                {
+                  "entity": "input_boolean.alistair_sound_trigger",
+                  "state": "off"
+                },
+                {
+                  "entity": "media_player.alistair_room",
+                  "state_not": "playing"
+                }
+              ],
+              "card": {
+                "show_name": true,
+                "show_icon": true,
+                "show_state": false,
+                "type": "glance",
+                "entities": [
+                  {
+                    "entity": "light.alistair_main",
+                    "icon": "mdi:speaker",
+                    "name": "Lights off, Sound on",
+                    "tap_action": {
+                      "action": "call-service",
+                      "service": "automation.trigger",
+                      "service_data": {
+                        "entity_id": "automation.alistair_turn_on_white_noise",
+                        "skip_condition": true
+                      }
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "entities": [
+                {
+                  "entity": "light.alistair_main",
+                  "icon": "mdi:tent",
+                  "name": "Quiet Time",
+                  "tap_action": {
+                    "action": "call-service",
+                    "service": "script.alistair_quiet_time"
+                  }
+                },
+                {
+                  "entity": "media_player.alistair_room",
+                  "icon": "mdi:speaker",
+                  "name": "Lights off, Sound on",
+                  "tap_action": {
+                    "action": "call-service",
+                    "service": "automation.trigger",
+                    "service_data": {
+                      "entity_id": "automation.alistair_turn_on_white_noise",
+                      "skip_condition": true
+                    }
+                  }
+                },
+                {
+                  "entity": "light.alistair_main",
+                  "icon": "mdi:close-thick",
+                  "name": "Don't press",
+                  "tap_action": {
+                    "action": "call-service",
+                    "service": "script.turn_on",
+                    "service_data": {
+                      "entity_id": "script.party_time"
+                    }
+                  }
+                }
+              ],
+              "show_state": false,
+              "type": "glance",
+              "show_name": true,
+              "show_icon": true,
+              "state_color": false
+            },
+            {
+              "entity": "light.alistair_main_ir",
+              "type": "light"
+            },
+            {
+              "entity": "media_player.alistair_room",
+              "type": "media-control"
+            }
+          ]
+        },
+        {
+          "theme": "Backend-selected",
+          "title": "Rowan Room",
+          "icon": "mdi:baby",
+          "path": "rowan-room",
+          "badges": [],
+          "cards": [
+            {
+              "entity": "light.rowan_main",
+              "name": "Rowan Main",
+              "type": "light"
+            },
+            {
+              "entities": [
+                {
+                  "entity": "light.rowan_main",
+                  "icon": "mdi:lightbulb-on",
+                  "name": "Default",
+                  "tap_action": {
+                    "action": "call-service",
+                    "service": "script.rowan_light",
+                    "service_data": {
+                      "brightness_pct": 100,
+                      "colour": "45, 5",
+                      "transition": 0.1
+                    }
+                  },
+                  "hold_action": {
+                    "action": "call-service",
+                    "service": "script.rowan_light",
+                    "service_data": {
+                      "brightness_pct": 100,
+                      "colour": "45, 5"
+                    }
+                  }
+                },
+                {
+                  "entity": "light.rowan_main",
+                  "icon": "mdi:book-open",
+                  "name": "Reading",
+                  "tap_action": {
+                    "action": "call-service",
+                    "service": "script.rowan_trigger_light",
+                    "service_data": {
+                      "brightness_pct": 30,
+                      "colour": "17, 50",
+                      "transition": 5
+                    }
+                  },
+                  "hold_action": {
+                    "action": "call-service",
+                    "service": "script.rowan_trigger_light",
+                    "service_data": {
+                      "brightness_pct": 30,
+                      "colour": "17, 50"
+                    }
+                  }
+                },
+                {
+                  "entity": "light.rowan_main",
+                  "icon": "mdi:weather-night",
+                  "name": "Nightlight",
+                  "tap_action": {
+                    "action": "call-service",
+                    "service": "script.rowan_light",
+                    "service_data": {
+                      "brightness_pct": 3,
+                      "colour": "10, 100",
+                      "transition": 5
+                    }
+                  },
+                  "hold_action": {
+                    "action": "call-service",
+                    "service": "script.rowan_light",
+                    "service_data": {
+                      "brightness_pct": 3,
+                      "colour": "10, 100"
+                    }
+                  }
+                }
+              ],
+              "show_state": false,
+              "type": "glance",
+              "state_color": false
+            },
+            {
+              "show_name": true,
+              "show_icon": true,
+              "show_state": false,
+              "type": "glance",
+              "entities": [
+                {
+                  "entity": "light.rowan_main",
+                  "icon": "mdi:speaker",
+                  "name": "Lights off, Sound on",
+                  "tap_action": {
+                    "action": "call-service",
+                    "service": "automation.trigger",
+                    "service_data": {
+                      "entity_id": "automation.rowan_turn_on_white_noise",
+                      "skip_condition": true
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "entity": "light.rowan_main_ir",
+              "type": "light"
+            },
+            {
+              "entity": "media_player.rowan_room",
+              "type": "media-control"
+            }
+          ]
+        },
+        {
+          "title": "Climate Station",
+          "icon": "mdi:thermometer",
+          "panel": false,
+          "path": "climate",
+          "badges": [],
+          "cards": [
+            {
+              "type": "thermostat",
+              "entity": "climate.thermostat"
+            },
+            {
+              "entities": [
+                {
+                  "entity": "binary_sensor.thermostat_fan",
+                  "icon": "mdi:fan",
+                  "name": "Boost Fan",
+                  "tap_action": {
+                    "action": "call-service",
+                    "service": "script.kickstart_fan"
+                  },
+                  "hold_action": {
+                    "action": "call-service",
+                    "service": "script.boost_fan"
+                  }
+                },
+                {
+                  "entity": "binary_sensor.thermostat_cooler",
+                  "icon": "mdi:snowflake",
+                  "name": "Boost A/C",
+                  "tap_action": {
+                    "action": "call-service",
+                    "service": "script.kickstart_ac"
+                  },
+                  "hold_action": {
+                    "action": "call-service",
+                    "service": "script.boost_ac"
+                  }
+                },
+                {
+                  "entity": "binary_sensor.thermostat_heater",
+                  "icon": "mdi:fire",
+                  "name": "Boost Heating",
+                  "tap_action": {
+                    "action": "call-service",
+                    "service": "script.kickstart_heat"
+                  },
+                  "hold_action": {
+                    "action": "call-service",
+                    "service": "script.boost_heat"
+                  }
+                }
+              ],
+              "show_state": false,
+              "type": "glance",
+              "show_name": true,
+              "show_icon": true,
+              "state_color": true,
+              "title": "Boost"
+            },
+            {
+              "type": "history-graph",
+              "entities": [
+                {
+                  "entity": "sensor.alistair_temperature"
+                },
+                {
+                  "entity": "sensor.rowan_temperature"
+                },
+                {
+                  "entity": "climate.thermostat"
+                },
+                {
+                  "entity": "sensor.thermostat_temperature"
+                },
+                {
+                  "entity": "sensor.living_room_multisensor_air_temperature"
+                },
+                {
+                  "entity": "sensor.bedroom_temperature"
+                }
+              ],
+              "hours_to_show": 24,
+              "refresh_interval": 0,
+              "title": "Temperature (24h)"
+            },
+            {
+              "type": "history-graph",
+              "entities": [
+                {
+                  "entity": "sensor.alistair_humidity"
+                },
+                {
+                  "entity": "sensor.rowan_humidity"
+                },
+                {
+                  "entity": "sensor.thermostat_humidity"
+                },
+                {
+                  "entity": "sensor.living_room_multisensor_humidity"
+                },
+                {
+                  "entity": "sensor.bedroom_humidity"
+                }
+              ],
+              "hours_to_show": 24,
+              "refresh_interval": 0,
+              "title": "Humidity (24h)"
+            },
+            {
+              "type": "history-graph",
+              "entities": [
+                {
+                  "entity": "sensor.alistair_temperature"
+                },
+                {
+                  "entity": "sensor.rowan_temperature"
+                },
+                {
+                  "entity": "climate.thermostat"
+                },
+                {
+                  "entity": "sensor.thermostat_temperature"
+                },
+                {
+                  "entity": "sensor.living_room_multisensor_air_temperature"
+                },
+                {
+                  "entity": "sensor.bedroom_temperature"
+                }
+              ],
+              "hours_to_show": 2,
+              "refresh_interval": 0,
+              "title": "Temperature (2h)"
+            },
+            {
+              "type": "history-graph",
+              "entities": [
+                {
+                  "entity": "sensor.alistair_humidity"
+                },
+                {
+                  "entity": "sensor.rowan_humidity"
+                },
+                {
+                  "entity": "sensor.thermostat_humidity"
+                },
+                {
+                  "entity": "sensor.living_room_multisensor_humidity"
+                },
+                {
+                  "entity": "sensor.bedroom_humidity"
+                }
+              ],
+              "hours_to_show": 2,
+              "refresh_interval": 0,
+              "title": "Humidity (2h)"
+            },
+            {
+              "type": "entities",
+              "entities": [
+                {
+                  "entity": "binary_sensor.thermostat_fan",
+                  "icon": "hass:fan",
+                  "secondary_info": "last-changed"
+                },
+                {
+                  "entity": "binary_sensor.thermostat_cooler",
+                  "icon": "hass:snowflake",
+                  "secondary_info": "last-changed"
+                },
+                {
+                  "entity": "binary_sensor.thermostat_heater",
+                  "icon": "hass:fire",
+                  "secondary_info": "last-changed"
+                }
+              ],
+              "state_color": true
+            },
+            {
+              "type": "entities",
+              "entities": [
+                "sensor.a_c_on_today",
+                "sensor.furnace_on_today"
+              ]
+            }
+          ]
         }
+      ]
     }
+  }
 }

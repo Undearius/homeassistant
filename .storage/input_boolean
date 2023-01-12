@@ -16,6 +16,11 @@
         "name": "PotsOverride",
         "icon": "mdi:lightbulb-off",
         "id": "potsoverride"
+      },
+      {
+        "id": "windows_open",
+        "name": "Windows Open",
+        "icon": "mdi:microsoft-windows-classic"
       }
     ]
   }

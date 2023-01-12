@@ -298,6 +298,11 @@ party_time:
       media_content_type: music
     target:
       entity_id: media_player.alistair_room
+  - service: media_player.repeat_set
+    data:
+      repeat: 'off'
+    target:
+      entity_id: media_player.alistair_room
   - wait_for_trigger:
     - platform: state
       entity_id: media_player.alistair_room
@@ -330,7 +335,10 @@ party_time:
   - service: lifx.effect_pulse
     data:
       brightness: 50
-      color_name: blue
+      rgb_color:
+      - 0
+      - 0
+      - 255
       cycles: 4
       period: 0.15
     target:
@@ -345,7 +353,10 @@ party_time:
       period: 0.15
       cycles: 4
       brightness: 120
-      color_name: red
+      rgb_color:
+      - 255
+      - 0
+      - 0
     target:
       entity_id: light.alistair_main
   - delay:
@@ -358,7 +369,10 @@ party_time:
       period: 0.15
       cycles: 4
       brightness: 60
-      color_name: green
+      rgb_color:
+      - 0
+      - 255
+      - 0
     target:
       entity_id: light.alistair_main
   - delay:
@@ -382,25 +396,49 @@ party_time:
     data:
       power: true
       brightness_pct: 100
-      color_name: blue
+      rgb_color:
+      - 0
+      - 0
+      - 255
     target:
       entity_id: light.alistair_main
   - service: lifx.set_state
     data:
       power: false
-      transition: 3
+      transition: 2
     target:
       entity_id: light.alistair_main
   - delay:
       hours: 0
       minutes: 1
-      seconds: 4
+      seconds: 3
       milliseconds: 0
   - service: lifx.effect_colorloop
     data:
       brightness: 255
       change: 22
       period: 0.05
+    target:
+      entity_id: light.alistair_main
+  - delay:
+      hours: 0
+      minutes: 1
+      seconds: 10
+      milliseconds: 0
+  - service: lifx.set_state
+    data:
+      power: true
+      brightness_pct: 100
+      rgb_color:
+      - 255
+      - 0
+      - 0
+    target:
+      entity_id: light.alistair_main
+  - service: lifx.set_state
+    data:
+      power: false
+      transition: 3
     target:
       entity_id: light.alistair_main
   mode: restart
@@ -434,12 +472,11 @@ alistair_trigger_light:
           unit_of_measurement: seconds
           mode: slider
   sequence:
-  - service: lifx.set_state
+  - service: light.turn_on
     data:
       brightness_pct: '{{ brightness_pct }}'
       entity_id: light.alistair_main
       hs_color: '[ {{colour}} ]'
-      power: 'on'
       transition: '{{ transition | float }}'
   - delay:
       seconds: '{{ transition | float }}'
@@ -482,12 +519,11 @@ alistair_light:
           unit_of_measurement: seconds
           mode: slider
   sequence:
-  - service: lifx.set_state
+  - service: light.turn_on
     data:
-      brightness_pct: '{{ brightness_pct }}'
+      brightness_pct: '{{ brightness_pct | float }}'
       entity_id: light.alistair_main
       hs_color: '[ {{colour}} ]'
-      power: 'on'
       transition: '{{ transition | float }}'
   mode: restart
 kickstart_ac:
@@ -689,12 +725,11 @@ alistair_quiet_time:
 rowan_light:
   alias: Rowan Light
   sequence:
-  - service: lifx.set_state
+  - service: light.turn_on
     data:
       brightness_pct: '{{ brightness_pct }}'
       entity_id: light.rowan_main
       hs_color: '[ {{colour}} ]'
-      power: 'on'
       transition: '{{ transition | float }}'
   variables:
     transition: '{{ states("input_number.fade_time") | float * 60 }}'
@@ -726,12 +761,11 @@ rowan_light:
 rowan_trigger_light:
   alias: Rowan Light with Trigger
   sequence:
-  - service: lifx.set_state
+  - service: light.turn_on
     data:
       brightness_pct: '{{ brightness_pct }}'
       entity_id: light.rowan_main
       hs_color: '[ {{colour}} ]'
-      power: 'on'
       transition: '{{ transition | float }}'
   - delay:
       seconds: '{{ transition | float }}'

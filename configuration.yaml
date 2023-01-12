@@ -102,20 +102,24 @@ template:
         unit_of_measurement: "°C"
         state: >
           {% set thermo = states("sensor.thermostat_temperature") | float(0) %}
-          {% set alistair = states("sensor.alistair_room_air_temperature") | float(0) %}
+          {% set alistair = states("sensor.alistair_temperature") | float(0) %}
           {% set rowan = states("sensor.rowan_temperature") | float(0) %}
           {% set weight = {"thermo": 1.00, "rowan": 0.00, "alistair": 0.00} %}
           {% set alistair_sleeping = is_state('light.alistair_main_ir', 'on') %}
+          {% set rowan_sleeping = is_state('light.rowan_main_ir', 'on') %}
 
-          {% if alistair_sleeping  %}
-            {% set perc_diff = 0.3 %} 
-            {% set weight = {
-              "thermo": weight.thermo - weight.thermo * perc_diff,
-              "rowan": weight.rowan - weight.rowan * perc_diff,
-              "alistair": weight.alistair + (1-weight.alistair) * perc_diff
-            } %}
-          {% endif %}
-         
+          {%- if alistair_sleeping  -%}
+            {%- set weight = {"thermo": 0.70, "rowan": 0.00, "alistair": 0.30} %}
+          {%- endif %}
+          {#
+          {%- if rowan_sleeping  -%}
+            {%- set weight = {"thermo": 0.70, "rowan": 0.30, "alistair": 0.00} %}
+          {%- endif %}
+
+          {%- if alistair_sleeping and rowan_sleeping  -%}
+            {%- set weight = {"thermo": 0.50, "rowan": 0.25, "alistair": 0.25} %}
+          {%- endif %}
+          #}       
           {% set sensors = [
             [thermo, weight.thermo],
             [alistair, weight.alistair],
@@ -139,23 +143,48 @@ template:
 
           {{ wAvg.x | round(1) }}
   - sensor:
+      - name: Pots brightness
+        unique_id: PotsBrightness
+        unit_of_measurement: "%"
+        state: >
+          {% if is_state("light.livingroom_pots", "on") -%}
+            {{ (state_attr("light.livingroom_pots", "brightness") / 2.55 ) | round }}
+          {%- else -%}
+            {% if now().hour >=22 or now().hour < 8 %} 1
+            {% elif now().hour >= 20 and now().hour < 22 %} 20
+            {% else %} 100
+            {% endif %}
+          {%- endif %}
+  - sensor:
       - name: Hydro Ottawa Cost
         unique_id: HydroOttawaCost
         unit_of_measurement: "CAD/kWh"
         state: >
           {% set prices = {
-            "tier1": 0.098,
-            "tier2": 0.115,
-            "off_peak": 0.082,
-            "mid_peak": 0.113,
-            "on_peak": 0.17,
+            "tier1": 0.087,
+            "tier2": 0.103,
+            "off_peak": 0.074,
+            "mid_peak": 0.102,
+            "on_peak": 0.151,
           } %}
 
           {% if "on" == "on" %}
-            {{ prices.tier1 }}
+            {% if now().month in range(5,11) %}
+              {% if states('sensor.monthly_energy') | float / 1000 < 600 %}
+                {{ prices.tier1 }}
+              {% else %}
+                {{ prices.tier2 }}
+              {% endif %}
+            {% else %}
+              {% if states('sensor.monthly_energy') | float / 1000 < 1000 %}
+                {{ prices.tier1 }}
+              {% else %}
+                {{ prices.tier2 }}
+              {% endif %}
+            {% endif %}
           {% else %}
             {% if states.binary_sensor.workday_sensor.state == "off" %}
-              {{ prices.off_peak }}
+              {{ prices.off_peak }} 
             {% else %}
                 {% if now().month in range(5,11) %}
                 {% if now().hour in range(11,17) %} {{ prices.on_peak }}
@@ -170,6 +199,13 @@ template:
               {% endif %}
             {% endif %}
           {% endif %}
+  - sensor:
+      - name: Cyberpower Power
+        unique_id: CyberpowerPower
+        unit_of_measurement: "W"
+        device_class: power
+        state: >
+          {{ ((states('sensor.cyberpower_load')|int / 100) * states('sensor.cyberpower_nominal_real_power')|int) }}
 
 automation: !include automations.yaml
 group: !include groups.yaml
