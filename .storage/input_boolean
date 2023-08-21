@@ -21,6 +21,21 @@
         "id": "windows_open",
         "name": "Windows Open",
         "icon": "mdi:microsoft-windows-classic"
+      },
+      {
+        "id": "kyle_asleep",
+        "name": "Kyle Asleep",
+        "icon": "mdi:sleep"
+      },
+      {
+        "id": "dryer_running",
+        "name": "dryer running",
+        "icon": "mdi:tumble-dryer"
+      },
+      {
+        "id": "washer_running",
+        "name": "Washer running",
+        "icon": "mdi:dishwasher"
       }
     ]
   }

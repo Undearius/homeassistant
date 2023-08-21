@@ -83,12 +83,11 @@
   alias: Rowan Light off White Noise on
   description: ''
   trigger:
-  - platform: device
-    type: turned_off
-    device_id: ec3547b4fd1a140b8125fedb3a35cf68
-    entity_id: light.rowan_main
-    domain: light
-    id: Rowan
+  - platform: state
+    entity_id:
+    - light.rowan_main
+    from: 'on'
+    to: 'off'
   condition:
   - condition: state
     state: 'on'
@@ -106,10 +105,13 @@
     service: media_player.volume_set
     target:
       entity_id: media_player.rowan_room
-  - data:
+  - service: media_player.play_media
+    data:
+      media_content_id: x-file-cifs://10.0.0.10/Sounds/Pink%20Noise%20HQ%20Audio.m4a
+      media_content_type: music
+      enqueue: replace
+    target:
       entity_id: media_player.rowan_room
-      source: Baby
-    service: media_player.select_source
   - service: media_player.repeat_set
     data:
       repeat: one
@@ -119,6 +121,7 @@
     device_id: ec3547b4fd1a140b8125fedb3a35cf68
     entity_id: light.rowan_main
     domain: light
+    enabled: false
   - service: light.turn_on
     data: {}
     target:
@@ -128,7 +131,7 @@
       - condition: numeric_state
         entity_id: media_player.rowan_room
         attribute: volume_level
-        below: 0.2
+        below: 0.22
       sequence:
       - service: media_player.volume_set
         data:
@@ -232,13 +235,23 @@
   trigger:
   - platform: webhook
     webhook_id: sleepasandroidkyle
+    allowed_methods:
+    - POST
+    - PUT
+    local_only: true
   condition: []
   action:
   - service: input_text.set_value
     data:
       value: '{{ trigger.json.event }}'
     entity_id: input_text.saa_kyle
-  mode: single
+  - condition: template
+    value_template: '{{ is_state(''input_text.saa_kyle'', ''sleep_tracking_stopped'')
+      or is_state(''input_text.saa_kyle'', ''sleep_tracking_started'') }}'
+  - service: '{% if is_state(''input_text.saa_kyle'', ''sleep_tracking_stopped'')
+      %}input_boolean.turn_off{% elif is_state(''input_text.saa_kyle'', ''sleep_tracking_started'')
+      %}input_boolean.turn_on{% else %}{% endif %}'
+    entity_id: input_boolean.kyle_asleep
 - id: '1613330813566'
   alias: SaA Webhook Allynn
   description: ''
@@ -270,8 +283,11 @@
       - condition: state
         entity_id: input_text.saa_kyle
         state: alarm_alert_dismiss
+      - condition: state
+        entity_id: person.kyle
+        state: home
   action:
-  - service: notify.mobile_app_oneplus5t
+  - service: notify.mobile_app_pixel_6a
     data:
       message: A song was played while you were sleeping. Check Last.fm
       title: Music Scrobbled
@@ -293,7 +309,7 @@
     entity_id: device_tracker.allynnscomputer
     state: home
   action:
-  - service: notify.mobile_app_oneplus5t
+  - service: notify.mobile_app_pixel_6a
     data:
       title: Computer Running
       message: Allynn left her computer on. Shut it off.
@@ -319,19 +335,19 @@
       seconds: 30
   condition: []
   action:
-  - service: notify.mobile_app_sm_a515w
+  - service: notify.mobile_app_allynns_iphone
     data:
       title: Thermostat Unavailable
       message: Check to see if the furnace is on!
       data:
         clickAction: /lovelace/climate
-  - service: notify.mobile_app_oneplus5t
+  - service: notify.mobile_app_pixel_6a
     data:
       title: Thermostat Unavailable
       message: Check to see if the furnace is on!
       data:
         clickAction: /lovelace/climate
-  - service: notify.mobile_app_oneplus5t
+  - service: notify.mobile_app_pixel_6a
     data:
       message: TTS
       title: Thermostat is offline
@@ -481,23 +497,10 @@
   description: Lights off, Garage closed, Thermostat to away
   trigger:
   - platform: state
-    entity_id: person.allynn
-    to: not_home
-  - platform: state
-    entity_id: person.kyle
-    to: not_home
-  condition:
-  - condition: state
-    entity_id: person.allynn
-    state: not_home
-  - condition: state
-    entity_id: person.kyle
-    state: not_home
-  - condition: not
-    conditions:
-    - condition: state
-      entity_id: person.guest
-      state: home
+    entity_id:
+    - zone.home
+    to: '0'
+  condition: []
   action:
   - service: light.turn_off
     entity_id: all
@@ -505,69 +508,23 @@
     domain: cover
     entity_id: cover.garage_door
     type: close
-  - service: climate.set_preset_mode
-    data:
-      preset_mode: away
-    target:
-      entity_id: climate.thermostat
-  mode: single
-- id: '1641689543179'
-  alias: 'Lights: Pots on motion'
-  description: ''
-  trigger:
-  - platform: state
-    entity_id:
-    - binary_sensor.living_room_dimmer_motion
-    - binary_sensor.living_room_multisensor_home_security_motion_detection
-    from: 'off'
-    to: 'on'
-  - platform: state
-    entity_id: input_boolean.potsoverride
-  condition:
-  - condition: state
-    entity_id: input_boolean.potsoverride
-    state: 'off'
-  - condition: numeric_state
-    entity_id: sensor.living_room_multisensor_illuminance
-    below: 10
-  - condition: or
-    conditions:
-    - condition: state
-      entity_id: light.livingroom_pots
-      state: 'on'
-    - condition: state
-      entity_id: light.livingroom_pots
-      state: 'off'
-      for:
-        hours: 0
-        minutes: 0
-        seconds: 5
-  - condition: template
-    value_template: "{% if states('weather.ottawa_kanata_orleans') in [\"snowy\",\"cloudy\",\"rainy\"]
-      %}\n  {% set ele = 7 %}\n{% else %}\n  {% set ele = 6 %}\n{% endif %}\n{{ state_attr('sun.sun',
-      'elevation') < ele }}"
-    enabled: false
-  action:
-  - service: light.turn_on
-    target:
-      entity_id: light.livingroom_pots
-    data:
-      brightness_pct: '{{ states(''sensor.pots_brightness'') }}'
-  - wait_template: '{{ is_state("binary_sensor.living_room_dimmer_motion", "off")
-      and is_state("binary_sensor.living_room_multisensor_home_security_motion_detection",
-      "off") }}'
-  - delay:
-      minutes: '{% if now().hour >=17 and now().hour < 22 %} 30 {% else %} 30 {% endif
-        %}'
-  - condition: state
-    entity_id: input_boolean.potsoverride
-    state: 'off'
-  - service: light.turn_off
-    target:
-      entity_id: light.livingroom_pots
+  - service: timer.start
     data: {}
-  - wait_for_trigger: []
-  mode: restart
+    target:
+      entity_id: timer.climate_timer
+  - service: input_datetime.set_datetime
+    data:
+      date: '{% if as_timestamp(now()) > as_timestamp(states("input_datetime.returning_home"))
+        %} {% set delta = 7-now().isoweekday() %} {% set sdelta = delta if delta>0
+        else 7 %} {% set datereturning = now()+timedelta(days=sdelta) %}
+
+        {{ datereturning.strftime(''%Y-%m-%d'') }} {%- endif %}
+
+        '
+      time: 09:00:00
+    target:
+      entity_id: input_datetime.returning_home
+  mode: single
 - id: '1641781795297'
   alias: Notify Kyle if furnace about to turn on
   description: ''
@@ -582,13 +539,13 @@
     below: 21.3
   condition: []
   action:
-  - service: notify.mobile_app_oneplus5t
+  - service: notify.mobile_app_pixel_6a
     data:
       message: Furnace is about to turn on
       title: 'Furnace '
   mode: single
 - id: '1641799136107'
-  alias: Sink lights on motion
+  alias: 'Lights: Sink lights on motion'
   description: ''
   trigger:
   - platform: state
@@ -600,18 +557,21 @@
   - service: light.turn_on
     target:
       entity_id: light.sink_lights
+    data: {}
   - wait_template: '{{ is_state("binary_sensor.living_room_dimmer_motion", "off")
       }}'
   - service: light.turn_off
     target:
       entity_id: light.sink_lights
+    data: {}
   mode: restart
 - id: '1643432818705'
   alias: 'Lights: Kitchen light on'
   description: ''
   trigger:
   - platform: state
-    entity_id: light.livingroom_pots
+    entity_id:
+    - binary_sensor.living_room_multisensor_home_security_motion_detection
     to: 'on'
   condition:
   - condition: or
@@ -640,6 +600,9 @@
       - wed
       - thu
       - fri
+  - condition: numeric_state
+    entity_id: sensor.living_room_multisensor_illuminance
+    below: 25
   action:
   - service: light.turn_on
     target:
@@ -660,7 +623,7 @@
     above: '0'
   condition: []
   action:
-  - service: notify.mobile_app_oneplus5t
+  - service: notify.mobile_app_pixel_6a
     data:
       message: Workstation power left on. Switching off in 5 minutes
       title: Workstation idling
@@ -669,6 +632,9 @@
       minutes: 5
       seconds: 0
       milliseconds: 0
+  - condition: numeric_state
+    entity_id: sensor.kyle_office_outlet_power
+    below: 30
   - service: switch.turn_off
     data: {}
     target:
@@ -718,81 +684,156 @@
     device_id: 7aebf5aee400c5e711739c9fe1445c40
     entity_id: light.porch_garage
     domain: light
+  - platform: device
+    type: turned_on
+    device_id: b4d240c8cf0cb5bb809c9848b8f4546a
+    entity_id: light.wled_roofline
+    domain: light
   condition: []
   action:
   - choose:
     - conditions:
-      - condition: template
-        value_template: '{{ now().month == 7 and now().day == 1 }}'
+      - condition: state
+        entity_id: calendar.porch_lights
+        attribute: message
+        state: Canada
+      - condition: state
+        entity_id: calendar.porch_lights
+        state: 'on'
       sequence:
       - service: scene.turn_on
         data: {}
         target:
           entity_id:
           - scene.porch_lights_canada
+      - service: select.select_option
+        data:
+          option: Flag - Canada
+        target:
+          entity_id: select.wled_roofline_preset
     - conditions:
-      - condition: template
-        value_template: '{{ now().month == 7 and now().day == 4 }}'
+      - condition: state
+        entity_id: calendar.porch_lights
+        attribute: message
+        state: USA
+      - condition: state
+        entity_id: calendar.porch_lights
+        state: 'on'
       sequence:
       - service: scene.turn_on
         data: {}
         target:
           entity_id:
           - scene.porch_lights_usa
+      - service: select.select_option
+        data:
+          option: Flag - USA
+        target:
+          entity_id: select.wled_roofline_preset
     - conditions:
-      - condition: template
-        value_template: '{{ now().month == 10 }}'
+      - condition: state
+        entity_id: calendar.porch_lights
+        attribute: message
+        state: Halloween
+      - condition: state
+        entity_id: calendar.porch_lights
+        state: 'on'
       sequence:
       - service: scene.turn_on
         data: {}
         target:
           entity_id: scene.porch_lights_halloween
+      - service: select.select_option
+        data:
+          option: Halloween
+        target:
+          entity_id: select.wled_roofline_preset
     - conditions:
-      - condition: state
-        entity_id: calendar.porch_lights
-        state: 'on'
       - condition: state
         entity_id: calendar.porch_lights
         attribute: message
         state: Christmas
+      - condition: state
+        entity_id: calendar.porch_lights
+        state: 'on'
       sequence:
       - service: scene.turn_on
         data: {}
         target:
           entity_id:
           - scene.porch_lights_christmas
+      - service: select.select_option
+        data:
+          option: '{{ state_attr(''select.wled_roofline_preset'', "options") | select(''match'',
+            ''Xmas -'') | list | random }}'
+        target:
+          entity_id: select.wled_roofline_preset
     default:
-    - service: scene.turn_on
-      data: {}
+    - service: select.select_option
+      data:
+        option: '{{ state_attr(''select.wled_roofline_preset'', "options") | select(''match'',
+          ''D -'') | list | random }}'
       target:
-        entity_id: scene.porch_lights_ukraine
+        entity_id: select.wled_roofline_preset
   mode: single
 - id: '1646622549758'
   alias: Climate Preset to Home
   description: ''
   trigger:
   - platform: state
-    entity_id: person.allynn
-    to: home
-  - platform: state
-    entity_id: person.kyle
-    to: home
-  - platform: template
-    value_template: '{{ now().weekday() == 6 and now().hour == 9}}'
+    entity_id:
+    - zone.home
+    from: '0'
+  - platform: time
+    at: input_datetime.returning_home
     id: Time
-  condition:
-  - condition: device
-    device_id: 03340c90280e45fb5531642771532b70
-    domain: climate
-    entity_id: climate.thermostat
-    type: is_preset_mode
-    preset_mode: away
+  condition: []
   action:
-  - service: climate.set_preset_mode
-    data:
-      preset_mode: home
-    target:
+  - if:
+    - condition: device
+      device_id: 03340c90280e45fb5531642771532b70
+      domain: climate
       entity_id: climate.thermostat
+      type: is_hvac_mode
+      hvac_mode: 'off'
+    then:
+    - service: climate.set_hvac_mode
+      data:
+        hvac_mode: cool
+      target:
+        entity_id: climate.thermostat
+      enabled: true
+    - service: climate.set_hvac_mode
+      data:
+        hvac_mode: heat
+      target:
+        entity_id: climate.thermostat
+      enabled: true
+    enabled: false
+  - if:
+    - condition: device
+      device_id: 03340c90280e45fb5531642771532b70
+      domain: climate
+      entity_id: climate.thermostat
+      type: is_preset_mode
+      preset_mode: away
+    then:
+    - device_id: 03340c90280e45fb5531642771532b70
+      domain: climate
+      entity_id: climate.thermostat
+      type: set_preset_mode
+      preset_mode: home
+  - if:
+    - condition: not
+      conditions:
+      - condition: trigger
+        id:
+        - Time
+    then:
+    - service: timer.cancel
+      data: {}
+      target:
+        entity_id: timer.climate_timer
   mode: single
 - id: '1647738110786'
   alias: Notify Kyle if Thermostat becomes unavailable
@@ -816,13 +857,13 @@
       seconds: 1
   condition: []
   action:
-  - service: notify.mobile_app_oneplus5t
+  - service: notify.mobile_app_pixel_6a
     data:
       title: Thermostat Unavailable
       message: Check to see if the furnace is on!
       data:
         clickAction: /lovelace/climate
-  - service: notify.mobile_app_oneplus5t
+  - service: notify.mobile_app_pixel_6a
     data:
       message: TTS
       title: Thermostat is offline
@@ -930,11 +971,11 @@
   alias: Alistair Light off White noise on
   description: ''
   trigger:
-  - platform: device
-    type: turned_off
-    device_id: 7baa77eeb6604448a7c10fb87d16a286
-    entity_id: light.alistair_main
-    domain: light
+  - platform: state
+    entity_id:
+    - light.alistair_main
+    from: 'on'
+    to: 'off'
   condition:
   - condition: state
     state: 'on'
@@ -952,10 +993,11 @@
     service: media_player.volume_set
     target:
       entity_id: media_player.alistair_room
-  - data:
+  - service: media_player.play_media
+    data:
+      media_content_id: x-file-cifs://10.0.0.10/Sounds/Pink%20Noise%20HQ%20Audio.m4a
+      media_content_type: music
       entity_id: media_player.alistair_room
-      source: Baby
-    service: media_player.select_source
   - service: media_player.repeat_set
     data:
       repeat: one
@@ -965,6 +1007,7 @@
     device_id: 7baa77eeb6604448a7c10fb87d16a286
     entity_id: light.alistair_main
     domain: light
+    enabled: false
   - service: light.turn_on
     data: {}
     target:
@@ -1021,10 +1064,6 @@
   - condition: state
     entity_id: input_boolean.potsoverride
     state: 'off'
-  - condition: numeric_state
-    entity_id: sensor.living_room_multisensor_illuminance
-    below: 10
-    enabled: false
   action:
   - choose:
     - conditions:
@@ -1059,7 +1098,7 @@
       - if:
         - condition: time
           before: 07:00:00
-          after: 00:00:00
+          after: '22:00:00'
         then:
         - service: light.turn_on
           data: {}
@@ -1073,12 +1112,14 @@
             entity_id: light.livingroom_pots
           data:
             brightness_pct: '{{ states(''sensor.pots_brightness'') }}'
+        enabled: true
     - conditions:
       - condition: trigger
         id: Motion stopped
       - condition: numeric_state
         entity_id: sensor.living_room_multisensor_illuminance
         below: 10
+        enabled: true
       sequence:
       - service: timer.start
         data:
@@ -1163,7 +1204,7 @@
     to: home
   condition: []
   action:
-  - service: notify.mobile_app_oneplus5t
+  - service: notify.mobile_app_pixel_6a
     data:
       message: Allynn is home
       title: Allynn is home
@@ -1183,4 +1224,499 @@
     data: {}
     target:
       entity_id: light.wled_kitchen
+  mode: single
+- id: '1684264071522'
+  alias: Notify Dish washer is done
+  description: ''
+  trigger:
+  - platform: numeric_state
+    entity_id: sensor.dish_washer_23a_power
+    for:
+      hours: 0
+      minutes: 1
+      seconds: 0
+    below: 5
+    id: WasherStopped
+  - platform: numeric_state
+    entity_id: sensor.dish_washer_23a_power
+    for:
+      hours: 0
+      minutes: 0
+      seconds: 5
+    above: 5
+    id: WasherRunning
+  condition: []
+  action:
+  - choose:
+    - conditions:
+      - condition: trigger
+        id:
+        - WasherRunning
+      sequence:
+      - service: input_boolean.turn_on
+        data: {}
+        target:
+          entity_id: input_boolean.washer_running
+    - conditions:
+      - condition: trigger
+        id:
+        - WasherStopped
+      - condition: state
+        entity_id: input_boolean.washer_running
+        state: 'on'
+      sequence:
+      - service: input_boolean.turn_off
+        data: {}
+        target:
+          entity_id: input_boolean.washer_running
+      - service: notify.mobile_app_pixel_6a
+        data:
+          message: Dishes are done!
+          title: Dishwasher Finished
+      - service: notify.mobile_app_allynns_iphone
+        data:
+          title: Dishwasher Finished
+          message: Dishes are done!
+  mode: single
+- id: '1684470375565'
+  alias: Climate Preset to Sleep
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - input_boolean.kyle_asleep
+  condition:
+  - condition: state
+    entity_id: person.allynn
+    state: not_home
+    enabled: false
+  action:
+  - service: climate.set_hvac_mode
+    data:
+      hvac_mode: heat
+    target:
+      entity_id: climate.thermostat
+    enabled: false
+  - choose:
+    - conditions:
+      - condition: state
+        entity_id: climate.thermostat
+        attribute: preset_mode
+        state: home
+        enabled: false
+      - condition: not
+        conditions:
+        - condition: state
+          entity_id: climate.thermostat
+          attribute: fan_mode
+          state: auto
+      - condition: state
+        entity_id: input_boolean.kyle_asleep
+        state: 'on'
+      sequence:
+      - service: climate.set_preset_mode
+        data:
+          preset_mode: sleep
+        target:
+          entity_id: climate.thermostat
+        enabled: false
+      - service: climate.set_fan_mode
+        data:
+          fan_mode: auto
+        target:
+          entity_id: climate.thermostat
+    - conditions:
+      - condition: state
+        entity_id: climate.thermostat
+        attribute: preset_mode
+        state: sleep
+        enabled: false
+      - condition: state
+        entity_id: climate.thermostat
+        attribute: fan_mode
+        state: auto
+      sequence:
+      - service: climate.set_preset_mode
+        data:
+          preset_mode: home
+        target:
+          entity_id: climate.thermostat
+      - service: climate.set_fan_mode
+        data:
+          fan_mode: 'off'
+        target:
+          entity_id: climate.thermostat
+  mode: single
+- id: '1684862139981'
+  alias: Notify Dryer is done
+  description: ''
+  trigger:
+  - platform: numeric_state
+    entity_id: sensor.dryer_17a19b_power
+    for:
+      hours: 0
+      minutes: 4
+      seconds: 0
+    below: 5
+    id: DryerStopped
+  - platform: numeric_state
+    entity_id: sensor.dryer_17a19b_power
+    for:
+      hours: 0
+      minutes: 0
+      seconds: 15
+    above: 5
+    id: DryerRunning
+  condition: []
+  action:
+  - choose:
+    - conditions:
+      - condition: trigger
+        id:
+        - DryerRunning
+      sequence:
+      - service: input_boolean.turn_on
+        data: {}
+        target:
+          entity_id: input_boolean.dryer_running
+    - conditions:
+      - condition: trigger
+        id:
+        - DryerStopped
+      - condition: state
+        entity_id: input_boolean.dryer_running
+        state: 'on'
+      sequence:
+      - service: input_boolean.turn_off
+        data: {}
+        target:
+          entity_id: input_boolean.dryer_running
+      - service: notify.mobile_app_allynns_iphone
+        data:
+          title: Clothes Dryer Finished
+          message: Clothes are dry!
+      - service: notify.mobile_app_pixel_6a
+        data:
+          message: Clothes are dry!
+          title: Clothes Dryer Finished
+  mode: single
+- id: '1685581047612'
+  alias: 'Lights: Kitchen Switch'
+  description: ''
+  trigger:
+  - platform: event
+    event_type: zwave_js_value_notification
+    event_data:
+      node_id: 5
+      label: Scene 005
+      value: KeyPressed
+    id: BigButtonPressed
+  - platform: event
+    event_type: zwave_js_value_notification
+    event_data:
+      node_id: 5
+      label: Scene 001
+      value: KeyPressed
+    id: TopLeftPressed
+  - platform: event
+    event_type: zwave_js_value_notification
+    event_data:
+      node_id: 5
+      label: Scene 002
+      value: KeyPressed
+    id: TopRightPressed
+  - platform: event
+    event_type: zwave_js_value_notification
+    event_data:
+      node_id: 5
+      label: Scene 003
+      value: KeyPressed
+    id: BottomLeftPressed
+  - platform: event
+    event_type: zwave_js_value_notification
+    event_data:
+      node_id: 5
+      label: Scene 004
+      value: KeyPressed
+    id: BottomRightPressed
+  - platform: event
+    event_type: zwave_js_value_notification
+    event_data:
+      node_id: 5
+      label: Scene 005
+      value: KeyPressed2x
+    id: BigButtonPressed2x
+  - platform: event
+    event_type: zwave_js_value_notification
+    event_data:
+      node_id: 5
+      label: Scene 001
+      value: KeyHeldDown
+    id: TopLeftHeld
+  - platform: event
+    event_type: zwave_js_value_notification
+    event_data:
+      node_id: 5
+      label: Scene 001
+      value: KeyReleased
+    id: TopLeftReleased
+  - platform: event
+    event_type: zwave_js_value_notification
+    event_data:
+      node_id: 5
+      label: Scene 003
+      value: KeyHeldDown
+    id: BottomLeftHeld
+  - platform: event
+    event_type: zwave_js_value_notification
+    event_data:
+      node_id: 5
+      label: Scene 003
+      value: KeyReleased
+    id: BottomLeftReleased
+  condition: []
+  action:
+  - choose:
+    - conditions:
+      - condition: trigger
+        id: TopLeftPressed
+      sequence:
+      - service: light.toggle
+        data: {}
+        target:
+          entity_id: light.wled_cabinet
+    - conditions:
+      - condition: trigger
+        id: BottomRightPressed
+      sequence:
+      - service: light.toggle
+        data: {}
+        target:
+          entity_id: light.dining_table
+    - conditions:
+      - condition: trigger
+        id: BottomLeftPressed
+      sequence:
+      - service: light.toggle
+        data: {}
+        target:
+          entity_id: light.wled_counter
+    - conditions:
+      - condition: trigger
+        id: TopRightPressed
+      sequence:
+      - service: light.toggle
+        data: {}
+        target:
+          entity_id: light.kitchen
+    - conditions:
+      - condition: trigger
+        id:
+        - BigButtonPressed2x
+      sequence:
+      - service: light.toggle
+        data: {}
+        target:
+          entity_id:
+          - light.livingroom_pots
+    - conditions:
+      - condition: trigger
+        id:
+        - BottomLeftHeld
+      sequence:
+      - repeat:
+          until:
+          - condition: trigger
+            id:
+            - BottomLeftReleased
+          sequence:
+          - service: light.turn_on
+            data:
+              brightness_step_pct: -2
+            target:
+              entity_id: light.wled_cabinet
+    - conditions:
+      - condition: trigger
+        id:
+        - TopLeftHeld
+      sequence:
+      - repeat:
+          until:
+          - condition: trigger
+            id:
+            - TopLeftReleased
+          sequence:
+          - service: light.turn_on
+            data:
+              brightness_step_pct: 2
+            target:
+              entity_id: light.wled_cabinet
+  mode: restart
+- id: '1686500199881'
+  alias: Notify fridge is open
+  description: ''
+  trigger:
+  - platform: numeric_state
+    entity_id: sensor.fridge_24b_power
+    for:
+      hours: 0
+      minutes: 3
+      seconds: 0
+    above: 167
+    below: 171
+  - platform: numeric_state
+    entity_id: sensor.fridge_24b_power
+    for:
+      hours: 0
+      minutes: 1
+      seconds: 0
+    above: 180
+    below: 220
+  condition: []
+  action:
+  - service: notify.mobile_app_allynns_iphone
+    data:
+      message: The fridge may have been left open.
+      title: Check the fridge!
+  - service: notify.mobile_app_pixel_6a
+    data:
+      message: The fridge may have been left open.
+      title: Check the fridge!
+  mode: single
+- id: '1686972622851'
+  alias: 'Zwave: Set Kitchen Switch indicators'
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - light.wled_cabinet
+    id: BigButtonTriggered
+    enabled: false
+  - platform: state
+    entity_id:
+    - light.wled_cabinet
+    id: TopLeftTriggered
+  - platform: state
+    entity_id:
+    - light.dining_table
+    id: BottomRightTriggered
+  - platform: state
+    entity_id:
+    - light.wled_counter
+    id: BottomLeftTriggered
+  - platform: state
+    entity_id:
+    - light.kitchen
+    id: TopRightTriggered
+  condition: []
+  action:
+  - choose:
+    - conditions:
+      - condition: trigger
+        id: TopLeftTriggered
+      sequence:
+      - service: zwave_js.bulk_set_partial_config_parameters
+        data_template:
+          parameter: 2
+          value: '{{ ''3'' if is_state(trigger.entity_id, ''on'') else ''2'' }}'
+        target:
+          entity_id: switch.kitchen_switch
+    - conditions:
+      - condition: trigger
+        id: TopRightTriggered
+      sequence:
+      - service: zwave_js.bulk_set_partial_config_parameters
+        data_template:
+          parameter: 3
+          value: '{{ ''3'' if is_state(trigger.entity_id, ''on'') else ''2'' }}'
+        target:
+          entity_id: switch.kitchen_switch
+    - conditions:
+      - condition: trigger
+        id: BottomLeftTriggered
+      sequence:
+      - service: zwave_js.bulk_set_partial_config_parameters
+        data_template:
+          parameter: 4
+          value: '{{ ''3'' if is_state(trigger.entity_id, ''on'') else ''2'' }}'
+        target:
+          entity_id: switch.kitchen_switch
+    - conditions:
+      - condition: trigger
+        id: BottomRightTriggered
+      sequence:
+      - service: zwave_js.bulk_set_partial_config_parameters
+        data_template:
+          parameter: 5
+          value: '{{ ''3'' if is_state(trigger.entity_id, ''on'') else ''2'' }}'
+        target:
+          entity_id: switch.kitchen_switch
+  mode: single
+- id: '1687319385385'
+  alias: Climate Preset to Away
+  description: ''
+  trigger:
+  - platform: event
+    event_type: timer.finished
+    event_data:
+      entity_id: timer.climate_timer
+    id: Timer finished
+  condition: []
+  action:
+  - service: climate.set_hvac_mode
+    data:
+      hvac_mode: 'off'
+    target:
+      entity_id: climate.thermostat
+    enabled: false
+  - service: climate.set_preset_mode
+    data:
+      preset_mode: away
+    target:
+      entity_id: climate.thermostat
+    enabled: true
+  mode: single
+- id: '1692051275563'
+  alias: 'Music: Play Hot 89.9 for Allynn'
+  description: This is for the Taylor Tuesdays to get tickets
+  trigger:
+  - platform: time
+    at: 06:50:00
+  condition:
+  - condition: time
+    weekday:
+    - tue
+  action:
+  - service: media_player.play_media
+    data:
+      media_content_id: aac://http://newcap.leanstream.co/CIHTFM?args=tunein_02on%253d-75.7058%2526partnerId%253dSonosRadio%2526ads_partner_alias%253dce.SonosApp%2526version%253d1%2526premium%253dfalse%2526abtest%253d%2526language%253den%2526stationId%253ds12314%2526is_ondemand%253dfalse%2526genre_id%253dg61%2526class%253dmusic%2526is_family%253dfalse%2526is_mature%253dfalse%2526country_region_id%253d41%2526station_language%253den%2526AffiliateIds%253d38479%25252c40080%2526enableDoublePreroll%253dfalse&ads.stationId=s12314&ads.ads_partner_alias=ce.SonosApp&ads.url=https%3a%2f%2ftunein.com%2fdesc%2fs12314%2f&ads.description_url=https%3a%2f%2ftunein.com%2fdesc%2fs12314%2f&ads.gdfp_req=1&ads.bundleId=tunein.com&ads.ppid=64af9aad25c9922a4c7e705130840f13&ads.is_lat=1
+      media_content_type: music
+    target:
+      entity_id: media_player.living_room
+  - service: media_player.volume_set
+    data:
+      volume_level: 0.1
+    target:
+      entity_id: media_player.living_room
+  mode: single
+- id: '1692336339190'
+  alias: 'Light: Test automation'
+  description: ''
+  trigger:
+  - platform: event
+    event_type: zwave_js_notification
+    event_data:
+      commandClassName: Multilevel Switch
+      commandClass: 38
+      property: currentValue
+      endpoint: 0
+      newValue: 0
+      propertyName: currentValue
+    id: TopButton
+  condition: []
+  action:
+  - service: light.turn_on
+    data: {}
+    target:
+      entity_id: light.sink_lights
   mode: single

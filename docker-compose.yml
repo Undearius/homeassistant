@@ -1,0 +1,13 @@
+services:
+  home-assistant:
+    container_name: home-assistant
+    image: ghcr.io/home-assistant/home-assistant:stable
+    restart: unless-stopped
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=America/Toronto
+    volumes:
+      - '${SSD}/home-assistant:/config'
+    tmpfs: /tmp
+    network_mode: host

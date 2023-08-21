@@ -2,12 +2,6 @@
 default_config:
 
 homeassistant:
-#  latitude: !secret lat
-#  longitude: !secret lon
-#  elevation: 100
-#  unit_system: metric
-#  time_zone: America/Toronto
-#  name: Home
   customize: !include customize.yaml
 # Uncomment this if you are using SSL/TLS, running in Docker container, etc.
 # http:
@@ -17,27 +11,12 @@ homeassistant:
 tts:
   - platform: google_translate
 
+wake_on_lan:
+
 logger:
   default: error
   logs:
     homeassistant.core: fatal
-
-binary_sensor:
-  - platform: workday
-    country: CA
-    province: 'ON'
-    #add_holidays: #Hydro Ottawa off-peak holidays 2021
-    # - "New Year’s Day"
-    # - "Family Day"
-    # - "Good Friday"
-    # - "Victoria Day"
-    # - "Canada Day"
-    # - "Civic Holiday"
-    # - "Labour Day"
-    # - "Thanksgiving"
-    # - "Christmas Day"
-    # - "Boxing Day"
-    #remove_holidays:
 
 light:
   - platform: template
@@ -126,10 +105,10 @@ template:
             [rowan, weight.rowan]
           ] %}
 
-          {#This calculates the weighted average only if the value of the sensor is above 0#}
+          {# This calculates the weighted average only if the value of the sensor is above 0 #}
           {% set wAvg = namespace(x=0,y=0) %}     
           {% for sensor in sensors if sensor[0] > 0 %}
-            {#Sets the output value to the only active sensor#}
+            {# Sets the output value to the only active sensor #}
             {% if loop.length == 1 %}
               {% set wAvg.x = sensor[0] %}
             {% else %}
@@ -155,6 +134,20 @@ template:
             {% else %} 100
             {% endif %}
           {%- endif %}
+  - sensor:
+      - name: Phase A Amps
+        unique_id: phaseaamps
+        unit_of_measurement: "A"
+        state_class: measurement
+        state: >
+          {{ states('sensor.phase_a_power') | float / states('sensor.phase_a_voltage') | float }}
+  - sensor:
+      - name: Phase B Amps
+        unique_id: phasebamps
+        unit_of_measurement: "A"
+        state_class: measurement
+        state: >
+          {{ states('sensor.phase_b_power') | float / states('sensor.phase_b_voltage') | float }}
   - sensor:
       - name: Hydro Ottawa Cost
         unique_id: HydroOttawaCost

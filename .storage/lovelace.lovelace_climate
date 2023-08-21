@@ -38,6 +38,24 @@
               "title": "Temperature"
             },
             {
+              "chart_type": "line",
+              "period": "5minute",
+              "type": "statistics-graph",
+              "entities": [
+                "sensor.thermostat_temperature",
+                "sensor.alistair_temperature",
+                "sensor.rowan_temperature",
+                "sensor.temperature"
+              ],
+              "stat_types": [
+                "mean"
+              ],
+              "view_layout": {
+                "position": "main"
+              },
+              "days_to_show": 1
+            },
+            {
               "type": "history-graph",
               "entities": [
                 {

@@ -570,7 +570,7 @@ kickstart_fan:
   use_blueprint:
     path: homeassistant/confirmable_notification.yaml
     input:
-      notify_device: f68ca7289cd6c034a440fb2d285a5013
+      notify_device: 2e8ba12176492e2b3bcddf3fce1e95aa
       title: Garage Door open
       message: The garage door has been open for 1 hour. Do you want to close it?
       confirm_text: Close Door
@@ -629,11 +629,12 @@ alistair_quiet_time:
       entity_id: light.alistair_main_ir
   mode: single
 '1647729706760':
-  alias: Party Time (Duplicate)
+  alias: Party Time Alt
   sequence:
-  - data:
+  - service: media_player.unjoin
+    data: {}
+    target:
       entity_id: media_player.alistair_room
-    service: sonos.unjoin
   - data:
       volume_level: 0.5
     service: media_player.volume_set
@@ -641,85 +642,15 @@ alistair_quiet_time:
       entity_id: media_player.alistair_room
   - service: media_player.play_media
     data:
-      media_content_id: x-file-cifs://10.0.0.10/media/Music/Darude/2000-Before%20the%20Storm/01%20Sandstorm.mp3
+      media_content_id: x-file-cifs://10.0.0.10/media/Music/Lady%20Gaga/2009-The%20Fame%20Monster/2-01%20Lady%20Gaga%20-%20Just%20Dance%20(feat.%20Colby%20O'Donis).m4a
       media_content_type: music
     target:
       entity_id: media_player.alistair_room
-  - wait_for_trigger:
-    - platform: state
+  - service: media_player.repeat_set
+    data:
+      repeat: 'off'
+    target:
       entity_id: media_player.alistair_room
-      to: playing
-  - delay:
-      hours: 0
-      minutes: 0
-      seconds: 1
-      milliseconds: 0
-  - service: lifx.set_state
-    data:
-      power: true
-      brightness_pct: 100
-      hs_color:
-      - 40
-      - 50
-    target:
-      entity_id: light.alistair_main
-  - service: lifx.set_state
-    data:
-      power: false
-      transition: 2
-    target:
-      entity_id: light.alistair_main
-  - delay:
-      hours: 0
-      minutes: 0
-      seconds: 13
-      milliseconds: 500
-  - service: lifx.effect_pulse
-    data:
-      brightness: 50
-      color_name: blue
-      cycles: 4
-      period: 0.15
-    target:
-      entity_id: light.alistair_main
-  - delay:
-      hours: 0
-      minutes: 0
-      seconds: 3
-      milliseconds: 500
-  - service: lifx.effect_pulse
-    data:
-      period: 0.15
-      cycles: 4
-      brightness: 80
-      color_name: red
-    target:
-      entity_id: light.alistair_main
-  - delay:
-      hours: 0
-      minutes: 0
-      seconds: 3
-      milliseconds: 500
-  - service: lifx.effect_pulse
-    data:
-      period: 0.15
-      cycles: 4
-      brightness: 60
-      color_name: green
-    target:
-      entity_id: light.alistair_main
-  - delay:
-      hours: 0
-      minutes: 0
-      seconds: 7
-      milliseconds: 0
-  - service: lifx.effect_colorloop
-    data:
-      brightness: 255
-      change: 22
-      period: 0.05
-    target:
-      entity_id: light.alistair_main
   mode: restart
   icon: mdi:party-popper
 rowan_light:
@@ -852,4 +783,377 @@ rowan_quiet_time:
     data: {}
     target:
       entity_id: light.rowan_main_ir
+  mode: single
+send_magic_packet:
+  alias: Turn on PC
+  sequence:
+  - service: switch.turn_on
+    data: {}
+    target:
+      entity_id: switch.kyle_office_outlet_relay
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 10
+      milliseconds: 0
+  - service: wake_on_lan.send_magic_packet
+    data:
+      mac: 18:c0:4d:07:7c:2d
+  description: ''
+  mode: single
+'1692591388656':
+  alias: Set Observed Holidays
+  sequence:
+  - repeat:
+      for_each:
+      - '1'
+      - '2'
+      - '3'
+      - '4'
+      - '5'
+      - '6'
+      - '7'
+      - '8'
+      - '9'
+      sequence:
+      - service: calendar.create_event
+        data:
+          summary: Ney Year's Day
+          start_date: '{%- set yearOffset = repeat.item | int %} {%- set year = now().year
+            + yearOffset -%} {%- set month = 1 -%} {%- set day = 1 -%} {%- set date
+            = today_at().replace(year=year, month=month, day=day) -%} {%- set delta
+            = (7 - date.weekday()) if (date.weekday() > 4) else 0 -%} {{ as_timestamp(date
+            + timedelta(days=delta)) | timestamp_custom(''%Y-%m-%d'') }}'
+          end_date: '{%- set yearOffset = repeat.item | int %} {%- set year = now().year
+            + yearOffset -%} {%- set month = 1 -%} {%- set day = 1 -%} {%- set date
+            = today_at().replace(year=year, month=month, day=day) -%} {%- set delta
+            = (7 - date.weekday()) if (date.weekday() > 4) else 0 -%} {{ as_timestamp(date
+            + timedelta(days=delta+1)) | timestamp_custom(''%Y-%m-%d'') }}'
+        target:
+          entity_id: calendar.observed_holidays
+  - repeat:
+      for_each:
+      - '1'
+      - '2'
+      - '3'
+      - '4'
+      - '5'
+      - '6'
+      - '7'
+      - '8'
+      - '9'
+      sequence:
+      - service: calendar.create_event
+        data:
+          summary: Good Friday
+          start_date: '{%- set yearOffset = repeat.item | int %} {%- set year = now().year
+            + yearOffset %} {%- set special_years = [''1954'', ''1981'', ''2049'',
+            ''2076''] %} {%- set special_year_sub = 7 %} {%- set a = year % 19 %}
+            {%- set b = year % 4 %} {%- set c = year % 7 %} {%- set d = (19 * a +
+            24) % 30 %} {%- set e = ((2 * b) + (4 * c) + (6 * d) + 5) % 7 %} {%- set
+            day = (22 + d + e) - special_year_sub if year in special_years else 22
+            + d + e %} {%- set month = 4 if day > 31 else 3 %} {%- set day = day -
+            31 if day > 31 else day -%} {{ as_timestamp(today_at().replace(year=year,
+            month=month, day=day) + timedelta(days=-2)) | timestamp_custom(''%Y-%m-%d'')
+            }}'
+          end_date: '{%- set yearOffset = repeat.item | int %} {%- set year = now().year
+            + yearOffset %} {%- set special_years = [''1954'', ''1981'', ''2049'',
+            ''2076''] %} {%- set special_year_sub = 7 %} {%- set a = year % 19 %}
+            {%- set b = year % 4 %} {%- set c = year % 7 %} {%- set d = (19 * a +
+            24) % 30 %} {%- set e = ((2 * b) + (4 * c) + (6 * d) + 5) % 7 %} {%- set
+            day = (22 + d + e) - special_year_sub if year in special_years else 22
+            + d + e %} {%- set month = 4 if day > 31 else 3 %} {%- set day = day -
+            31 if day > 31 else day -%} {{ as_timestamp(today_at().replace(year=year,
+            month=month, day=day) + timedelta(days=-1)) | timestamp_custom(''%Y-%m-%d'')
+            }}'
+        target:
+          entity_id: calendar.observed_holidays
+  - repeat:
+      for_each:
+      - '1'
+      - '2'
+      - '3'
+      - '4'
+      - '5'
+      - '6'
+      - '7'
+      - '8'
+      - '9'
+      sequence:
+      - service: calendar.create_event
+        data:
+          summary: Easter Monday
+          start_date: '{%- set yearOffset = repeat.item | int %} {%- set year = now().year
+            + yearOffset %} {%- set special_years = [''1954'', ''1981'', ''2049'',
+            ''2076''] %} {%- set special_year_sub = 7 %} {%- set a = year % 19 %}
+            {%- set b = year % 4 %} {%- set c = year % 7 %} {%- set d = (19 * a +
+            24) % 30 %} {%- set e = ((2 * b) + (4 * c) + (6 * d) + 5) % 7 %} {%- set
+            day = (22 + d + e) - special_year_sub if year in special_years else 22
+            + d + e %} {%- set month = 4 if day > 31 else 3 %} {%- set day = day -
+            31 if day > 31 else day -%} {{ as_timestamp(today_at().replace(year=year,
+            month=month, day=day) + timedelta(days=1)) | timestamp_custom(''%Y-%m-%d'')
+            }}'
+          end_date: '{%- set yearOffset = repeat.item | int %} {%- set year = now().year
+            + yearOffset %} {%- set special_years = [''1954'', ''1981'', ''2049'',
+            ''2076''] %} {%- set special_year_sub = 7 %} {%- set a = year % 19 %}
+            {%- set b = year % 4 %} {%- set c = year % 7 %} {%- set d = (19 * a +
+            24) % 30 %} {%- set e = ((2 * b) + (4 * c) + (6 * d) + 5) % 7 %} {%- set
+            day = (22 + d + e) - special_year_sub if year in special_years else 22
+            + d + e %} {%- set month = 4 if day > 31 else 3 %} {%- set day = day -
+            31 if day > 31 else day -%} {{ as_timestamp(today_at().replace(year=year,
+            month=month, day=day) + timedelta(days=2)) | timestamp_custom(''%Y-%m-%d'')
+            }}'
+        target:
+          entity_id: calendar.observed_holidays
+  - repeat:
+      for_each:
+      - '1'
+      - '2'
+      - '3'
+      - '4'
+      - '5'
+      - '6'
+      - '7'
+      - '8'
+      - '9'
+      sequence:
+      - service: calendar.create_event
+        data:
+          summary: Victoria Day
+          start_date: '{%- set yearOffset = repeat.item | int %} {%- set year = now().year
+            + yearOffset -%} {%- set month = 5 -%} {%- set day = 0 -%} {%- set date
+            = today_at().replace(year=year, month=month, day=25) %} {%- set adjust
+            = (day - date.weekday()) % 7 %} {% set date = date + timedelta(days=adjust)
+            -%} {{ as_timestamp(date + timedelta(weeks = -1)) | timestamp_custom(''%Y-%m-%d'')
+            }}'
+          end_date: '{%- set yearOffset = repeat.item | int %} {%- set year = now().year
+            + yearOffset -%} {%- set month = 5 -%} {%- set day = 0 -%} {%- set date
+            = today_at().replace(year=year, month=month, day=25) %} {%- set adjust
+            = (day - date.weekday()) % 7 %} {% set date = date + timedelta(days=adjust)
+            -%} {{ as_timestamp(date + timedelta(weeks = -1,days=1)) | timestamp_custom(''%Y-%m-%d'')
+            }}'
+        target:
+          entity_id: calendar.observed_holidays
+  - repeat:
+      for_each:
+      - '1'
+      - '2'
+      - '3'
+      - '4'
+      - '5'
+      - '6'
+      - '7'
+      - '8'
+      - '9'
+      sequence:
+      - service: calendar.create_event
+        data:
+          summary: Canada Day
+          start_date: '{%- set yearOffset = repeat.item | int %} {%- set year = now().year
+            + yearOffset -%} {%- set month = 7 -%} {%- set day = 1 -%} {%- set date
+            = today_at().replace(year=year, month=month, day=day) -%} {%- set delta
+            = (7 - date.weekday()) if (date.weekday() > 4) else 0 -%} {{ as_timestamp(date
+            + timedelta(days=delta)) | timestamp_custom(''%Y-%m-%d'') }}'
+          end_date: '{%- set yearOffset = repeat.item | int %} {%- set year = now().year
+            + yearOffset -%} {%- set month = 7 -%} {%- set day = 1 -%} {%- set date
+            = today_at().replace(year=year, month=month, day=day) -%} {%- set delta
+            = (7 - date.weekday()) if (date.weekday() > 4) else 0 -%} {{ as_timestamp(date
+            + timedelta(days=delta+1)) | timestamp_custom(''%Y-%m-%d'') }}'
+        target:
+          entity_id: calendar.observed_holidays
+  - repeat:
+      for_each:
+      - '1'
+      - '2'
+      - '3'
+      - '4'
+      - '5'
+      - '6'
+      - '7'
+      - '8'
+      - '9'
+      sequence:
+      - service: calendar.create_event
+        data:
+          summary: Civic Holiday
+          start_date: '{%- set yearOffset = repeat.item | int %} {%- set year = now().year
+            + yearOffset -%} {%- set month = 8 -%} {%- set week = 1 -%} {%- set day
+            = 0 -%} {%- set date = today_at().replace(year=year, month=month, day=1)
+            %} {%- set adjust = (day - date.weekday()) % 7 %} {%- set date = date
+            + timedelta(days=adjust) -%} {{ as_timestamp(date + timedelta(weeks =
+            week - 1)) | timestamp_custom(''%Y-%m-%d'') }}'
+          end_date: '{%- set yearOffset = repeat.item | int %} {%- set year = now().year
+            + yearOffset -%} {%- set month = 8 -%} {%- set week = 1 -%} {%- set day
+            = 0 -%} {%- set date = today_at().replace(year=year, month=month, day=1)
+            %} {%- set adjust = (day - date.weekday()) % 7 %} {%- set date = date
+            + timedelta(days=adjust) -%} {{ as_timestamp(date + timedelta(weeks =
+            week - 1,days=1)) | timestamp_custom(''%Y-%m-%d'') }}'
+        target:
+          entity_id: calendar.observed_holidays
+  - repeat:
+      for_each:
+      - '1'
+      - '2'
+      - '3'
+      - '4'
+      - '5'
+      - '6'
+      - '7'
+      - '8'
+      - '9'
+      sequence:
+      - service: calendar.create_event
+        data:
+          summary: Labour Day
+          start_date: '{%- set yearOffset = repeat.item | int %} {%- set year = now().year
+            + yearOffset -%} {%- set month = 9 -%} {%- set week = 1 -%} {%- set day
+            = 0 -%} {%- set date = today_at().replace(year=year, month=month, day=1)
+            %} {%- set adjust = (day - date.weekday()) % 7 %} {%- set date = date
+            + timedelta(days=adjust) -%} {{ as_timestamp(date + timedelta(weeks =
+            week - 1)) | timestamp_custom(''%Y-%m-%d'') }}'
+          end_date: '{%- set yearOffset = repeat.item | int %} {%- set year = now().year
+            + yearOffset -%} {%- set month = 9 -%} {%- set week = 1 -%} {%- set day
+            = 0 -%} {%- set date = today_at().replace(year=year, month=month, day=1)
+            %} {%- set adjust = (day - date.weekday()) % 7 %} {%- set date = date
+            + timedelta(days=adjust) -%} {{ as_timestamp(date + timedelta(weeks =
+            week - 1,days=1)) | timestamp_custom(''%Y-%m-%d'') }}'
+        target:
+          entity_id: calendar.observed_holidays
+  - repeat:
+      for_each:
+      - '1'
+      - '2'
+      - '3'
+      - '4'
+      - '5'
+      - '6'
+      - '7'
+      - '8'
+      - '9'
+      sequence:
+      - service: calendar.create_event
+        data:
+          summary: Truth and Reconciliation
+          start_date: '{%- set yearOffset = repeat.item | int %} {%- set year = now().year
+            + yearOffset -%} {%- set month = 9 -%} {%- set day = 30 -%} {%- set date
+            = today_at().replace(year=year, month=month, day=day) -%} {%- set delta
+            = (7 - date.weekday()) if (date.weekday() > 4) else 0 -%} {{ as_timestamp(date
+            + timedelta(days=delta)) | timestamp_custom(''%Y-%m-%d'') }}'
+          end_date: '{%- set yearOffset = repeat.item | int %} {%- set year = now().year
+            + yearOffset -%} {%- set month = 9 -%} {%- set day = 30 -%} {%- set date
+            = today_at().replace(year=year, month=month, day=day) -%} {%- set delta
+            = (7 - date.weekday()) if (date.weekday() > 4) else 0 -%} {{ as_timestamp(date
+            + timedelta(days=delta+1)) | timestamp_custom(''%Y-%m-%d'') }}'
+        target:
+          entity_id: calendar.observed_holidays
+  - repeat:
+      for_each:
+      - '1'
+      - '2'
+      - '3'
+      - '4'
+      - '5'
+      - '6'
+      - '7'
+      - '8'
+      - '9'
+      sequence:
+      - service: calendar.create_event
+        data:
+          summary: Thanksgiving
+          start_date: '{%- set yearOffset = repeat.item | int %} {%- set year = now().year
+            + yearOffset -%} {%- set month = 10 -%} {%- set week = 2 -%} {%- set day
+            = 0 -%} {%- set date = today_at().replace(year=year, month=month, day=1)
+            %} {%- set adjust = (day - date.weekday()) % 7 %} {%- set date = date
+            + timedelta(days=adjust) -%} {{ as_timestamp(date + timedelta(weeks =
+            week - 1)) | timestamp_custom(''%Y-%m-%d'') }}'
+          end_date: '{%- set yearOffset = repeat.item | int %} {%- set year = now().year
+            + yearOffset -%} {%- set month = 10 -%} {%- set week = 2 -%} {%- set day
+            = 0 -%} {%- set date = today_at().replace(year=year, month=month, day=1)
+            %} {%- set adjust = (day - date.weekday()) % 7 %} {%- set date = date
+            + timedelta(days=adjust) -%} {{ as_timestamp(date + timedelta(weeks =
+            week - 1,days=1)) | timestamp_custom(''%Y-%m-%d'') }}'
+        target:
+          entity_id: calendar.observed_holidays
+  - repeat:
+      for_each:
+      - '1'
+      - '2'
+      - '3'
+      - '4'
+      - '5'
+      - '6'
+      - '7'
+      - '8'
+      - '9'
+      sequence:
+      - service: calendar.create_event
+        data:
+          summary: Remembrance Day
+          start_date: '{%- set yearOffset = repeat.item | int %} {%- set year = now().year
+            + yearOffset -%} {%- set month = 11 -%} {%- set day = 11 -%} {%- set date
+            = today_at().replace(year=year, month=month, day=day) -%} {%- set delta
+            = (7 - date.weekday()) if (date.weekday() > 4) else 0 -%} {{ as_timestamp(date
+            + timedelta(days=delta)) | timestamp_custom(''%Y-%m-%d'') }}'
+          end_date: '{%- set yearOffset = repeat.item | int %} {%- set year = now().year
+            + yearOffset -%} {%- set month = 11 -%} {%- set day = 11 -%} {%- set date
+            = today_at().replace(year=year, month=month, day=day) -%} {%- set delta
+            = (7 - date.weekday()) if (date.weekday() > 4) else 0 -%} {{ as_timestamp(date
+            + timedelta(days=delta+1)) | timestamp_custom(''%Y-%m-%d'') }}'
+        target:
+          entity_id: calendar.observed_holidays
+  - repeat:
+      for_each:
+      - '1'
+      - '2'
+      - '3'
+      - '4'
+      - '5'
+      - '6'
+      - '7'
+      - '8'
+      - '9'
+      sequence:
+      - service: calendar.create_event
+        data:
+          summary: Chistmas
+          start_date: '{%- set yearOffset = repeat.item | int %} {%- set year = now().year
+            + yearOffset -%} {%- set month = 12 -%} {%- set day = 25 -%} {%- set date
+            = today_at().replace(year=year, month=month, day=day) -%} {%- set delta
+            = (7 - date.weekday()) if (date.weekday() > 4) else 0 -%} {{ as_timestamp(date
+            + timedelta(days=delta)) | timestamp_custom(''%Y-%m-%d'') }}'
+          end_date: '{%- set yearOffset = repeat.item | int %} {%- set year = now().year
+            + yearOffset -%} {%- set month = 12 -%} {%- set day = 25 -%} {%- set date
+            = today_at().replace(year=year, month=month, day=day) -%} {%- set delta
+            = (7 - date.weekday()) if (date.weekday() > 4) else 0 -%} {{ as_timestamp(date
+            + timedelta(days=delta+1)) | timestamp_custom(''%Y-%m-%d'') }}'
+        target:
+          entity_id: calendar.observed_holidays
+  - repeat:
+      for_each:
+      - '1'
+      - '2'
+      - '3'
+      - '4'
+      - '5'
+      - '6'
+      - '7'
+      - '8'
+      - '9'
+      sequence:
+      - service: calendar.create_event
+        data:
+          summary: Boxing Day
+          start_date: '{%- set yearOffset = repeat.item | int %} {%- set year = now().year
+            + yearOffset -%} {%- set month = 12 -%} {%- set day = 26 -%} {%- set date
+            = today_at().replace(year=year, month=month, day=day) -%} {%- set delta
+            = 2 if (date.weekday() > 4) else 0 -%} {{ as_timestamp(date + timedelta(days=delta))
+            | timestamp_custom(''%Y-%m-%d'') }}'
+          end_date: '{%- set yearOffset = repeat.item | int %} {%- set year = now().year
+            + yearOffset -%} {%- set month = 12 -%} {%- set day = 26 -%} {%- set date
+            = today_at().replace(year=year, month=month, day=day) -%} {%- set delta
+            = 2 if (date.weekday() > 4) else 0 -%} {{ as_timestamp(date + timedelta(days=delta+1))
+            | timestamp_custom(''%Y-%m-%d'') }}'
+        target:
+          entity_id: calendar.observed_holidays
   mode: single

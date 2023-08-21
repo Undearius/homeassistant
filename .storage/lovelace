@@ -74,11 +74,31 @@
                 },
                 {
                   "entity": "light.porch_door"
+                },
+                {
+                  "entity": "light.wled_roofline"
+                },
+                {
+                  "entity": "select.wled_roofline_preset"
                 }
               ],
               "title": "Outside Lights",
               "type": "entities",
               "state_color": true
+            },
+            {
+              "card": {
+                "type": "iframe",
+                "url": "http://10.0.1.8/liveview",
+                "aspect_ratio": "2%"
+              },
+              "conditions": [
+                {
+                  "entity": "light.wled_roofline",
+                  "state": "on"
+                }
+              ],
+              "type": "conditional"
             },
             {
               "entities": [
@@ -107,6 +127,24 @@
               "entity": "climate.thermostat"
             },
             {
+              "card": {
+                "type": "entity",
+                "entity": "input_datetime.returning_home",
+                "state_color": false
+              },
+              "conditions": [
+                {
+                  "entity": "person.allynn",
+                  "state": "not_home"
+                },
+                {
+                  "entity": "person.kyle",
+                  "state": "not_home"
+                }
+              ],
+              "type": "conditional"
+            },
+            {
               "entity": "weather.ottawa_kanata_orleans",
               "show_forecast": true,
               "type": "weather-forecast"
@@ -118,24 +156,11 @@
               "type": "sensor"
             },
             {
-              "entities": [
-                {
-                  "entity": "cover.garage_door"
-                }
-              ],
-              "type": "entities"
-            },
-            {
               "type": "tile",
-              "entity": "vacuum.beemer",
+              "entity": "cover.garage_door",
               "features": [
                 {
-                  "type": "vacuum-commands",
-                  "commands": [
-                    "start_pause",
-                    "stop",
-                    "locate"
-                  ]
+                  "type": "cover-open-close"
                 }
               ]
             },
@@ -168,7 +193,8 @@
               ],
               "entities": [
                 "person.swala",
-                "person.alvin"
+                "person.alvin",
+                "person.david"
               ]
             },
             {
@@ -407,14 +433,14 @@
                   }
                 },
                 {
-                  "entity": "light.alistair_main",
-                  "icon": "mdi:close-thick",
-                  "name": "Don't press",
+                  "entity": "script.dance_party_alt",
+                  "icon": null,
+                  "name": "Dance Party",
                   "tap_action": {
                     "action": "call-service",
                     "service": "script.turn_on",
                     "service_data": {
-                      "entity_id": "script.party_time"
+                      "entity_id": "script.dance_party_alt"
                     }
                   }
                 }
@@ -642,8 +668,8 @@
                   "entity": "sensor.bedroom_temperature"
                 }
               ],
-              "hours_to_show": 24,
-              "refresh_interval": 0
+              "refresh_interval": 0,
+              "hours_to_show": 24
             },
             {
               "type": "history-graph",
@@ -682,6 +708,24 @@
             {
               "type": "thermostat",
               "entity": "climate.thermostat"
+            },
+            {
+              "card": {
+                "type": "entity",
+                "entity": "input_datetime.returning_home",
+                "state_color": false
+              },
+              "conditions": [
+                {
+                  "entity": "person.allynn",
+                  "state": "not_home"
+                },
+                {
+                  "entity": "person.kyle",
+                  "state": "not_home"
+                }
+              ],
+              "type": "conditional"
             },
             {
               "entities": [
@@ -758,6 +802,19 @@
               "entities": [
                 "sensor.a_c_on_today",
                 "sensor.furnace_on_today"
+              ]
+            },
+            {
+              "chart_type": "line",
+              "period": "day",
+              "days_to_show": 365,
+              "type": "statistics-graph",
+              "entities": [
+                "sensor.furnace_on_today",
+                "sensor.a_c_on_today"
+              ],
+              "stat_types": [
+                "max"
               ]
             },
             {
@@ -847,6 +904,9 @@
                 },
                 {
                   "entity": "timer.pots_timer"
+                },
+                {
+                  "entity": "light.livingroom_pots"
                 }
               ],
               "hours_to_show": 1,
@@ -874,23 +934,19 @@
               ]
             },
             {
-              "chart_type": "line",
-              "period": "day",
-              "days_to_show": 365,
-              "type": "statistics-graph",
-              "entities": [
-                "sensor.furnace_on_today",
-                "sensor.a_c_on_today"
-              ],
-              "stat_types": [
-                "max"
-              ]
-            },
-            {
               "type": "entities",
               "entities": [
                 {
                   "entity": "sensor.total_power"
+                },
+                {
+                  "entity": "sensor.total_daily_energy"
+                },
+                {
+                  "entity": "sensor.balance_power"
+                },
+                {
+                  "entity": "sensor.balance_daily_energy"
                 },
                 {
                   "entity": "sensor.phase_a_voltage"
@@ -905,106 +961,284 @@
                   "entity": "sensor.phase_b_power"
                 },
                 {
+                  "entity": "sensor.phase_a_amps"
+                },
+                {
+                  "entity": "sensor.phase_b_amps"
+                },
+                {
                   "entity": "sensor.ac_13a15b_power"
-                },
-                {
-                  "entity": "sensor.bed_1_10_power"
-                },
-                {
-                  "entity": "sensor.bed_2_8_power"
-                },
-                {
-                  "entity": "sensor.dish_washer_23a_power"
-                },
-                {
-                  "entity": "sensor.dryer_17a19b_power"
-                },
-                {
-                  "entity": "sensor.first_floor_22b_power"
-                },
-                {
-                  "entity": "sensor.first_floor_23b_power"
-                },
-                {
-                  "entity": "sensor.second_floor_20b_power"
-                },
-                {
-                  "entity": "sensor.fridge_24b_power"
-                },
-                {
-                  "entity": "sensor.furnace_15a_power"
-                },
-                {
-                  "entity": "sensor.garage_21b_power"
-                },
-                {
-                  "entity": "sensor.kitchen_right_13b_power"
-                },
-                {
-                  "entity": "sensor.living_room_19a_power"
-                },
-                {
-                  "entity": "sensor.microwave_16a_power"
-                },
-                {
-                  "entity": "sensor.range_14a16b_power"
-                },
-                {
-                  "entity": "sensor.washer_22a_power"
-                },
-                {
-                  "entity": "sensor.total_daily_energy"
                 },
                 {
                   "entity": "sensor.ac_13a15b_daily_energy"
                 },
                 {
+                  "entity": "sensor.bed_1_10_power"
+                },
+                {
                   "entity": "sensor.bed_1_10_daily_energy"
+                },
+                {
+                  "entity": "sensor.bed_2_8_power"
                 },
                 {
                   "entity": "sensor.bed_2_8_daily_energy"
                 },
                 {
+                  "entity": "sensor.dish_washer_23a_power"
+                },
+                {
                   "entity": "sensor.dish_washer_23a_daily_energy"
+                },
+                {
+                  "entity": "sensor.dryer_17a19b_power"
                 },
                 {
                   "entity": "sensor.dryer_17a19b_daily_energy"
                 },
                 {
-                  "entity": "sensor.first_floor_23b_daily_energy"
+                  "entity": "sensor.ev_9a_11b_power"
+                },
+                {
+                  "entity": "sensor.ev_9a_11b_daily_energy"
+                },
+                {
+                  "entity": "sensor.first_floor_22b_power"
                 },
                 {
                   "entity": "sensor.first_floor_22b_daily_energy"
                 },
                 {
+                  "entity": "sensor.first_floor_23b_power"
+                },
+                {
+                  "entity": "sensor.first_floor_23b_daily_energy"
+                },
+                {
+                  "entity": "sensor.second_floor_20b_power"
+                },
+                {
                   "entity": "sensor.second_floor_20b_daily_energy"
+                },
+                {
+                  "entity": "sensor.fridge_24b_power"
                 },
                 {
                   "entity": "sensor.fridge_24b_daily_energy"
                 },
                 {
+                  "entity": "sensor.furnace_15a_power"
+                },
+                {
                   "entity": "sensor.furnace_15a_daily_energy"
                 },
                 {
-                  "entity": "sensor.garage_21b_daily_energy"
+                  "entity": "sensor.kitchen_right_13b_power"
                 },
                 {
                   "entity": "sensor.kitchen_right_13b_daily_energy"
                 },
                 {
+                  "entity": "sensor.living_room_19a_power"
+                },
+                {
                   "entity": "sensor.living_room_19a_daily_energy"
+                },
+                {
+                  "entity": "sensor.microwave_16a_power"
                 },
                 {
                   "entity": "sensor.microwave_16a_daily_energy"
                 },
                 {
+                  "entity": "sensor.range_14a16b_power"
+                },
+                {
                   "entity": "sensor.range_14a16b_daily_energy"
+                },
+                {
+                  "entity": "sensor.washer_22a_power"
                 },
                 {
                   "entity": "sensor.washer_22a_daily_energy"
                 }
               ],
-              "title": "breaker-panel"
+              "title": "Breaker Panel"
+            },
+            {
+              "chart_type": "line",
+              "period": "day",
+              "days_to_show": 365,
+              "type": "statistics-graph",
+              "entities": [
+                "sensor.phase_a_amps",
+                "sensor.phase_b_amps"
+              ],
+              "stat_types": [
+                "max"
+              ],
+              "title": "Max Daily Amperage"
+            },
+            {
+              "chart_type": "line",
+              "period": "hour",
+              "type": "statistics-graph",
+              "entities": [
+                "sensor.phase_a_amps",
+                "sensor.phase_b_amps"
+              ],
+              "stat_types": [
+                "max"
+              ],
+              "title": "Max Hourly Amperage",
+              "days_to_show": 14
+            },
+            {
+              "type": "horizontal-stack",
+              "cards": [
+                {
+                  "type": "entities",
+                  "entities": [
+                    {
+                      "entity": "sensor.total_power"
+                    },
+                    {
+                      "entity": "sensor.balance_power"
+                    },
+                    {
+                      "entity": "sensor.phase_a_voltage"
+                    },
+                    {
+                      "entity": "sensor.phase_b_voltage"
+                    },
+                    {
+                      "entity": "sensor.phase_a_power"
+                    },
+                    {
+                      "entity": "sensor.phase_b_power"
+                    },
+                    {
+                      "entity": "sensor.ac_13a15b_power"
+                    },
+                    {
+                      "entity": "sensor.bed_1_10_power"
+                    },
+                    {
+                      "entity": "sensor.bed_2_8_power"
+                    },
+                    {
+                      "entity": "sensor.dish_washer_23a_power"
+                    },
+                    {
+                      "entity": "sensor.dryer_17a19b_power"
+                    },
+                    {
+                      "entity": "sensor.ev_9a_11b_power"
+                    },
+                    {
+                      "entity": "sensor.first_floor_22b_power"
+                    },
+                    {
+                      "entity": "sensor.first_floor_23b_power"
+                    },
+                    {
+                      "entity": "sensor.second_floor_20b_power"
+                    },
+                    {
+                      "entity": "sensor.fridge_24b_power"
+                    },
+                    {
+                      "entity": "sensor.furnace_15a_power"
+                    },
+                    {
+                      "entity": "sensor.kitchen_right_13b_power"
+                    },
+                    {
+                      "entity": "sensor.living_room_19a_power"
+                    },
+                    {
+                      "entity": "sensor.microwave_16a_power"
+                    },
+                    {
+                      "entity": "sensor.range_14a16b_power"
+                    },
+                    {
+                      "entity": "sensor.washer_22a_power"
+                    }
+                  ]
+                },
+                {
+                  "type": "entities",
+                  "entities": [
+                    {
+                      "entity": "sensor.total_daily_energy"
+                    },
+                    {
+                      "entity": "sensor.balance_daily_energy"
+                    },
+                    {
+                      "entity": "sensor.phase_a_voltage"
+                    },
+                    {
+                      "entity": "sensor.phase_b_voltage"
+                    },
+                    {
+                      "entity": "sensor.phase_a_amps"
+                    },
+                    {
+                      "entity": "sensor.phase_b_amps"
+                    },
+                    {
+                      "entity": "sensor.ac_13a15b_daily_energy"
+                    },
+                    {
+                      "entity": "sensor.bed_1_10_daily_energy"
+                    },
+                    {
+                      "entity": "sensor.bed_2_8_daily_energy"
+                    },
+                    {
+                      "entity": "sensor.dish_washer_23a_daily_energy"
+                    },
+                    {
+                      "entity": "sensor.dryer_17a19b_daily_energy"
+                    },
+                    {
+                      "entity": "sensor.ev_9a_11b_daily_energy"
+                    },
+                    {
+                      "entity": "sensor.first_floor_22b_daily_energy"
+                    },
+                    {
+                      "entity": "sensor.first_floor_23b_daily_energy"
+                    },
+                    {
+                      "entity": "sensor.second_floor_20b_daily_energy"
+                    },
+                    {
+                      "entity": "sensor.fridge_24b_daily_energy"
+                    },
+                    {
+                      "entity": "sensor.furnace_15a_daily_energy"
+                    },
+                    {
+                      "entity": "sensor.kitchen_right_13b_daily_energy"
+                    },
+                    {
+                      "entity": "sensor.living_room_19a_daily_energy"
+                    },
+                    {
+                      "entity": "sensor.microwave_16a_daily_energy"
+                    },
+                    {
+                      "entity": "sensor.range_14a16b_daily_energy"
+                    },
+                    {
+                      "entity": "sensor.washer_22a_daily_energy"
+                    }
+                  ]
+                }
+              ]
             }
           ]
         }
